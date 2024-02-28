@@ -1,4 +1,3 @@
 # Team 11
 
-Hei alle sammen! - Ronja 😊
-\n Hei fra Margrethe :) 
+Hei alle sammen! - Ronja 😊 og hei fra Margrethe :) 
