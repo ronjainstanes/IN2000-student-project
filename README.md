@@ -1,3 +1,3 @@
 # Team 11
 
-Hei alle sammen! - Ronja 😊 og hei fra Margrethe, Dmitrii og Maksym :) 
+Hei alle sammen! - Ronja 😊 og hei fra Margrethe, Dmitry og Maksym :) 
