@@ -31,56 +31,17 @@ class GripfilesDataSource {
 
         }
 
-        /**
+
         install(ContentNegotiation) {
             gson()
-        } */
+        }
     }
-
-
     suspend fun fetchWeatherCurrentWaves2(): WeatherCurrentWaves_Objekt {
 
-        Log.e("TEST RESPONS",  "${url}" )
-
-        //val liste_weatherCurrentWaves: List<WeatherCurrentWaves> = client.get(url).body()
-        try {
-            val liste_weatherCurrentWaves: HttpResponse = client.get(url)
-        }
-        catch (e:Exception) {
-            Log.e("feilmelding??", "HEI", e)
-
-        }
-       // Log.e("TEST RESPONS 2 ",  "$liste_weatherCurrentWaves" )
-        /**
-        val groupedWeatherCurrentWaves = liste_weatherCurrentWaves.groupBy { it.area }
-
-        groupedWeatherCurrentWaves.forEach { data ->
-            Log.e("TEST DATA", "$data")
-        }
-        return WeatherCurrentWaves_Objekt(groupedWeatherCurrentWaves) */
-        return WeatherCurrentWaves_Objekt(emptyMap())
+        val liste_weatherCurrentWaves: List<WeatherCurrentWaves> = client.get(url).body()
+        val groupedWeatherCurrentWaves = liste_weatherCurrentWaves.groupBy { it.labels.area }
+        return WeatherCurrentWaves_Objekt(groupedWeatherCurrentWaves)
     }
-
-
-
-    /**
-    suspend fun fetchWeatherCurrentWaves(): WeatherCurrentWaves_Objekt {
-    try {
-    val jsonRespons = client.get(url).body<String>()
-    val weatherData = gson().fromJson(jsonRespons, Array<WeatherCurrentWaves>:: class.java).toList()
-    return WeatherCurrentWaves_Objekt(weatherData)
-
-    } catch (e: Exception) {
-    Log.e("ERROR WEATHER_DATA", "Feilmelding: ${e.message}")
-    throw e }
-    }
-     */
 
 
 }
-
-/**
- *         val liste_weatherCurrentWaves: List<WeatherCurrentWaves> = client.get(url).body()
- *         val groupedWeatherCurrentWaves = liste_weatherCurrentWaves.groupBy { it.area }
- *         return WeatherCurrentWaves_Objekt(groupedWeatherCurrentWaves)
- */

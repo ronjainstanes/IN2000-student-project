@@ -51,7 +51,7 @@ fun GribfilesDataSource() {
 
                 weatherList.groupedWeatherCurrentWaves.forEach { (area, dataList) ->
                     dataList.forEach { data ->
-                        Log.e("WEATHER_DATA: ", "Area: $area, Content: ${data.content}, Updated: ${data.updated}, URI: ${data.uri}")
+                        Log.e("WEATHER_DATA: ", "\n\nArea: $area, \nContent: ${data.params.content}, \nUpdated: ${data.updated}, \nURI: ${data.uri}")
                     }
                 }
 
