@@ -66,4 +66,14 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    val ktor_version = "2.3.8"
+    implementation("io.ktor:ktor-serialization-gson:$ktor_version")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    implementation("io.coil-kt:coil-compose:2.1.0")
+    implementation ("io.ktor:ktor-client-gson:$ktor_version")
+
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
 }
