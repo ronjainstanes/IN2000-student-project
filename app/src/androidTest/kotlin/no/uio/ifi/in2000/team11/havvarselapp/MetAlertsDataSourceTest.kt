@@ -12,6 +12,8 @@ class MetAlertsDataSourceTest {
 
     private val dataSource: MetAlertsDataSource = MetAlertsDataSource()
 
+    //TODO gjør dette til en faktisk test, ikke 1 = 1
+
     @Test
     fun fetchData() {
         assertEquals(1,1)

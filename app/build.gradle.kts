@@ -31,6 +31,8 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -111,4 +113,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     // Android Maps Compose composables
     implementation("com.google.maps.android:maps-compose:4.3.3")
+
+    // Android Desugaring to use ZonedDateTime
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
