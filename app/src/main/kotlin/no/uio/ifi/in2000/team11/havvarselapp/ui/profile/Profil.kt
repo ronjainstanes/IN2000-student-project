@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp.ui
+package no.uio.ifi.in2000.team11.havvarselapp.ui.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
