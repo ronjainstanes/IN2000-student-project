@@ -89,4 +89,14 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     // Android Maps Compose composables for the Maps SDK for Android
     implementation("com.google.maps.android:maps-compose:4.3.3")
+    dependencies {
+        val nav_version = "2.7.7"
+
+        implementation("androidx.navigation:navigation-compose:$nav_version")
+    }
+    android {
+        defaultConfig {
+            vectorDrawables.useSupportLibrary = true
+        }
+    }
 }
