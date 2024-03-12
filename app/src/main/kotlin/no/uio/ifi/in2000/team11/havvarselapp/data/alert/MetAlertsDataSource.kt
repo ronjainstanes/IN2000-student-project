@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp.data
+package no.uio.ifi.in2000.team11.havvarselapp.data.alert
 
 import android.os.Build
 import android.util.Log
@@ -11,8 +11,8 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.serialization.gson.gson
 import io.ktor.util.appendIfNameAbsent
-import no.uio.ifi.in2000.team11.havvarselapp.model.MetAlert
-import no.uio.ifi.in2000.team11.havvarselapp.model.StartStopDate
+import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
+import no.uio.ifi.in2000.team11.havvarselapp.model.alert.StartStopDate
 import org.json.JSONObject
 import java.time.ZonedDateTime
 

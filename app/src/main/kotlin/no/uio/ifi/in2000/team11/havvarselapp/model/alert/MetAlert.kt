@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp.model
+package no.uio.ifi.in2000.team11.havvarselapp.model.alert
 
 import com.google.android.gms.maps.model.LatLng
 import java.time.ZonedDateTime

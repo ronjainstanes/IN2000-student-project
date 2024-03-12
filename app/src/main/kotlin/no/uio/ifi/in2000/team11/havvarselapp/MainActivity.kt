@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.team11.havvarselapp.ui.theme.HavvarselAppTheme
 
 import no.uio.ifi.in2000.team11.havvarselapp.data.weather_current_waves.GripfilesDataSource
+import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -29,10 +30,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    NavScreen()
+                    GribfilesDataSource()
                 }
             }
-            GribfilesDataSource()
+
         }
     }
 }
