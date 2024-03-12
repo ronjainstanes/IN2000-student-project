@@ -1,25 +1,49 @@
 package no.uio.ifi.in2000.team11.havvarselapp
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestGribfilesDataSource
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestLocationForecastDataSource
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestLocationForecastViewModel
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestLocationRepository
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import no.uio.ifi.in2000.team11.havvarselapp.ui.SeaMapScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.theme.HavvarselAppTheme
 
-
 class MainActivity : ComponentActivity() {
+
+    // klient for å kunne hente posisjon
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // opprett en instans av LocationClient for å kunne hente brukerens posisjon
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // sjekker at brukeren har gitt tillatelse til å hente posisjon
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    // Got last known location. In some rare situations this can be null.
+                }
+        }
+
+
         setContent {
             HavvarselAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -27,45 +51,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    SeaMapScreen()
+                    // SimpleMetAlertScreen()
                 }
             }
-            //TestGribfilesDataSource()
-            TestLocationForecastDataSource()
-            TestLocationRepository()
-            TestLocationForecastViewModel()
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HavvarselAppTheme {
-        Greeting("Android")
-    }
-}
-
-

@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast
 
-import android.util.Log
 import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationForecast
 
 /**

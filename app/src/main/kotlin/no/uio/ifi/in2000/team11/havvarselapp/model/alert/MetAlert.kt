@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.team11.havvarselapp.model.alert
 
-import com.google.android.gms.maps.model.LatLng
 import java.time.ZonedDateTime
 
 /**
@@ -8,7 +7,7 @@ import java.time.ZonedDateTime
  */
 data class MetAlert(
     /**
-     * Id
+     * Id for det konkrete farevarselet
      */
     val id: String,
 
@@ -23,20 +22,14 @@ data class MetAlert(
     val title: String,
 
     /**
-     * Liste med koordinater som rammer inn
-     * området der varselet gjelder
-     */
-    val coordinates: List<LatLng>,
-
-    /**
      * Beskrivelse av varselet
      */
     val description: String, // properties.description
 
     /**
-     * Beskriver konsekvensene av været
+     * Beskriver konsekvensene av været, kan være null
      */
-    val consequences: String,
+    val consequences: String?,
 
     /**
      * Instruks til hva man bør gjøre,
@@ -46,12 +39,12 @@ data class MetAlert(
 
     /**
      * Hvilket nivå varselet har,
-     * f.eks. "2, yellow, Moderate"
+     * f.eks. "2, yellow, Moderate" //TODO Green, Yellow, Orange, Red. Gjøre om til enum?
      */
-    val awarenessLevel: List<String>, //TODO kan gjøres om til enum med 3 nivåer
+    val awarenessLevel: List<String>,
 
     /**
-     * Type farevarsel, f.eks "1, wind" //TODO finn ut hvilke typer som finnes, gjøre om til enum?
+     * Type farevarsel, f.eks "1, wind" //TODO wind, extreme high temperature, rain, extreme low temperature, snow/ice, coastal event, thunderstorms, forestfire, fog, avalanches
      */
     val awarenessType: List<String>,
 
@@ -62,9 +55,9 @@ data class MetAlert(
     val duration: StartStopDate,
 
     /**
-     * Meter per sekund
+     * Meter per sekund, kan være null
      */
-    val triggerLevel: String
+    val triggerLevel: String?
 ) {
     /**
      * Sammenligner to MetAlert-objekter
