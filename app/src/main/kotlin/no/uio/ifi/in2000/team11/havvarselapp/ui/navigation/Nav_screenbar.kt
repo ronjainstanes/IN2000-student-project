@@ -23,8 +23,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import no.uio.ifi.in2000.team11.havvarselapp.ui.SeaMapScreen
+import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMap
 import no.uio.ifi.in2000.team11.havvarselapp.ui.profile.Profil
-import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMapScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
 
 
@@ -90,7 +91,7 @@ fun NavScreen(){
 
                 when (selectedItemIndex) {
 
-                    0 -> SeaMapScreen()
+                    0 -> SeaMap()
                     1 -> WeatherScreen()
                     2 -> Profil()
                     else -> SeaMapScreen()

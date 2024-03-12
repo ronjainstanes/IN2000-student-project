@@ -1,6 +1,8 @@
 package no.uio.ifi.in2000.team11.havvarselapp.data
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.google.android.gms.maps.model.LatLng
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -35,6 +37,7 @@ class MetAlertsDataSource {
      * Sjekk ut filen "MetAlerts" for å se hvordan
      * dataen er strukturert.
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun fetchData(): List<MetAlert> {
         val response = client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/metalerts/2.0/current.json")
 

@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp.ui
+package no.uio.ifi.in2000.team11.havvarselapp.ui.map
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
