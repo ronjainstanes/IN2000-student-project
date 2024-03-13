@@ -5,16 +5,10 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.gson.gson
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.util.appendIfNameAbsent
 import no.uio.ifi.in2000.team11.havvarselapp.model.weather_current_waves.WeatherCurrentWaves
 import no.uio.ifi.in2000.team11.havvarselapp.model.weather_current_waves.WeatherCurrentWaves_Objekt
-
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.gson.*
-import io.ktor.client.*
-import com.google.gson.Gson
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.statement.HttpResponse
-import io.ktor.util.appendIfNameAbsent
 
 
 class GripfilesDataSource {

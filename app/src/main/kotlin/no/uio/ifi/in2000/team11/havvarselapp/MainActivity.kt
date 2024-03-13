@@ -31,15 +31,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NavScreen()
-                    GribfilesDataSource()
+                    //GribfilesDataSource()
                 }
             }
-
         }
     }
 }
-
-
 
 @Composable
 fun GribfilesDataSource() {
@@ -65,29 +62,3 @@ fun GribfilesDataSource() {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HavvarselAppTheme {
-        Greeting("Android")
-    }
-}
-
-
