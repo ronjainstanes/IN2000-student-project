@@ -85,8 +85,33 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // Ktor
+    val ktorVersion = "2.3.8"
+    implementation("io.ktor:ktor-serialization-gson:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+
+    // JSON
+    implementation("org.json:json:20240303")
+
+    // NavController
+    val navVersion = "2.7.7"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+
     // Maps SDK for Android
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     // Android Maps Compose composables for the Maps SDK for Android
     implementation("com.google.maps.android:maps-compose:4.3.3")
+    dependencies {
+        val nav_version = "2.7.7"
+
+        implementation("androidx.navigation:navigation-compose:$nav_version")
+    }
+    android {
+        defaultConfig {
+            vectorDrawables.useSupportLibrary = true
+        }
+    }
+
 }
