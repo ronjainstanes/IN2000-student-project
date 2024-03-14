@@ -21,6 +21,10 @@ data class Params(
 data class WeatherCurrentWaves_Objekt(
     val groupedWeatherCurrentWaves: Map<String, List<WeatherCurrentWaves>>
 )
+
+data class WeatherCurrentWaves_Objekt_liste(
+    val liste: List<WeatherCurrentWaves_Objekt>
+)
 // grouped by area --> (oslofjord: <oslofjord, weather, updated, uri>,  <oslofjord, current,..>,  <oslofjord, waves,..>)
 
 
