@@ -31,9 +31,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
             //TestGribfilesDataSource()
-            //TestLocationForecastDataSource()
-             //TestLocationRepository()
-           // TestLocationForecastViewModel()
+            TestLocationForecastDataSource()
+            TestLocationRepository()
+            TestLocationForecastViewModel()
         }
     }
 }
