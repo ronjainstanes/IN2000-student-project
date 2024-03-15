@@ -17,6 +17,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationFore
 
 data class IsAPiCalled( // for å unngå for mange API kall
     var iscalled: Boolean = false
+
 )
 
 
@@ -34,7 +35,7 @@ class LocationForecastViewModel(
 
     fun loadForecast(lat: String, lon: String) {
         if (isAPiCalled.iscalled) {
-            return;
+            return
         }
         else {
             viewModelScope.launch(Dispatchers.IO) {

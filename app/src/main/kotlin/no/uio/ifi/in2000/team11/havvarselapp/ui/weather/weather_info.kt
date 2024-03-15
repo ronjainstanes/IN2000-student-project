@@ -24,13 +24,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.team11.havvarselapp.R
 import no.uio.ifi.in2000.team11.havvarselapp.ui.LocationForecast.LocationForecastViewModel
 
+
+
+//Kan være lurt å legge til parametere lat og lon til WeatherScreen og fjerne init fra LocationForecastViewModel
+//fordi vi allerede kaller på loadForecast fun i WeatherScreen
+
+//Problemet oppstår når vi kaller loadForecast med ulike lat, lon fordi at pga IsAPiCalled()
+//blir alltid true etter første kjøring så det er lurt å ha priviouLat og priviousLon i IsApiCalled mutable data
+// som sjekker om loadForecasting kommet med ny lat og lon, da kan vi kjøre api kall igjen
 @Preview
 @Composable
 fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
     // ImageVector for værikonet som skal vises,
     // hentet fra drawable-ressursene
-    forecastViewModel.loadForecast("59.9", "10.7")
-    val weatherInfo = forecastViewModel.forecastInfo_UiState.collectAsState().value
+    forecastViewModel.loadForecast("59.9", "10.7") //kan byttes til parametere lat og lon
+    val weatherInfo = forecastViewModel.forecastInfo_UiState.collectAsState().value //kan fjernes
     val imageVector = ImageVector.vectorResource(id = R.drawable.p1honsftvsnih1nss1kofsciqo4_page_01)
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -62,6 +70,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                         .padding(end = 8.dp),
                     fontWeight = FontWeight.Bold
                 )
+                //Text(text = "${forecastViewModel.getTemperatureNow()}  ${forecastViewModel.getTemperatureUnit()}", denne linja kan brukes i stedet
                 Text(text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.air_temperature}  ${weatherInfo?.properties?.meta?.units?.air_temperature}",
 
                     modifier = Modifier
@@ -80,7 +89,8 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                         .padding(end = 8.dp),
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed}  ${weatherInfo?.properties?.meta?.units?.wind_speed}",
+                //Text(text = "${forecastViewModel.getWindSpeedNow()}  ${forecastViewModel.getWindSpeedUnit()}", denne linja kan brukes i stedet
+               Text(text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed}  ${weatherInfo?.properties?.meta?.units?.wind_speed}",
 
                     modifier = Modifier
                         .weight(1f)
@@ -98,6 +108,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                         .padding(end = 8.dp),
                     fontWeight = FontWeight.Bold
                 )
+                //Text(text = "${forecastViewModel.getWindDirection()}  ${forecastViewModel.getWindDirectionUnit()}", denne linja kan brukes i stedet
                 Text(text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_from_direction}  ${weatherInfo?.properties?.meta?.units?.wind_from_direction}",
 
                     modifier = Modifier
