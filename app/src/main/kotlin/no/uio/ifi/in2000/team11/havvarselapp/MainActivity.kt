@@ -10,10 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestGribfilesDataSource
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestLocationForecastDataSource
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestLocationForecastViewModel
-import no.uio.ifi.in2000.team11.havvarselapp.test.TestLocationRepository
+import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.theme.HavvarselAppTheme
 
 
@@ -30,10 +27,7 @@ class MainActivity : ComponentActivity() {
                     Greeting("Android")
                 }
             }
-            //TestGribfilesDataSource()
-            //TestLocationForecastDataSource()
-             //TestLocationRepository()
-           // TestLocationForecastViewModel()
+            NavScreen()
         }
     }
 }
