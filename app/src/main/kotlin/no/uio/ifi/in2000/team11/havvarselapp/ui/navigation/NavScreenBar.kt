@@ -17,13 +17,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import no.uio.ifi.in2000.team11.havvarselapp.ui.SeaMapScreen
+import no.uio.ifi.in2000.team11.havvarselapp.ui.SimpleMetAlertScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMap
 import no.uio.ifi.in2000.team11.havvarselapp.ui.profile.Profil
 import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
@@ -55,9 +55,13 @@ fun NavScreen(){
 
             BottomNavigationItem(titel = "Profil",
                 selectedIcon = Icons.Filled.Face,
-                unselectedIcon = Icons.Outlined.Face),)
+                unselectedIcon = Icons.Outlined.Face),
+
+            BottomNavigationItem(titel = "Farevarsel",
+                selectedIcon = Icons.Filled.Menu,
+                unselectedIcon = Icons.Outlined.Menu),)
         var selectedItemIndex by rememberSaveable {
-            mutableStateOf(0)
+            mutableIntStateOf(0)
         }
         Scaffold(
             bottomBar = {
@@ -94,11 +98,10 @@ fun NavScreen(){
                     0 -> SeaMap()
                     1 -> WeatherScreen()
                     2 -> Profil()
-                    else -> SeaMapScreen()
+                    3 -> SimpleMetAlertScreen()
+                    else -> SeaMap()
                 }
             }
         }
     }
 }
-
-

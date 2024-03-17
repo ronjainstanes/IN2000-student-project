@@ -8,8 +8,8 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationFore
  */
 interface LocationForecastRepository{
     suspend fun getLocationForecast(lat: String, lon: String): LocationForecast?
-
 }
+
 class LocatinForecastRepositoryImpl(
     private val dataKilde: LocationForecastDataSource = LocationForecastDataSource()
 ): LocationForecastRepository {
@@ -17,5 +17,4 @@ class LocatinForecastRepositoryImpl(
     override suspend fun getLocationForecast(lat: String, lon: String): LocationForecast? {
         return dataKilde.fetchLocationForecast_LatAndLon(lat, lon)
     }
-
 }

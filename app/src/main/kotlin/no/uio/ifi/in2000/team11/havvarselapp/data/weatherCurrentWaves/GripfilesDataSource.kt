@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp.data.weather_current_waves
+package no.uio.ifi.in2000.team11.havvarselapp.data.weatherCurrentWaves
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -7,8 +7,8 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.serialization.gson.gson
 import io.ktor.util.appendIfNameAbsent
-import no.uio.ifi.in2000.team11.havvarselapp.model.weather_current_waves.WeatherCurrentWaves
-import no.uio.ifi.in2000.team11.havvarselapp.model.weather_current_waves.WeatherCurrentWaves_Objekt
+import no.uio.ifi.in2000.team11.havvarselapp.model.weatherCurrentWaves.WeatherCurrentWaves
+import no.uio.ifi.in2000.team11.havvarselapp.model.weatherCurrentWaves.WeatherCurrentWaves_Objekt
 
 class GripfilesDataSource {
 

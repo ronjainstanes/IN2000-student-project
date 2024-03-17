@@ -25,15 +25,31 @@ class MetAlertsDataSource {
     }
 
     /**
-     * Returnerer en liste med alle farevarsler (Feature-objekter).
-     * Sjekk ut filen "MetAlerts" for å se hvordan
-     * dataen er strukturert.
+     * Returnerer alle farevarsler for hele Norge, som en liste med MetAlerts.
+     * Sjekk ut filen "MetAlerts" for å se hvordan dataen er strukturert.
      */
-    suspend fun fetchData(): MutableList<MetAlert> {
+    suspend fun fetchMetAlertsInNorway(): List<MetAlert> {
+        return fetchMetAlerts("https://gw-uio.intark.uh-it.no/in2000/" +
+                "weatherapi/metalerts/2.0/current.json?geographicDomain=marine")
+    }
+
+    /**
+     * Returnerer en liste med alle farevarsler som gjelder for posisjonen.
+     * Sjekk ut filen "MetAlerts" for å se hvordan dataen er strukturert.
+     */
+    suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert> {
+        return fetchMetAlerts("https://gw-uio.intark.uh-it.no/in2000/" +
+                "weatherapi/metalerts/2.0/current.json?geographicDomain=marine&lat=${lat}&lon=${lon}")
+    }
+
+    /**
+     * Tar inn en URL, og henter alle farevarsler fra denne URL-en.
+     * Parser dataen slik at det returneres som en liste med MetAlert-objekter.
+     */
+    private suspend fun fetchMetAlerts(url: String): List<MetAlert> {
         try {
             val response =
-                client.get("https://gw-uio.intark.uh-it.no/in2000/" +
-                        "weatherapi/metalerts/2.0/current.json")
+                client.get(url)
 
             Log.d(
                 "MET_ALERTS_DATA_SOURCE",
@@ -50,18 +66,18 @@ class MetAlertsDataSource {
             // gå gjennom alle farevarsler, parse til MetAlerts-objekter
             for (i in 0 until features.length()) {
                 val alert = features.getJSONObject(i)
-                val id = alert.getJSONObject("properties").optString("id")
 
                 // id bør aldri være null, hvis det er det lagrer vi ikke dette farevarselet
-                if (id.isBlank()) {
-                    continue
-                }
+                val id = alert.getJSONObject("properties").optString("id")
+                if (id.isBlank()) { continue }
+
                 val area = alert.getJSONObject("properties").optString("area")
                 val title = alert.getJSONObject("properties").optString("title")
                 val description = alert.getJSONObject("properties").optString("description")
                 val consequences = alert.getJSONObject("properties").optString("consequences")
                 val instruction = alert.getJSONObject("properties").optString("instruction")
                 val triggerLevel = alert.getJSONObject("properties").optString("triggerLevel")
+                val riskMatrixColor = alert.getJSONObject("properties").optString("riskMatrixColor")
 
                 // parser fra "2; yellow; Moderate" til en List<String>
                 val awarenessLevelStr =
@@ -83,12 +99,10 @@ class MetAlertsDataSource {
                 // lagre det i et MetAlert, og legg til i listen
                 val metAlert = MetAlert(
                     id, area, title, description, consequences,
-                    instruction, awarenessLevel, awarenessType, duration, triggerLevel
+                    instruction, awarenessLevel, riskMatrixColor, awarenessType, duration, triggerLevel
                 )
-
                 allAlerts.add(metAlert)
             }
-
             return allAlerts
 
         // ikke koblet til internett

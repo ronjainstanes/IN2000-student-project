@@ -26,15 +26,7 @@ class LocationForecastDataSource {
         }
     }
     suspend fun fetchLocationForecast_LatAndLon(lat: String, lon: String): LocationForecast {
-        val locationforecast: LocationForecast = client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0//compact?lat=${lat}&lon=${lon}").body()
+        val locationforecast: LocationForecast = client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}").body()
         return locationforecast
     }
-
-
 }
-
-
-
-
-
-//

@@ -42,7 +42,7 @@ class LocationForecastViewModel(
                     isAPiCalled.iscalled = true
                     val forecast = repository.getLocationForecast(lat, lon)
                     _forecastInfo_UiState.update { forecast }
-                    Log.e("VIEWMODEL", "API-kall")
+                    Log.e("LOCATIONFORECAST_VIEWMODEL", "Gjør et API-kall")
 
                 } catch (e: Exception) {
                     Log.e(

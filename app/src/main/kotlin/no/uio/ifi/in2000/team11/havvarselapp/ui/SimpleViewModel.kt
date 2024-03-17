@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.team11.havvarselapp.data.MetAlertsRepositoryImpl
+import no.uio.ifi.in2000.team11.havvarselapp.data.alert.MetAlertsRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 
 /**
@@ -54,7 +54,7 @@ class SimpleViewModel : ViewModel() {
             // Updates UiState with list of MetAlerts
             _appUiState.update { currentAppUiState ->
                 //TODO logg at dette kalles
-                val metAlerts = metAlertsRepository.getAllMetAlerts()
+                val metAlerts = metAlertsRepository.getMetAlertsInNorway()
 
                 // Return a new UiState with MetAlerts and replace the old UiState
                 currentAppUiState.copy(allMetAlerts = metAlerts)

@@ -39,9 +39,15 @@ data class MetAlert(
 
     /**
      * Hvilket nivå varselet har,
-     * f.eks. "2, yellow, Moderate" //TODO Green, Yellow, Orange, Red. Gjøre om til enum?
+     * f.eks. "2, yellow, Moderate"
      */
     val awarenessLevel: List<String>,
+
+    /**
+     * Hvilket nivå/farge varselet har:
+     * Green, Yellow, Orange, Red
+     */
+    val riskMatrixColor: String,
 
     /**
      * Type farevarsel, f.eks "1, wind" //TODO wind, extreme high temperature, rain, extreme low temperature, snow/ice, coastal event, thunderstorms, forestfire, fog, avalanches
