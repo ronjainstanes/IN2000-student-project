@@ -9,14 +9,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavScreen
-import androidx.compose.ui.tooling.preview.Preview
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.theme.HavvarselAppTheme
 

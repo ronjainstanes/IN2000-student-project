@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.map
 
+/**
+
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,3 +37,4 @@ class AppViewModel : ViewModel() {
     // Private mutable state flow to represent the UI state.
     val appUiState: StateFlow<AppUiState> = _appUiState.asStateFlow()
 }
+ */
