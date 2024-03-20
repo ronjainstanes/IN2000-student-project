@@ -23,7 +23,7 @@
       android:pathData="M272,188C272,234.39 234.39,272 188,272C141.61,272 104,234.39 104,188C104,141.61 141.61,104 188,104C234.39,104 272,141.61 272,188ZM272,188"
       android:strokeLineJoin="miter"
       android:strokeWidth="4"
-      android:fillColor="#00000000"
+      android:fillColor="#F8AE17"
       android:strokeColor="#F8AE17"
       android:strokeLineCap="butt"/>
   <path

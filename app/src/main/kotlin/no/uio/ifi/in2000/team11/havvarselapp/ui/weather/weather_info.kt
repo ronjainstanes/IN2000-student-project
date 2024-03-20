@@ -22,8 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.team11.havvarselapp.R
+import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 import no.uio.ifi.in2000.team11.havvarselapp.ui.LocationForecast.LocationForecastViewModel
-
+import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.GetIcon
 
 
 //Kan være lurt å legge til parametere lat og lon til WeatherScreen og fjerne init fra LocationForecastViewModel
@@ -61,6 +62,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
         Card(modifier = Modifier.padding(16.dp))
 
         {
+            //GetIcon(type = metAlert., color = )
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)){
@@ -110,6 +112,24 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                 )
                 //Text(text = "${forecastViewModel.getWindDirection()}  ${forecastViewModel.getWindDirectionUnit()}", denne linja kan brukes i stedet
                 Text(text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_from_direction}  ${weatherInfo?.properties?.meta?.units?.wind_from_direction}",
+
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    fontWeight = FontWeight.Bold,
+                    //textAlign = TextAlign.Right
+                )
+            }
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)){
+                Text(text = "Nedbør: ",
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_from_direction}  ${weatherInfo?.properties?.meta?.units?.precipitation_amount}",
 
                     modifier = Modifier
                         .weight(1f)

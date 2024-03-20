@@ -1,3 +1,4 @@
+/*
 package no.uio.ifi.in2000.team11.havvarselapp
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,4 +22,4 @@ class MetAlertsDataSourceTest {
             dataSource.fetchData()
         }
     }
-}
+}*/

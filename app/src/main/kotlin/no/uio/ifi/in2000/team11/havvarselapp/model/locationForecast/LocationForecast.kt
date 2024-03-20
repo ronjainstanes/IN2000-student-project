@@ -23,8 +23,102 @@ package no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast
  *      Wind-direction unit:          forecast?.properties?.meta?.units?.wind_from_direction
  *      -   Forklaring Wind-direction:  0° (north), 90° (east), 180° (south), 270° (west)
  *
+ *       air_pressure_at_sea_level:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.air_pressure_at_sea_level
+ *       air_pressure_at_sea_level unit:          forecast?.properties?.meta?.units?.air_pressure_at_sea_level
+ *
+ *       air_temperature_max:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.air_temperature_max
+ *       air_temperature_max unit:          forecast?.properties?.meta?.units?.air_temperature_max
+ *
+ *       air_temperature_min:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.air_temperature_min
+ *       air_temperature_min unit:          forecast?.properties?.meta?.units?.air_temperature_min
+ *
+ *       Tåkeområdet               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.fog_area_fraction
+ *       Tåkeområdet unit:          forecast?.properties?.meta?.units?.fog_area_fraction
+ *
+ *       Tåkeområdet høy:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.cloud_area_fraction_high
+ *       Tåkeområdet høy unit:          forecast?.properties?.meta?.units?.cloud_area_fraction_high
+ *
+ *       Tåkeområdet medium:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.cloud_area_fraction_medium
+ *       Tåkeområdet medium unit:          forecast?.properties?.meta?.units?.cloud_area_fraction_medium
+ *
+ *       Tåkeområdet lav:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.cloud_area_fraction_low
+ *       Tåkeområdet lav unit:          forecast?.properties?.meta?.units?.cloud_area_fraction_low
+ *
+ *       dew_point_temperature:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.dew_point_temperature
+ *       dew_point_temperature unit:          forecast?.properties?.meta?.units?.dew_point_temperature
+ *
+ *       relative_humidity:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.relative_humidity
+ *       relative_humidity unit:          forecast?.properties?.meta?.units?.relative_humidity
+ *
+ *       wind_speed_of_gust:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed_of_gust
+ *       wind_speed_of_gust unit:          forecast?.properties?.meta?.units?.wind_speed_of_gust
+ *
+ *       wind_speed_percentile_10:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed_percentile_10
+ *       wind_speed_percentile_10 unit:          forecast?.properties?.meta?.units?.wind_speed_percentile_10
+ *
+ *       wind_speed_percentile_90:               forecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed_percentile_90
+ *       wind_speed_percentile_90 unit:          forecast?.properties?.meta?.units?.wind_speed_percentile_90
  *
  *
+ *
+ *                                      Hent vær-data 1 time frem i tid: (dette er ALLE data man kan hente om 1 time frem i tid)
+ *
+ *
+ *      Sannsynlighet for nedbør:          forecast?.properties?.timeseries?.firstOrNull()?.data?.next_1_hours?.details?.probability_of_precipitation
+ *      Sannsynlighet for nedbør unit:     forecast?.properties?.meta?.units?.probability_of_precipitation
+ *
+ *
+ *      Sannsynlighet for torden:              forecast?.properties?.timeseries?.firstOrNull()?.data?.next_1_hours?.details?.probability_of_thunder
+ *      Sannsynlighet for torden unit:         forecast?.properties?.meta?.units?.probability_of_thunder
+ *
+ *
+ *      Nedbørs mengde:                  forecast?.properties?.timeseries?.firstOrNull()?.data?.next_1_hours?.details?.precipitation_amount
+ *      Nedbørs mengde unit:             forecast?.properties?.meta?.units?.precipitation_amount
+ *
+ *
+ *      Nedbørs mengde max:              forecast?.properties?.timeseries?.firstOrNull()?.data?.next_1_hours?.details?.precipitation_amount_max
+ *      Nedbørs mengde max unit:         forecast?.properties?.meta?.units?.precipitation_amount_max
+ *
+ *
+ *      Nedbørs mengde min:              forecast?.properties?.timeseries?.firstOrNull()?.data?.next_1_hours?.details?.precipitation_amount_min
+ *      Nedbørs mengde min unit:         forecast?.properties?.meta?.units?.precipitation_amount_min
+ *
+ *
+ *
+ *
+ *
+ *                                      Hent vær-data 6 timer frem i tid: (dette er ALLE data man kan hente om 6 timer frem i tid)
+ *
+ *      Max temperatur:                        forecast?.properties?.timeseries?.firstOrNull()?.data?.next_6_hours?.details?.air_temperature_max
+ *      Max temperatur unit:                    forecast?.properties?.meta?.units?.air_temperature_max
+ *
+ *
+ *      Min temperatur:                        forecast?.properties?.timeseries?.firstOrNull()?.data?.next_6_hours?.details?.air_temperature_min
+ *      Min temperatur unit:                    forecast?.properties?.meta?.units?.air_temperature_min
+ *
+ *
+ *      Sannsynlighet for torden:              forecast?.properties?.timeseries?.firstOrNull()?.data?.next_6_hours?.details?.probability_of_thunder
+ *      Sannsynlighet for torden unit:         forecast?.properties?.meta?.units?.probability_of_thunder
+ *
+ *
+ *      Nedbørs mengde:                  forecast?.properties?.timeseries?.firstOrNull()?.data?.next_6_hours?.details?.precipitation_amount
+ *      Nedbørs mengde unit:             forecast?.properties?.meta?.units?.precipitation_amount
+ *
+ *
+ *      Nedbørs mengde max:              forecast?.properties?.timeseries?.firstOrNull()?.data?.next_6_hours?.details?.precipitation_amount_max
+ *      Nedbørs mengde max unit:         forecast?.properties?.meta?.units?.precipitation_amount_max
+ *
+ *
+ *      Nedbørs mengde min:              forecast?.properties?.timeseries?.firstOrNull()?.data?.next_6_hours?.details?.precipitation_amount_min
+ *      Nedbørs mengde min unit:         forecast?.properties?.meta?.units?.precipitation_amount_min
+ *
+ *
+ *
+ *
+ *                                      Hent vær-data 12 timer frem i tid: (dette er ALLE data man kan hente om 12 timer frem i tid)
+ *
+ *        Sannsynlighet for nedbør:          forecast?.properties?.timeseries?.firstOrNull()?.data?.next_12_hours?.details?.probability_of_precipitation
+ *        Sannsynlighet for nedbør unit:     forecast?.properties?.meta?.units?.probability_of_precipitation
  *
  */
 data class LocationForecast(
@@ -109,7 +203,7 @@ data class Instant(
     val details: InstantDetails,
 )
 
-
+// air_temperature_percentile_10   air_temperature_percentile_90   cloud_area_fraction  cloud_area_fraction_high  cloud_area_fraction_low  cloud_area_fraction_medium
 
 data class InstantDetails (
     val air_pressure_at_sea_level : Double?,
