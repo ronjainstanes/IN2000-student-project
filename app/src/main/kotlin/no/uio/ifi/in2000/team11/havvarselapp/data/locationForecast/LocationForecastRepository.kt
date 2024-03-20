@@ -11,10 +11,10 @@ interface LocationForecastRepository{
 }
 
 class LocatinForecastRepositoryImpl(
-    private val dataKilde: LocationForecastDataSource = LocationForecastDataSource()
+    private val dataSource: LocationForecastDataSource = LocationForecastDataSource()
 ): LocationForecastRepository {
 
     override suspend fun getLocationForecast(lat: String, lon: String): LocationForecast? {
-        return dataKilde.fetchLocationForecast_LatAndLon(lat, lon)
+        return dataSource.fetchLocationForecast_LatAndLon(lat, lon)
     }
 }

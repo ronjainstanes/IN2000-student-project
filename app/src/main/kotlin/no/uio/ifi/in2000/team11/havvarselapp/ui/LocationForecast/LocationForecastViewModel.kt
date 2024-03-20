@@ -17,7 +17,6 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationFore
 
 data class IsAPiCalled( // for å unngå for mange API kall
     var iscalled: Boolean = false
-
 )
 
 
@@ -36,8 +35,7 @@ class LocationForecastViewModel(
     fun loadForecast(lat: String, lon: String) {
         if (isAPiCalled.iscalled) {
             return
-        }
-        else {
+        } else {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     isAPiCalled.iscalled = true
@@ -65,31 +63,31 @@ class LocationForecastViewModel(
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.air_temperature
     }
+
     fun getTemperatureUnit(): String? { // grader er i celsius
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.meta?.units?.air_temperature
     }
 
-
     fun getUVIndexNow(): Double? { // UV-indexen under klare himmelforhold
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.ultraviolet_index_clear_sky
     }
+
     fun getUVIndexUnit(): String? { // grader er i celsius
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.meta?.units?.ultraviolet_index_clear_sky
     }
 
-
     fun getWindSpeedNow(): Double? { // UV-indexen under klare himmelforhold
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed
     }
+
     fun getWindSpeedUnit(): String? { // grader er i celsius
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.meta?.units?.wind_speed
     }
-
 
     fun getWindDirection(): Double? { // UV-indexen under klare himmelforhold
         val currentForecast = _forecastInfo_UiState.value
@@ -109,6 +107,4 @@ class LocationForecastViewModel(
                 "\nWind speed: ${getWindSpeedNow()} ${getWindSpeedUnit()}" +
                 "\nWind direction: ${getWindDirection()} ${getWindDirectionUnit()}\n\n"
     }
-
-
 }

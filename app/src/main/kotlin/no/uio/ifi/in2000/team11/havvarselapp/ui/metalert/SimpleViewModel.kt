@@ -13,8 +13,9 @@ import no.uio.ifi.in2000.team11.havvarselapp.data.alert.MetAlertsRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 
 /**
- * UI State for alle skjermene i appen
- * TODO ingen parametre?
+ * UI State for å lagre all nødvendig info på skjermen.
+ * Lagrer nåværende posisjon (currentLocation) og
+ * en liste med alle relevante farevarsler (allMetAlerts)
  */
 data class AppUiState(
     /**
@@ -30,7 +31,7 @@ data class AppUiState(
 )
 
 /**
- * View model for alle skjermer appen.
+ * View model for SimpleMetAlert-skjermen.
  */
 class SimpleViewModel : ViewModel() {
     // Create instance of repository
