@@ -31,6 +31,6 @@ data class WeatherCurrentWaves_Objekt_liste(
 /**
  * AREA: området for data - oslofjord, skagerrak, sorlandet, west_norway, n-northsea, troms-finnmark, nordland
  * CONTENT: type data - Weather, Current eller Waves
- * UPDATED: timestamp for når data asist ble oppdatert
+ * UPDATED: timestamp for når data sist ble oppdatert
  * URI: lenke til selve dataen
  */

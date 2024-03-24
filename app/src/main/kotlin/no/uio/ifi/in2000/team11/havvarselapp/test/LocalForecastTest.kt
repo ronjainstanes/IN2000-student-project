@@ -6,8 +6,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocatinForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastDataSource
+import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.ui.LocationForecast.LocationForecastViewModel
 
 
@@ -19,7 +19,7 @@ fun TestLocationForecastDataSource() {
     LaunchedEffect(key1 = Unit) {
         coroutineScope.launch {
             try {
-                val locationForecast = dataSource.fetchLocationForecast_LatAndLon( "59.9", "10.7")
+                val locationForecast = dataSource.fetchLocationForecast( "59.9", "10.7")
                 Log.e("LOCATIONFORECAST_DATA: ", " \n\nDATA-SOURCE LOCATIONFORECAST: CURRENT WHEATER DATA\n " +
                         "\nCordinates: ${locationForecast.geometry.coordinates} " +
                         "\nTemperature: ${locationForecast.properties.timeseries.firstOrNull()?.data?.instant?.details?.air_temperature} ${locationForecast.properties.meta.units.air_temperature}" +
@@ -40,7 +40,7 @@ fun TestLocationForecastDataSource() {
 
 @Composable
 fun TestLocationRepository() {
-    val repository = LocatinForecastRepositoryImpl()
+    val repository = LocationForecastRepositoryImpl()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -59,7 +59,7 @@ fun TestLocationRepository() {
 
 
             } catch (e: Exception) {
-                Log.e("ERROR forecast REPOSITORY", "Feil ved LocatinForecastRepositoryImpl()...", e)
+                Log.e("ERROR forecast REPOSITORY", "Feil ved LocationForecastRepositoryImpl()...", e)
             }
         }
     }

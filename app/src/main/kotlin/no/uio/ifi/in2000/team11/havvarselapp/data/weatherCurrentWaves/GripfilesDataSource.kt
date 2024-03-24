@@ -10,7 +10,7 @@ import io.ktor.util.appendIfNameAbsent
 import no.uio.ifi.in2000.team11.havvarselapp.model.weatherCurrentWaves.WeatherCurrentWaves
 import no.uio.ifi.in2000.team11.havvarselapp.model.weatherCurrentWaves.WeatherCurrentWaves_Objekt
 
-class GripfilesDataSource {
+class GribfilesDataSource {
 
     // API endepunkt fra MET for weather, currents og waves for 'ish' hele Norge
     private val url: String =
@@ -32,9 +32,4 @@ class GripfilesDataSource {
         val groupedWeatherCurrentWaves = liste_weatherCurrentWaves.groupBy { it.labels.area }
         return WeatherCurrentWaves_Objekt(groupedWeatherCurrentWaves)
     }
-
-
-
-
-
 }

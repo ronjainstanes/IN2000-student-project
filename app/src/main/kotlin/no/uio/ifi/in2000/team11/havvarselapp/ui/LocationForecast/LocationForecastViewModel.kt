@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocatinForecastRepositoryImpl
+import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationForecast
 
 data class IsAPiCalled( // for å unngå for mange API kall
@@ -21,7 +21,7 @@ data class IsAPiCalled( // for å unngå for mange API kall
 
 
 class LocationForecastViewModel(
-    private val repository: LocatinForecastRepositoryImpl = LocatinForecastRepositoryImpl()
+    private val repository: LocationForecastRepositoryImpl = LocationForecastRepositoryImpl()
 ) : ViewModel() {
     private val _forecastInfo_UiState = MutableStateFlow<LocationForecast?>(null)
     val forecastInfo_UiState: StateFlow<LocationForecast?> = _forecastInfo_UiState.asStateFlow()

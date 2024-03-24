@@ -22,9 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.team11.havvarselapp.R
-import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 import no.uio.ifi.in2000.team11.havvarselapp.ui.LocationForecast.LocationForecastViewModel
-import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.GetIcon
 
 
 //Kan være lurt å legge til parametere lat og lon til WeatherScreen og fjerne init fra LocationForecastViewModel

@@ -5,11 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.team11.havvarselapp.data.weatherCurrentWaves.GripfilesDataSource
+import no.uio.ifi.in2000.team11.havvarselapp.data.weatherCurrentWaves.GribfilesDataSource
 
 @Composable
 fun TestGribfilesDataSource() {
-    val dataSource = GripfilesDataSource()
+    val dataSource = GribfilesDataSource()
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {

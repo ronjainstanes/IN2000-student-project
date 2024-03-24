@@ -23,22 +23,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.SimpleMetAlertScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMap
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.CurrentLocationAlert
 import no.uio.ifi.in2000.team11.havvarselapp.ui.profile.Profil
-import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherAlertScreen
-import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
+import no.uio.ifi.in2000.team11.havvarselapp.ui.weatherWithAlert.WeatherAlertScreen
 
-
-// Dataklasse for å representere hvert element i navigasjonsmenyen
+/**
+ * Dataklasse for å representere hvert element i navigasjonsmenyen
+ */
 data class BottomNavigationItem(
-    val titel: String,
+    val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon:ImageVector,
 )
-// En funksjon som representerer hovedskjermen i appen med en navigasjonsbar
 
+/**
+ * En navigasjonsbar som inneholder knapper for å
+ * navigere til alle skjermer i appen
+ */
 @Composable
 fun NavScreen(){
     Column(
@@ -47,21 +49,22 @@ fun NavScreen(){
     )
     {
         val items = listOf(
-            BottomNavigationItem(titel = "Kart",
+            BottomNavigationItem(title = "Kart",
                 selectedIcon = Icons.Filled.Place,
                 unselectedIcon = Icons.Outlined.Place),
 
-            BottomNavigationItem(titel = "Vær",
+            BottomNavigationItem(title = "Vær",
                 selectedIcon = Icons.Filled.Menu,
                 unselectedIcon = Icons.Outlined.Menu),
 
-            BottomNavigationItem(titel = "Profil",
+            BottomNavigationItem(title = "Profil",
                 selectedIcon = Icons.Filled.Face,
                 unselectedIcon = Icons.Outlined.Face),
 
-            BottomNavigationItem(titel = "Farevarsel",
+            BottomNavigationItem(title = "Farevarsel",
                 selectedIcon = Icons.Filled.Menu,
-                unselectedIcon = Icons.Outlined.Menu),)
+                unselectedIcon = Icons.Outlined.Menu)
+        )
         var selectedItemIndex by rememberSaveable {
             mutableIntStateOf(0)
         }
@@ -72,9 +75,9 @@ fun NavScreen(){
                         NavigationBarItem(
                             selected = selectedItemIndex == index,
                             onClick = { selectedItemIndex = index
-                                //navController.navigate(item.titel)
+                                //navController.navigate(item.title)
                             },
-                            label = {Text(text = item.titel)},
+                            label = {Text(text = item.title)},
                             icon = {
                                 Icon(
                                 imageVector = if(index == selectedItemIndex)
@@ -82,15 +85,14 @@ fun NavScreen(){
                                     item.selectedIcon
                                     } else item.unselectedIcon,
 
-                                contentDescription = item.titel
+                                contentDescription = item.title
                             )
                             }
                         )
                     }
                 }
             }
-        )
-        {
+        ) {
             innerPadding ->
             // Innholdsområde som endres avhengig av valgt navigasjonselement
             Column(modifier = Modifier.padding(innerPadding)) {
@@ -98,10 +100,10 @@ fun NavScreen(){
                 when (selectedItemIndex) {
 
                     0 -> SeaMap()
-//                    1 -> WeatherScreen()
+                    // 1 -> WeatherScreen()
                     1 -> WeatherAlertScreen()
                     2 -> Profil()
-//                    3 -> SimpleMetAlertScreen()
+                    // 3 -> SimpleMetAlertScreen()
                     3 -> CurrentLocationAlert("")
                     else -> SeaMap()
                 }

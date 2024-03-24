@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp.ui.weatherwithalert
+package no.uio.ifi.in2000.team11.havvarselapp.ui.weatherWithAlert
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding

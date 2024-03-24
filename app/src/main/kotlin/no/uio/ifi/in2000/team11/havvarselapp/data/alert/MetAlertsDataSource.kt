@@ -9,6 +9,7 @@ import io.ktor.util.appendIfNameAbsent
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.StartStopDate
 import org.json.JSONObject
+import java.net.ConnectException
 import java.net.UnknownHostException
 import java.time.ZonedDateTime
 
@@ -53,7 +54,7 @@ class MetAlertsDataSource {
 
             Log.d(
                 "MET_ALERTS_DATA_SOURCE",
-                "Statuskode for API-kall: ${response.status} \n"
+                "Statuskode for MetAlerts API-kall: ${response.status} \n"
             )
 
             // JSONObjekt som inneholder en array med features (farevarsler)
@@ -111,14 +112,15 @@ class MetAlertsDataSource {
         // ikke koblet til internett
         } catch (e: UnknownHostException) {
             Log.e("MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. Ingen internett-tilkobling.\n")
+                "API-kall mislykket. UnknownHostException. Ingen internett-tilkobling.\n")
+            return mutableListOf()
+
+        } catch (e: ConnectException) {
+            Log.e("MET_ALERTS_DATA_SOURCE",
+                "API-kall mislykket. ConnectException. Ingen internett-tilkobling.\n")
             return mutableListOf()
 
         // noe annet gikk galt
-        } catch (e: Exception) {
-            Log.e("MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. Feilmelding: ${e.message}\n")
-            return mutableListOf()
         }
     }
 }

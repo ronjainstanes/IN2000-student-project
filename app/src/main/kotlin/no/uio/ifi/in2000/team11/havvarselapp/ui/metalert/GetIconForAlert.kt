@@ -11,7 +11,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
-
+/**
+ * Henter riktig ikon for farevarselet.
+ * NB: Funksjonen har "SuppressLint" annotering fordi ikonnavn
+ * og ID er dynamiske i stedet for statiske, noe som gir en warning hvis
+ * man ikke har SuppressLint annoteringen.
+ */
 @SuppressLint("DiscouragedApi")
 @Composable
 fun GetIcon(type: String, color: String) {
@@ -28,7 +33,7 @@ fun GetIcon(type: String, color: String) {
         "drawable",
         context.packageName
     )
-    // Samme prinsippe, men hvis faretype finnes ikke
+    // Samme prinsipp, men hvis fare-type ikke finnes
     val otherIconName = "icon_warning_generic_${color}".lowercase()
 
    @DrawableRes
