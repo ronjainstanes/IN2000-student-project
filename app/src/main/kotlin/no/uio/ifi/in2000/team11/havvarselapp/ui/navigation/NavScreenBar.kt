@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMap
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.CurrentLocationAlert
 import no.uio.ifi.in2000.team11.havvarselapp.ui.profile.Profil
-import no.uio.ifi.in2000.team11.havvarselapp.ui.weatherWithAlert.WeatherAlertScreen
+import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
 
 /**
  * Dataklasse for å representere hvert element i navigasjonsmenyen
@@ -100,8 +100,7 @@ fun NavScreen(){
                 when (selectedItemIndex) {
 
                     0 -> SeaMap()
-                    // 1 -> WeatherScreen()
-                    1 -> WeatherAlertScreen()
+                    1 -> WeatherScreen()
                     2 -> Profil()
                     // 3 -> SimpleMetAlertScreen()
                     3 -> CurrentLocationAlert("")
