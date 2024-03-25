@@ -65,7 +65,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.air_temperature}  ${weatherInfo?.properties?.meta?.units?.air_temperature}",
+                            text = forecastViewModel.getTemperature(0),
 
                             modifier = Modifier
                                 .weight(1f)
@@ -88,7 +88,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_speed}  ${weatherInfo?.properties?.meta?.units?.wind_speed}",
+                            forecastViewModel.getWindSpeed(0),
 
                             modifier = Modifier
                                 .weight(1f)
@@ -111,7 +111,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.wind_from_direction}  ${weatherInfo?.properties?.meta?.units?.wind_from_direction}",
+                            text = forecastViewModel.getWindDirection(0),
 
                             modifier = Modifier
                                 .weight(1f)
@@ -134,7 +134,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.next_1_hours?.details?.precipitation_amount}  ${weatherInfo?.properties?.meta?.units?.precipitation_amount}",
+                            text = forecastViewModel.getPrecipitationAmount(0),
 
                             modifier = Modifier
                                 .weight(1f)
@@ -157,8 +157,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.fog_area_fraction}  ${weatherInfo?.properties?.meta?.units?.fog_area_fraction}",
-
+                            text = forecastViewModel.get_fog_area_fraction(0),
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 8.dp),
@@ -176,7 +175,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                                 .padding(end = 8.dp),
                             fontWeight = FontWeight.Bold
                         )
-                        Text(text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.instant?.details?.cloud_area_fraction_high}  ${weatherInfo?.properties?.meta?.units?.cloud_area_fraction_high}",
+                        Text(text = forecastViewModel.getCloudAreaFraction(0),
 
                             modifier = Modifier
                                 .weight(1f)
@@ -199,7 +198,31 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "${weatherInfo?.properties?.timeseries?.firstOrNull()?.data?.next_1_hours?.details?.probability_of_thunder}  ${weatherInfo?.properties?.meta?.units?.probability_of_thunder}",
+                            text = forecastViewModel.getProbabilityOfThunder(0),
+
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                            fontWeight = FontWeight.Bold,
+                            //textAlign = TextAlign.Right
+                        )
+                    }
+                }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Relativ fuktighet: ",
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = forecastViewModel.getRelativeHumidity(0),
 
                             modifier = Modifier
                                 .weight(1f)
