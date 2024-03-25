@@ -43,11 +43,6 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
             fontSize = 30.sp,
             modifier = Modifier.padding(top=20.dp))
 
-        /*Image(imageVector = imageVector, contentDescription = "image",*/
-        /*    Modifier*/
-        /*        .size(200.dp)*/
-        /*        .padding(20.dp))*/
-
         ValidImageWeather()
 
         Card(modifier = Modifier
