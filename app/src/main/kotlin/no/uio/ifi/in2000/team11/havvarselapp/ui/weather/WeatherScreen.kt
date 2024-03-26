@@ -157,7 +157,7 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = forecastViewModel.get_fog_area_fraction(0),
+                            text = forecastViewModel.getFogAreaFraction(0),
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 8.dp),

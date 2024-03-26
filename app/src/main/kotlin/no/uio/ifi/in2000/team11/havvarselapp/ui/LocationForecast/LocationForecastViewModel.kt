@@ -65,22 +65,22 @@ class LocationForecastViewModel(
      * Denne returnerer dato og tid typ: '20 March 2024 16:00' i NORSK TID
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun konvertDateAndTime(time: Int): String {
+    fun convertDateAndTime(time: Int): String {
         val currentForecast = _forecastInfo_UiState.value
-        val tid_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
-        val parsedDate = ZonedDateTime.parse(tid_String)
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm")
-        return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formatter)
+        val time_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
+        val parsedDate = ZonedDateTime.parse(time_String)
+        val formats = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm")
+        return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formats)
     }
 
     /**
      * Denne returnerer norsk tid - typ: '16:00'
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getNorskTime(time: Int): String {
+    fun getNorwegianTime(time: Int): String {
         val currentForecast = _forecastInfo_UiState.value
-        val tid_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
-        var parsedDate = ZonedDateTime.parse(tid_String)
+        val time_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
+        var parsedDate = ZonedDateTime.parse(time_String)
         return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).hour.toString()
     }
 
@@ -117,7 +117,7 @@ class LocationForecastViewModel(
     }
     // fog_area_fraction
 
-    fun get_fog_area_fraction(time: Int): String { // UV-indexen under klare himmelforhold
+    fun getFogAreaFraction(time: Int): String { // UV-indexen under klare himmelforhold
         val currentForecast = _forecastInfo_UiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.fog_area_fraction} ${currentForecast?.properties?.meta?.units?.fog_area_fraction}"
     }
@@ -147,7 +147,7 @@ class LocationForecastViewModel(
         return currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.summary?.symbol_code
     }
 
-    fun probability_of_precipitation_12hours(): Double? { // Sannsynlighet for nedbør om 12 timer
+    fun probabilityOfPrecipitation_12hours(): Double? { // Sannsynlighet for nedbør om 12 timer
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.timeseries?.firstOrNull()?.data?.next_12_hours?.details?.probability_of_precipitation
     }
