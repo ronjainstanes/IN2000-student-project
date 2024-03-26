@@ -31,7 +31,6 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 fun CurrentLocationAlert(region: String,
     simpleViewModel: SimpleViewModel = viewModel()
 ) {
-    // TODO will be used with current location, "oslo" for now
     val currentLocation: String = region
 
     // Observe the UI state object from the ViewModel
@@ -93,6 +92,7 @@ fun CurrentLocationAlert(region: String,
 
 @Composable
 fun MetAlertCardCurrent(metAlert: MetAlert) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth() // Fylle maksimal bredde som er tilgjengelig
