@@ -23,7 +23,7 @@
       android:pathData="M160.62,107.4C113.45,107.4 75.21,69.67 75.21,23.13C75.21,15.82 76.25,8.76 78.03,2C35.27,6.61 2,42.32 2,85.73C2,132.27 40.24,170 87.41,170C127.16,170 160.48,143.15 170,106.86C166.91,107.2 163.79,107.4 160.62,107.4ZM160.62,107.4"
       android:strokeLineJoin="round"
       android:strokeWidth="4"
-      android:fillColor="#00000000"
+      android:fillColor="#71B8D4"
       android:strokeColor="#71B8D4"
       android:strokeLineCap="round"/>
   <group>
@@ -49,7 +49,7 @@
         android:pathData="M199.34,144.09C199.34,161.98 213.84,176.5 231.73,176.5L361.32,176.5L361.32,176.38C362.09,176.43 362.85,176.5 363.63,176.5C382.8,176.5 398.34,160.95 398.34,141.77C398.34,124.81 386.18,110.71 370.11,107.68C370.39,105.96 370.57,104.21 370.57,102.42C370.57,84.52 356.07,70.01 338.18,70.01C332.13,70.01 326.48,71.7 321.63,74.59C313.07,60.75 297.8,51.49 280.33,51.49C253.49,51.49 231.73,73.26 231.73,100.11C231.73,104.13 232.28,108.02 233.2,111.75C232.71,111.73 232.23,111.68 231.73,111.68C213.84,111.68 199.34,126.19 199.34,144.09ZM199.34,144.09"
         android:strokeLineJoin="miter"
         android:strokeWidth="4"
-        android:fillColor="#00000000"
+        android:fillColor="#93A2B8"
         android:strokeColor="#93A2B8"
         android:strokeLineCap="butt"/>
   </group>
@@ -76,7 +76,7 @@
         android:pathData="M291.84,131C290.98,131 290.15,131.09 289.31,131.12C290.9,124.66 291.84,117.95 291.84,111C291.84,64.6 254.23,27 207.84,27C177.64,27 151.24,42.98 136.44,66.91C128.06,61.91 118.3,59 107.84,59C76.91,59 51.84,84.07 51.84,115C51.84,118.09 52.16,121.11 52.64,124.08C24.86,129.33 3.84,153.69 3.84,183C3.84,216.13 30.7,243 63.84,243C65.19,243 66.51,242.88 67.84,242.79L67.84,243L291.84,243C322.77,243 347.84,217.92 347.84,187C347.84,156.07 322.77,131 291.84,131ZM291.84,131"
         android:strokeLineJoin="miter"
         android:strokeWidth="4"
-        android:fillColor="#00000000"
+        android:fillColor="#E6EEFB"
         android:strokeColor="#E6EEFB"
         android:strokeLineCap="butt"/>
   </group>
@@ -103,7 +103,7 @@
         android:pathData="M172,172L140,268L172,268L156,348L236,236L188,236L220,172ZM172,172"
         android:strokeLineJoin="miter"
         android:strokeWidth="4"
-        android:fillColor="#00000000"
+        android:fillColor="#F6A822"
         android:strokeColor="#F6A822"
         android:strokeLineCap="butt"/>
   </group>

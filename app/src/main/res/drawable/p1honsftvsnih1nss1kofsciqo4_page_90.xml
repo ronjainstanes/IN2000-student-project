@@ -26,7 +26,7 @@
         android:pathData="M340,292C340,338.39 302.39,376 256,376C209.61,376 172,338.39 172,292C172,245.61 209.61,208 256,208C302.39,208 340,245.61 340,292ZM340,292"
         android:strokeLineJoin="miter"
         android:strokeWidth="4"
-        android:fillColor="#00000000"
+        android:fillColor="#F8AE17"
         android:strokeColor="#F8AE17"
         android:strokeLineCap="butt"/>
   </group>
