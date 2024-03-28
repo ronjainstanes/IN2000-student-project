@@ -37,7 +37,7 @@ class LocationForecastViewModel(
 
 
     init {
-        loadForecast("59.911491", "10.757933") // starter opp med Latitude og longitude tilsvarende Oslo
+        loadForecast("59.91", "10.75") // starter opp med Latitude og longitude tilsvarende Oslo
     }
 
     fun loadForecast(lat: String, lon: String) {
@@ -48,7 +48,7 @@ class LocationForecastViewModel(
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     isAPiCalled.iscalled = true
-                    val forecast = repository.getLocationForecastComplete(lat, lon)
+                    val forecast = repository.getLocationForecast(lat, lon)
                     _forecastInfo_UiState.update { forecast }
                     val oceanForecast = repositoryOcean.getOceanForecast(lat, lon)
                     _OceanForecast_UiState.update { oceanForecast }

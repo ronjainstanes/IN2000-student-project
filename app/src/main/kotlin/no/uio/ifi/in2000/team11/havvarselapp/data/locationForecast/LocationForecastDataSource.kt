@@ -10,7 +10,8 @@ import io.ktor.util.appendIfNameAbsent
 import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationForecast
 
 /**
- * Henter LocationForecast-API'et, oppretter et objekt av data klassen LocationForecast, må sende inn Latitude og Longtitude på området data skal hentes fra
+ * Henter data fra API-et LocationForecast, oppretter et objekt av data klassen LocationForecast,
+ * må sende inn Latitude og Longtitude på området data skal hentes fra
  */
 class LocationForecastDataSource {
 
@@ -26,9 +27,8 @@ class LocationForecastDataSource {
         }
     }
 
-    suspend fun fetchLocationForecast_complete(lat: String, lon: String): LocationForecast {
-        val compleatelocationforecast: LocationForecast = client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/complete?lat=${lat}&lon=${lon}").body()
-        return compleatelocationforecast
-    }                                                                                         // https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=60.10&lon=9.58
-
+    suspend fun fetchLocationForecast(lat: String, lon: String): LocationForecast {
+        return client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/" +
+                "locationforecast/2.0/complete?lat=${lat}&lon=${lon}").body<LocationForecast>()
+    }
 }

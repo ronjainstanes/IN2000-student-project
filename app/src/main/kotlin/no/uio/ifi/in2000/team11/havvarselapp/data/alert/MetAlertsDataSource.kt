@@ -86,9 +86,6 @@ class MetAlertsDataSource {
                 val awarenessLevel =
                     awarenessLevelStr.split(";")
 
-                /**
-                 * Det var feil ved henting av farevarsel type
-                 */
                 // parser fra "1; wind" til en List<String>
                 val awarenessTypeStr = alert.getJSONObject("properties").getString("awareness_type")
                 val awarenessType = awarenessTypeStr.split(";")
@@ -109,18 +106,23 @@ class MetAlertsDataSource {
             }
             return allAlerts
 
-        // ikke koblet til internett
+        // ikke koblet til internett, mulighet 1
         } catch (e: UnknownHostException) {
             Log.e("MET_ALERTS_DATA_SOURCE",
                 "API-kall mislykket. UnknownHostException. Ingen internett-tilkobling.\n")
             return mutableListOf()
 
+        // ikke koblet til internett, mulighet 2
         } catch (e: ConnectException) {
             Log.e("MET_ALERTS_DATA_SOURCE",
                 "API-kall mislykket. ConnectException. Ingen internett-tilkobling.\n")
             return mutableListOf()
 
         // noe annet gikk galt
+        } catch (e: Exception) {
+            Log.e("MET_ALERTS_DATA_SOURCE",
+                "API-kall mislykket. Noe gikk galt.\n")
+            return mutableListOf()
         }
     }
 }

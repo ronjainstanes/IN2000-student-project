@@ -50,7 +50,11 @@ data class MetAlert(
     val riskMatrixColor: String,
 
     /**
-     * Type farevarsel, f.eks "1, wind" //TODO wind, extreme high temperature, rain, extreme low temperature, snow/ice, coastal event, thunderstorms, forestfire, fog, avalanches
+     * Type farevarsel, f.eks "1, wind".
+     *
+     * GYLDIGE TYPER: wind, extreme high temperature, rain,
+     * extreme low temperature, snow/ice, coastal event,
+     * thunderstorms, forestfire, fog, avalanches
      */
     val awarenessType: List<String>,
 

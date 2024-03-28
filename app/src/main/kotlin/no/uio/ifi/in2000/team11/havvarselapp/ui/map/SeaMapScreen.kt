@@ -25,6 +25,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,8 +36,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -49,13 +51,22 @@ import com.google.maps.android.compose.TileOverlay
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import no.uio.ifi.in2000.team11.havvarselapp.R
+import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
 import java.io.IOException
 import java.net.URL
 
 
 @Composable
-@Preview()
-fun SeaMap() {
+fun SeaMapScreen(
+    locationRepository: LocationRepository,
+    region: String,
+    seaMapViewModel: SeaMapViewModel = viewModel()
+) {
+
+    // observerer UiState fra ViewModel
+    val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
+
+    // lagrer tekst som skrives i søkefelt
     val textState = remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -64,10 +75,8 @@ fun SeaMap() {
     // her trengs 'context' for å kunne hente utseende av kartet
     val context = LocalContext.current
 
-    // bruker koordinatene til Oslo som startposisjon
-    val oslo = LatLng(59.9, 10.73)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(oslo, 12f)
+        position = CameraPosition.fromLatLngZoom(mapUiState.currentLocation, 12f)
     }
 
     // brukes for å plassere pin på kartet
@@ -75,6 +84,7 @@ fun SeaMap() {
     val markerPosition = remember { mutableStateOf(LatLng(59.9, 10.73)) }
 
     Box(modifier = Modifier.fillMaxSize()) {
+
         // selve kartet
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -119,7 +129,8 @@ fun SeaMap() {
                     onValueChange = { newText ->
                         textState.value = newText
                     },
-                    // Optional parameters to customize the TextField
+
+                    // tekst og ikon som vises i søkefeltet
                     label = { Text("Søk her") },
                     maxLines = 1,
 
@@ -128,7 +139,8 @@ fun SeaMap() {
                             Icons.Default.Search, contentDescription = "Search Icon",
                             modifier = Modifier.clickable {
                                 if (textState.value.isNotBlank()) {
-                                    getPosition(textState, context, cameraPositionState)
+                                    getPosition(textState, context,
+                                        cameraPositionState, seaMapViewModel, mapUiState)
                                 }
                                 keyboardController?.hide()
                                 focusManager.clearFocus(true)
@@ -145,10 +157,12 @@ fun SeaMap() {
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done
                     ),
+                    // søker opp området når brukeren trykker på søk-knappen
                     keyboardActions = KeyboardActions(
                     onDone = {
                         if (textState.value.isNotBlank()) {
-                            getPosition(textState, context, cameraPositionState)
+                            getPosition(textState, context, cameraPositionState,
+                                seaMapViewModel, mapUiState)
                         }
                         keyboardController?.hide()
                         focusManager.clearFocus(true)
@@ -171,7 +185,13 @@ fun SeaMap() {
     }
 }
 
-fun getPosition(placeName: MutableState<String>, context: Context, cameraPositionState: CameraPositionState){
+fun getPosition(
+    placeName: MutableState<String>,
+    context: Context,
+    cameraPositionState: CameraPositionState,
+    seaMapViewModel: SeaMapViewModel,
+    mapUiState: MapUiState
+){
     val locationName = placeName.value
     val geocoder = Geocoder(context)
 
@@ -186,20 +206,22 @@ fun getPosition(placeName: MutableState<String>, context: Context, cameraPositio
 
             // Sjekk om enheten har en aktiv internettforbindelse via Wi-Fi eller mobilnett (CELLULAR for mobilnett)
             if (networkCapabilities != null && (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))) {
+
+                // henter posisjonen til stedet som er søkt på
                 val addressList: List<Address>? = geocoder.getFromLocationName(locationName, 1)
                 if (!addressList.isNullOrEmpty()) {
                     val address: Address = addressList[0]
-                    val latitude = address.latitude
-                    val longitude = address.longitude
-                    // TODO: remove or change text later
-                    Toast.makeText(
-                        context,
-                        "Latitude: $latitude, Longitude: $longitude",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    val searchLocation = LatLng(latitude, longitude)
+                    val lat = address.latitude
+                    val long = address.longitude
+                    val searchLocation = LatLng(lat, long)
+
+                    // oppdater posisjon i UiState, som deretter oppdaterer locationRepository
+                    seaMapViewModel.updateUiStateLocation(searchLocation)
+
+                    // flytter kartet til stedet som er søkt opp
                     cameraPositionState.position = CameraPosition.fromLatLngZoom(searchLocation, 12f)
                 } else {
+                    // viser en "toast", en liten pop-up melding om at stedet ikke ble funnet
                     Toast.makeText(context, "Location not found", Toast.LENGTH_SHORT).show()
                 }
             } else {

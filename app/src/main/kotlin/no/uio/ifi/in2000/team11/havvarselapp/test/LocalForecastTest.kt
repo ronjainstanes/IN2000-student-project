@@ -19,7 +19,7 @@ fun TestLocationForecastDataSource() {
     LaunchedEffect(key1 = Unit) {
         coroutineScope.launch {
             try {
-                val locationForecast = dataSource.fetchLocationForecast_complete( "59.9", "10.7")
+                val locationForecast = dataSource.fetchLocationForecast( "59.9", "10.7")
                 val tid_String: String = "${locationForecast.properties.timeseries.firstOrNull()?.time}"
                 var parsedDate = ZonedDateTime.parse(tid_String)
                 val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm")
@@ -73,7 +73,7 @@ fun TestLocationRepository() {
     LaunchedEffect(key1 = Unit) {
         coroutineScope.launch {
             try {
-                val locationForecast = repository.getLocationForecastComplete("59.9", "10.7")
+                val locationForecast = repository.getLocationForecast("59.9", "10.7")
                 if (locationForecast != null) {
                     Log.e("REPOSITORY-LOCATIONFORECAST: ", " \n\nREPOSOTORY LOCATIONFORECAST: CURRENT WHEATER DATA\n " +
                             "\nCordinates: ${locationForecast.geometry.coordinates} " +
@@ -85,7 +85,7 @@ fun TestLocationRepository() {
 
 
             } catch (e: Exception) {
-                Log.e("ERROR forecast REPOSITORY", "Feil ved LocatinForecastRepositoryImpl()...", e)
+                Log.e("ERROR forecast REPOSITORY", "Feil ved LocationForecastRepositoryImpl()...", e)
             }
         }
     }

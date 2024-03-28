@@ -18,6 +18,5 @@ fun Profil(){
         verticalArrangement = Arrangement.SpaceBetween)
     {
         Text(text = "Her vil det være innstillinger og brukerprofil")
-        Text(text = "Hei :)")
     }
 }

@@ -33,7 +33,7 @@ fun SimpleMetAlertScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Title
+            // Tittel
             Text(
                 text = "Farevarsler",
                 fontSize = 35.sp,
@@ -42,7 +42,7 @@ fun SimpleMetAlertScreen(
                     .paddingFromBaseline(50.dp, 10.dp)
             )
 
-            // Display all parties
+            // Viser frem alle farevarsler
             LazyVerticalGrid(
                 modifier = Modifier.padding(innerPadding),
                 columns = GridCells.Fixed(1)

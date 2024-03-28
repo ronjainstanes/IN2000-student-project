@@ -53,15 +53,13 @@ android {
 }
 
 secrets {
-    // name of file containing data that should not be included in git
+    // Fil som absolutt ikke skal inkluderes i Git, inneholder API-nøkler
     propertiesFileName = "secrets.properties"
 
-    // A properties file containing default secret values. This file can be
-    // checked in version control.
+    // Fil som inneholder standardverdier, kan inkluderes i Git
     defaultPropertiesFileName = "local.defaults.properties"
 
-    // Configure which keys should be ignored by the plugin by providing regular expressions.
-    // "sdk.dir" is ignored by default.
+    // Hvilke nøkler som skal ignoreres av plugin. "sdk.dir" ignoreres som standard
     ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
     ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }
@@ -82,8 +80,6 @@ dependencies {
 
     // Jetpack Compose ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-
-    implementation("com.google.android.libraries.places:places:3.3.0")
 
     // Testing (Junit, Espresso, Compose UI testing)
     testImplementation("junit:junit:4.13.2")
@@ -116,6 +112,9 @@ dependencies {
 
     // Location
     implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    // Brukes for adressesøk i søkefelt
+    implementation("com.google.android.libraries.places:places:3.3.0")
 
     // Android Desugaring for å kunne bruke ZonedDateTime
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")

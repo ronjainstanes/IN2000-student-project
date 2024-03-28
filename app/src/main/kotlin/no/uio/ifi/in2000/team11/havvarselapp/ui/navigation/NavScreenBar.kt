@@ -29,12 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
-import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMap
+import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
+import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMapScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.AppUiState
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.CurrentLocationAlert
 import no.uio.ifi.in2000.team11.havvarselapp.ui.profile.Profil
 import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
-
 
 /**
  * Dataklasse for å representere hvert element i navigasjonsmenyen
@@ -47,11 +47,11 @@ data class BottomNavigationItem(
 )
 
 /**
- * En navigasjonsbar som inneholder knapper for å
- * navigere til alle skjermer i appen
+ * Denne skjermen har en navigasjonslinje nederst, og dynamisk innhold
+ * som fornyes hver gang brukeren navigerer til en annen skjerm
  */
 @Composable
-fun NavScreen(region: String,
+fun NavScreen(locationRepository: LocationRepository, region: String,
               navScreenViewModel: NavScreenViewModel = viewModel())
 {
 
@@ -72,7 +72,7 @@ fun NavScreen(region: String,
 
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     )
     {
         val items = listOf(
@@ -158,12 +158,13 @@ fun NavScreen(region: String,
             Column(modifier = Modifier.padding(innerPadding)) {
 
                 when (selectedItemIndex) {
-                    0 -> SeaMap()
+
+                    0 -> SeaMapScreen(locationRepository, region)
                     1 -> WeatherScreen()
                     2 -> Profil()
                     // 3 -> SimpleMetAlertScreen()
                     3 -> CurrentLocationAlert("")
-                    else -> SeaMap()
+                    else -> SeaMapScreen(locationRepository, region)
                 }
             }
         }
