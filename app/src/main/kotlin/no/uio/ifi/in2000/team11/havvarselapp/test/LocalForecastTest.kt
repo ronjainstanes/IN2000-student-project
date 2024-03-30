@@ -8,7 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocatinForecastRepositoryImpl
+import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastDataSource
 import no.uio.ifi.in2000.team11.havvarselapp.ui.LocationForecast.LocationForecastViewModel
 import java.time.LocalDateTime
@@ -73,7 +73,7 @@ fun TestLocationForecastDataSource() {
 
 @Composable
 fun TestLocationRepository() {
-    val repository = LocatinForecastRepositoryImpl()
+    val repository = LocationForecastRepositoryImpl()
 
     val coroutineScope = rememberCoroutineScope()
 

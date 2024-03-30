@@ -12,14 +12,14 @@ interface LocationForecastRepository{
 
 
 }
-class LocatinForecastRepositoryImpl(
-    private val dataKilde: LocationForecastDataSource = LocationForecastDataSource()
+class LocationForecastRepositoryImpl(
+    private val dataSource: LocationForecastDataSource = LocationForecastDataSource()
 ): LocationForecastRepository {
 
 
 
     override suspend fun getLocationForecastComplete(lat: String, lon: String): LocationForecast? {
-        return dataKilde.fetchLocationForecast_complete(lat, lon)
+        return dataSource.fetchLocationForecast_complete(lat, lon)
     }
 
 }
