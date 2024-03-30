@@ -91,6 +91,7 @@ fun SeaMap() {
                     },
                     // Optional parameters to customize the TextField
                     label = { Text("Søk her") },
+                    maxLines = 1,
 
                     leadingIcon = {
                         Icon(
