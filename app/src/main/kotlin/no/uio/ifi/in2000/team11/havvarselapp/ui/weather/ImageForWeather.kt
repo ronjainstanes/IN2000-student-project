@@ -15,6 +15,6 @@ fun ValidImageWeather(){
     val imageVector = ImageVector.vectorResource(id = R.drawable.p1honsftvsnih1nss1kofsciqo4_page_01)
     Image(imageVector = imageVector, contentDescription = "image",
         Modifier
-            .size(100.dp)
-            .padding(20.dp))
+            .size(139.dp)
+            .padding(top = 13.dp, bottom = 20.dp))
 }
