@@ -21,6 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,7 +30,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 
 @Composable
-fun CurrentLocationAlert(region: String,
+fun CurrentLocationAlert(
+    region: String,
+    textStyle: TextStyle = TextStyle(
+        fontSize = 35.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal ),
     simpleViewModel: SimpleViewModel = viewModel()
 ) {
     val currentLocation: String = region
@@ -48,12 +53,20 @@ fun CurrentLocationAlert(region: String,
 
     if(filteredMetAlerts.isEmpty()){
         Column {
+
             Text(
-                text = "Ingen farevarsler i \n\n${currentLocation} området!",
-                fontSize = 35.sp,
+                text = "Ingen farevarsler i",
+                style = textStyle,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .paddingFromBaseline(50.dp, 10.dp)
+                    .paddingFromBaseline(45.dp, 10.dp)
+            )
+            Text(
+                text = "${currentLocation} området!",
+                style = textStyle,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .paddingFromBaseline(25.dp, 10.dp)
             )
         }
     }
@@ -66,7 +79,7 @@ fun CurrentLocationAlert(region: String,
                 // Title
                 Text(
                     text = "Farevarsler",
-                    fontSize = 35.sp,
+                    style = textStyle,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .paddingFromBaseline(50.dp, 10.dp)

@@ -80,7 +80,7 @@ class LocationForecastViewModel(
     fun getNorwegianTime(time: Int): String {
         val currentForecast = _forecastInfo_UiState.value
         val time_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
-        var parsedDate = ZonedDateTime.parse(time_String)
+        val parsedDate = ZonedDateTime.parse(time_String)
         return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).hour.toString()
     }
 
@@ -115,7 +115,7 @@ class LocationForecastViewModel(
         val currentForecast = _forecastInfo_UiState.value
         return currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.ultraviolet_index_clear_sky
     }
-    // fog_area_fraction
+
 
     fun getFogAreaFraction(time: Int): String { // UV-indexen under klare himmelforhold
         val currentForecast = _forecastInfo_UiState.value
