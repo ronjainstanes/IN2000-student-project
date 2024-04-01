@@ -442,20 +442,20 @@ fun OceanRow(forecastViewModel: LocationForecastViewModel, time: Int, rowColor: 
 
 
         // Current from
-        Column(modifier = Modifier.weight(1f).wrapContentSize().padding(top = 7.dp) ) {
+        Column(modifier = Modifier.weight(1f).wrapContentSize().padding(top = 6.dp) ) {
             Text(
                 text = forecastViewModel.getCurrentDirectionFrom(time),
                 //modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
-                fontSize = 11.sp,
+                fontSize = 10.sp,
                 fontFamily = font )
             Image(
                 imageVector = pil, contentDescription = "image",
-                Modifier.size(12.dp).align(Alignment.CenterHorizontally))
+                Modifier.size(10.dp).align(Alignment.CenterHorizontally))
             Text(
                 text = forecastViewModel.getCurrentDirectionTowards(time) + "",
                 fontWeight = FontWeight.Bold,
-                fontSize = 11.sp,
+                fontSize = 10.sp,
                 fontFamily = font )
         }
 
