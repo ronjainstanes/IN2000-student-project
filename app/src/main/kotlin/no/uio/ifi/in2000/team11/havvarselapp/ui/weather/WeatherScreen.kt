@@ -1,8 +1,5 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.weather
 
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,8 +46,6 @@ enum class DisplayInfo {
     Weather, Sea
 }
 
-@SuppressLint("DiscouragedApi")
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
@@ -316,8 +311,6 @@ fun WeatherScreen(forecastViewModel: LocationForecastViewModel = viewModel()){
 
 
 // Metoden for å laste inn alle radene med værinfo
-@SuppressLint("DiscouragedApi")
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeatherRow(forecastViewModel: LocationForecastViewModel, time: Int, rowColor: Color, font: FontFamily) {
     val ikonName = forecastViewModel.getWeatherIcon(time) ?: "fair_day"
@@ -399,10 +392,9 @@ fun WeatherRow(forecastViewModel: LocationForecastViewModel, time: Int, rowColor
 }
 
 
-
-// Metoden for å laste inn alle radene med hav-info
-@SuppressLint("DiscouragedApi")
-@RequiresApi(Build.VERSION_CODES.O)
+/**
+ * Laster inn rader med hav-info, en rad for hvert klokkeslett
+ */
 @Composable
 fun OceanRow(forecastViewModel: LocationForecastViewModel, time: Int, rowColor: Color, font: FontFamily) {
     val borderColor: Color = Color(134, 145, 205, 255)

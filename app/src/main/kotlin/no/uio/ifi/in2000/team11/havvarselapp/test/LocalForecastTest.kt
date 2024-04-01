@@ -1,23 +1,16 @@
 package no.uio.ifi.in2000.team11.havvarselapp.test
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastDataSource
-import no.uio.ifi.in2000.team11.havvarselapp.ui.LocationForecast.LocationForecastViewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastRepositoryImpl
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TestLocationForecastDataSource() {
     val dataSource = LocationForecastDataSource()

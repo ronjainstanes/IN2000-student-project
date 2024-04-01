@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 
+
 @Composable
 fun CurrentLocationAlert(
     region: String,
@@ -46,7 +47,7 @@ fun CurrentLocationAlert(
     fun String.containsIgnoreCase(other: String): Boolean {
         return this.contains(other, ignoreCase = true)
     }
-// Denne listen vil bare inneholde elementer hvor 'areal' har ordet "oslo".
+
     val filteredMetAlerts = appUiState.allMetAlerts.filter {
         it.area.containsIgnoreCase(currentLocation)
     }

@@ -1,8 +1,6 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.LocationForecast
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -71,7 +69,6 @@ class LocationForecastViewModel(
     /**
      * Denne returnerer dato og tid typ: '20 March 2024 16:00' i NORSK TID
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun convertDateAndTime(time: Int): String {
         val currentForecast = _forecastInfo_UiState.value
         val time_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
@@ -83,7 +80,6 @@ class LocationForecastViewModel(
     /**
      * Denne returnerer norsk tid - typ: '16'
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getNorwegianTime(time: Int): String {
         val currentForecast = _forecastInfo_UiState.value
         val time_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
@@ -93,7 +89,6 @@ class LocationForecastViewModel(
     /**
      * Denne returnerer norsk tid - typ: '16:00'
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getNorwegianTimeAndMin(time: Int): String {
         val currentForecast = _forecastInfo_UiState.value
         val time_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
@@ -173,7 +168,6 @@ class LocationForecastViewModel(
     /**
      * Denne returnerer dato og tid typ: '20 March 2024 16:00' i NORSK TID
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun konvertDateAndTimeOcean(time: Int): String {
         val oceanForecast = _OceanForecast_UiState.value
         val tid_String: String = "${oceanForecast?.properties?.timeseries?.get(time)?.time}"
@@ -185,7 +179,6 @@ class LocationForecastViewModel(
     /**
      * Denne returnerer norsk tid - typ: '16:00'
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getNorwegianTimeOcean(time: Int): String {
         val oceanForecast = _OceanForecast_UiState.value
         val tid_String: String = "${oceanForecast?.properties?.timeseries?.get(time)?.time}"
@@ -265,7 +258,6 @@ class LocationForecastViewModel(
     /**
      * Denne returnerer norsk tid - typ: '16:00'
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getNorwegianTimeAndMinOcean(time: Int): String {
         val currentForecast = _OceanForecast_UiState.value
         val time_String: String = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
