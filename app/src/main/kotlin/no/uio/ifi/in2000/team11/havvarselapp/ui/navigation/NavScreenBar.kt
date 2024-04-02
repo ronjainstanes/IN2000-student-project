@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +25,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMap
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.CurrentLocationAlert
 import no.uio.ifi.in2000.team11.havvarselapp.ui.profile.Profil
 import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
+
 
 /**
  * Dataklasse for å representere hvert element i navigasjonsmenyen
@@ -37,15 +42,17 @@ data class BottomNavigationItem(
     val unselectedIcon:ImageVector,
 )
 
+
 /**
  * En navigasjonsbar som inneholder knapper for å
  * navigere til alle skjermer i appen
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavScreen(){
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     )
     {
         val items = listOf(
@@ -70,7 +77,10 @@ fun NavScreen(){
         }
         Scaffold(
             bottomBar = {
-                NavigationBar{
+                NavigationBar(
+                    // First value = alpha and later RGB
+                    containerColor = Color(0xFF_13_23_2C)
+                ) {
                     items.forEachIndexed{index,item ->
                         NavigationBarItem(
                             selected = selectedItemIndex == index,
@@ -84,21 +94,29 @@ fun NavScreen(){
                                 {
                                     item.selectedIcon
                                     } else item.unselectedIcon,
-
                                 contentDescription = item.title
                             )
-                            }
+                            },
+                            colors = NavigationBarItemColors(
+                                //2F4156
+                                selectedIconColor = Color(0xFF_D9_D9_D9),
+                                selectedTextColor = Color(0xFF_D9_D9_D9),
+                                selectedIndicatorColor = Color(0xFF_2F_41_56),
+                                unselectedIconColor = Color(0xFF_D9_D9_D9),
+                                unselectedTextColor = Color(0xFF_D9_D9_D9),
+                                disabledIconColor = Color(0xFF_13_23_2C),
+                                disabledTextColor = Color(0xFF_13_23_2C)
+                            ),
                         )
                     }
                 }
-            }
+            },
         ) {
             innerPadding ->
             // Innholdsområde som endres avhengig av valgt navigasjonselement
             Column(modifier = Modifier.padding(innerPadding)) {
 
                 when (selectedItemIndex) {
-
                     0 -> SeaMap()
                     1 -> WeatherScreen()
                     2 -> Profil()

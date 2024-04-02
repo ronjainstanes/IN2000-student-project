@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -31,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -47,10 +51,12 @@ import java.net.URL
 
 
 @Composable
+@Preview()
 fun SeaMap() {
     val textState = remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val hideSymbolsButton = remember { mutableStateOf(true) }
 
     // her trengs 'context' for å kunne hente utseende av kartet
     val context = LocalContext.current
@@ -70,21 +76,24 @@ fun SeaMap() {
                 mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle),
             )
         ) {
-            TileOverlay(
-                tileProvider = object : UrlTileProvider(256, 256) {
-                    override fun getTileUrl(x: Int, y: Int, z: Int): URL {
-                        return URL("https://t1.openseamap.org/seamark/$z/$x/$y.png")
+            if (hideSymbolsButton.value) {
+                TileOverlay(
+                    tileProvider = object : UrlTileProvider(256, 256) {
+                        override fun getTileUrl(x: Int, y: Int, z: Int): URL {
+                            return URL("https://t1.openseamap.org/seamark/$z/$x/$y.png")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
             // TextField with the value from textState and an event handler to update textState
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 OutlinedTextField(
-
+                    modifier = Modifier.padding(15.dp),
+                    shape = RoundedCornerShape(50.dp),
                     value = textState.value,
                     onValueChange = { newText ->
                         textState.value = newText
@@ -104,10 +113,12 @@ fun SeaMap() {
                                 focusManager.clearFocus(true)
                             }
                         ) },
-                    modifier = Modifier.padding(15.dp),
+                    //colors for search field
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White.copy(alpha = 0.7f),
+                        focusedContainerColor = Color(0xFF_D9_D9_D9),
+                        unfocusedContainerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.9f),
+                        focusedBorderColor = Color(0xFF_D9_D9_D9),
+                        unfocusedBorderColor = Color(0xFF_D9_D9_D9)
                     ),
                     // closing Text field after pressing enter
                     keyboardOptions = KeyboardOptions(
@@ -123,6 +134,18 @@ fun SeaMap() {
                     }
                 )
             )
+        }
+        // Knapp for å aktivere/deaktivere TileOverlay
+        Button(
+            onClick = { hideSymbolsButton.value = !hideSymbolsButton.value },
+            modifier = Modifier
+                .padding(start = 2.dp)
+                .align(Alignment.BottomStart),
+            colors =  ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF_13_23_2C)
+            )
+        ) {
+            Text(text = if (hideSymbolsButton.value) "Deaktiver Overlay" else "Aktiver Overlay")
         }
     }
 }
