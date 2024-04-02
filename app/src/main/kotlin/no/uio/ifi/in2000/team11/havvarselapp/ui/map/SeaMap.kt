@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -43,8 +44,10 @@ import com.google.android.gms.maps.model.UrlTileProvider
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.TileOverlay
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import no.uio.ifi.in2000.team11.havvarselapp.R
 import java.io.IOException
 import java.net.URL
@@ -66,11 +69,20 @@ fun SeaMap() {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(oslo, 12f)
     }
+
+    // brukes for å plassere pin på kartet
+    val markerVisible = remember { mutableStateOf(false) }
+    val markerPosition = remember { mutableStateOf(LatLng(59.9, 10.73)) }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        // kart
+        // selve kartet
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
+            onMapClick = { clickedPosition ->
+                markerPosition.value = clickedPosition
+                markerVisible.value = true
+            },
             properties = MapProperties(
                 // dette er utseende av kartet, som man finner i filen "mapstyle" i raw-mappen
                 mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle),
@@ -85,11 +97,20 @@ fun SeaMap() {
                     }
                 )
             }
+            // pin som plasseres på kartet der brukeren trykker
+            if (markerVisible.value) {
+                Marker(
+                    state = rememberMarkerState(position = markerPosition.value),
+                    visible = markerVisible.value,
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                )
+            }
+
         }
             // TextField with the value from textState and an event handler to update textState
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
                     modifier = Modifier.padding(15.dp),
