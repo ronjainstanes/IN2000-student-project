@@ -8,16 +8,13 @@ import android.net.NetworkCapabilities
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepositoryImpl
 import java.io.IOException
 
@@ -32,8 +29,8 @@ data class MapUiState(
     val markerVisible: Boolean = false
 )
 
-class SeaMapViewModel: ViewModel() {
-    // et repository som lagrer posisjonsdata som alle skjermer skal ha tilgang til
+class SeaMapViewModel : ViewModel() {
+    // repository som flere skjermer har tilgang til
     private val locationRepository: LocationRepositoryImpl = LocationRepositoryImpl()
 
     // oppretter en privat state flow, denne er mutable og kan derfor endres på
@@ -45,21 +42,12 @@ class SeaMapViewModel: ViewModel() {
     /**
      * Metode som oppdaterer UiState med den nye posisjonen i appen
      */
-    private fun updateUiStateLocation(newLocation: LatLng) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun updateLocationUiState(newLocation: LatLng) {
+        // oppdaterer repository med den nye posisjonen i appen
+        locationRepository.setCurrentLocation(newLocation)
 
-            // oppdaterer repository med den nye posisjonen i appen
-            locationRepository.setCurrentLocation(newLocation)
-
-            _mapUiState.update { currentState ->
-                currentState.copy(currentLocation = newLocation)
-            }
-        }
-    }
-
-    fun updateCameraPosition(newCameraPosition: CameraPosition) {
         _mapUiState.update { currentState ->
-            currentState.copy(currentCameraPosition = newCameraPosition)
+            currentState.copy(currentLocation = newLocation)
         }
     }
 
@@ -87,20 +75,24 @@ class SeaMapViewModel: ViewModel() {
         placeName: MutableState<String>,
         context: Context,
         cameraPositionState: CameraPositionState
-    ){
+    ) {
         val locationName = placeName.value
         val geocoder = Geocoder(context)
 
         try {
             // Sjekk tilgjengeligheten av nettverkstilgang
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
             // Hent informasjon om nettverkstilkoblingen
-            val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            val networkCapabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
 
             // Sjekk om enheten har en aktiv internettforbindelse via Wi-Fi eller mobilnett (CELLULAR for mobilnett)
             if (networkCapabilities != null && (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || networkCapabilities.hasTransport(
-                    NetworkCapabilities.TRANSPORT_CELLULAR))) {
+                    NetworkCapabilities.TRANSPORT_CELLULAR
+                ))
+            ) {
 
                 // henter posisjonen til stedet som er søkt på
                 val addressList: List<Address>? = geocoder.getFromLocationName(locationName, 1)
@@ -111,17 +103,18 @@ class SeaMapViewModel: ViewModel() {
                     val searchLocation = LatLng(lat, long)
 
                     // oppdater posisjon i UiState, som deretter oppdaterer locationRepository
-                    updateUiStateLocation(searchLocation)
+                    updateLocationUiState(searchLocation)
 
                     // flytter kartet til stedet som er søkt opp
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(searchLocation, 12f)
+                    cameraPositionState.position =
+                        CameraPosition.fromLatLngZoom(searchLocation, 12f)
                 } else {
                     // viser en "toast", en liten pop-up melding om at stedet ikke ble funnet
-                    Toast.makeText(context, "Location not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Posisjonen ble ikke funnet", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 // Hvis det ikke er noen aktiv internettforbindelse, vis en passende melding
-                Toast.makeText(context, "No internet connection available", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Ingen internettforbindelse", Toast.LENGTH_SHORT).show()
             }
         } catch (e: IOException) {
             e.printStackTrace()

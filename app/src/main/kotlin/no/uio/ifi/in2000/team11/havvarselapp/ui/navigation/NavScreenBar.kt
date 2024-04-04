@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
-import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
 import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMapScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.AppUiState
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.CurrentLocationAlert
@@ -51,16 +50,17 @@ data class BottomNavigationItem(
  * som fornyes hver gang brukeren navigerer til en annen skjerm
  */
 @Composable
-fun NavScreen(locationRepository: LocationRepository, region: String,
-              navScreenViewModel: NavScreenViewModel = viewModel())
-{
+fun NavScreen(
+    region: String,
+    navScreenViewModel: NavScreenViewModel = viewModel()
+) {
 
     val currentLocation: String = region
     // Observe the UI state object from the ViewModel
     val appUiState: AppUiState by navScreenViewModel.appUiState.collectAsState()
 
     // Bruker funksjonen for å filtrere 'allMetAlert' listen basert på 'areal' feltet.
-// Funksjon som sjekker om en streng inneholder ordet "oslo" i en case-insensitive måte.
+    // Funksjon som sjekker om en streng inneholder ordet "oslo" i en case-insensitive måte.
     fun String.containsIgnoreCase(other: String): Boolean {
         return this.contains(other, ignoreCase = true)
     }
@@ -83,10 +83,12 @@ fun NavScreen(locationRepository: LocationRepository, region: String,
                 badgeCount = 0
             ),
 
-            BottomNavigationItem(title = "Vær",
+            BottomNavigationItem(
+                title = "Vær",
                 selectedIcon = Icons.Filled.Menu,
                 unselectedIcon = Icons.Outlined.Menu,
-                badgeCount = amountOfAlerts ),
+                badgeCount = amountOfAlerts
+            ),
 
 
             BottomNavigationItem(
@@ -112,13 +114,14 @@ fun NavScreen(locationRepository: LocationRepository, region: String,
                     // First value = alpha and later RGB
                     containerColor = Color(0xFF_13_23_2C)
                 ) {
-                    items.forEachIndexed{index,item ->
+                    items.forEachIndexed { index, item ->
                         NavigationBarItem(
                             selected = selectedItemIndex == index,
-                            onClick = { selectedItemIndex = index
+                            onClick = {
+                                selectedItemIndex = index
                                 //navController.navigate(item.title)
                             },
-                            label = {Text(text = item.title)},
+                            label = { Text(text = item.title) },
                             icon = {
                                 BadgedBox(
                                     badge = {
@@ -152,19 +155,18 @@ fun NavScreen(locationRepository: LocationRepository, region: String,
                     }
                 }
             }
-        ) {
-            innerPadding ->
+        ) { innerPadding ->
             // Innholdsområde som endres avhengig av valgt navigasjonselement
             Column(modifier = Modifier.padding(innerPadding)) {
 
                 when (selectedItemIndex) {
 
-                    0 -> SeaMapScreen(locationRepository, region)
+                    0 -> SeaMapScreen()
                     1 -> WeatherScreen()
                     2 -> Profil()
                     // 3 -> SimpleMetAlertScreen()
                     3 -> CurrentLocationAlert("")
-                    else -> SeaMapScreen(locationRepository, region)
+                    else -> SeaMapScreen()
                 }
             }
         }

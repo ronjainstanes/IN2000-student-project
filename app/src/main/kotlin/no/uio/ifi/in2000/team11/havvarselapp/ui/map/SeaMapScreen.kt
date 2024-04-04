@@ -41,16 +41,12 @@ import com.google.maps.android.compose.TileOverlay
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import no.uio.ifi.in2000.team11.havvarselapp.R
-import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
 import java.net.URL
 
 @Composable
 fun SeaMapScreen(
-    locationRepository: LocationRepository,
-    region: String,
     seaMapViewModel: SeaMapViewModel = viewModel()
 ) {
-
     // observerer UiState fra ViewModel
     val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
 
@@ -63,6 +59,8 @@ fun SeaMapScreen(
     // her trengs 'context' for å kunne hente utseende av kartet
     val context = LocalContext.current
 
+    // dette lagres lokalt, ikke i UiState for å unngå at skjermen blir
+    // recomposed hvert sekund hvis man scroller rundt i kartet */
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(mapUiState.currentLocation, 12f)
     }
@@ -122,13 +120,16 @@ fun SeaMapScreen(
                         Icons.Default.Search, contentDescription = "Search Icon",
                         modifier = Modifier.clickable {
                             if (textState.value.isNotBlank()) {
-                                seaMapViewModel.getPosition(textState, context,
-                                    cameraPositionState)
+                                seaMapViewModel.getPosition(
+                                    textState, context,
+                                    cameraPositionState
+                                )
                             }
                             keyboardController?.hide()
                             focusManager.clearFocus(true)
                         }
-                    ) },
+                    )
+                },
                 //colors for search field
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFF_D9_D9_D9),
@@ -158,7 +159,7 @@ fun SeaMapScreen(
             modifier = Modifier
                 .padding(start = 2.dp)
                 .align(Alignment.BottomStart),
-            colors =  ButtonDefaults.buttonColors(
+            colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF_13_23_2C)
             )
         ) {

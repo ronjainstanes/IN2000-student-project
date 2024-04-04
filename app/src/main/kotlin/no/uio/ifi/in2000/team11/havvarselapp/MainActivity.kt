@@ -13,8 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
-import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.theme.HavvarselAppTheme
 
@@ -22,10 +20,6 @@ class MainActivity : ComponentActivity() {
 
     // klient for å kunne hente posisjon
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-    // repository for posisjons-data som alle skjermer trenger tilgang til
-    private val locationRepository: LocationRepository = LocationRepositoryImpl()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavScreen(locationRepository, "Oslo")
+                    NavScreen("Oslo")
                 }
             }
         }
