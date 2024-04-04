@@ -1,12 +1,5 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.map
 
-import android.content.Context
-import android.location.Address
-import android.location.Geocoder
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +17,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,10 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.UrlTileProvider
-import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
@@ -52,9 +42,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import no.uio.ifi.in2000.team11.havvarselapp.R
 import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
-import java.io.IOException
 import java.net.URL
-
 
 @Composable
 fun SeaMapScreen(
@@ -70,7 +58,7 @@ fun SeaMapScreen(
     val textState = remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val hideSymbolsButton = remember { mutableStateOf(true) }
+    val hideOverlayButton = remember { mutableStateOf(true) }
 
     // her trengs 'context' for å kunne hente utseende av kartet
     val context = LocalContext.current
@@ -79,10 +67,6 @@ fun SeaMapScreen(
         position = CameraPosition.fromLatLngZoom(mapUiState.currentLocation, 12f)
     }
 
-    // brukes for å plassere pin på kartet
-    val markerVisible = remember { mutableStateOf(false) }
-    val markerPosition = remember { mutableStateOf(LatLng(59.9, 10.73)) }
-
     Box(modifier = Modifier.fillMaxSize()) {
 
         // selve kartet
@@ -90,15 +74,15 @@ fun SeaMapScreen(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             onMapClick = { clickedPosition ->
-                markerPosition.value = clickedPosition
-                markerVisible.value = true
+                seaMapViewModel.placeOrRemoveMarker(clickedPosition)
             },
             properties = MapProperties(
                 // dette er utseende av kartet, som man finner i filen "mapstyle" i raw-mappen
                 mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle),
             )
         ) {
-            if (hideSymbolsButton.value) {
+            // kartlag fra OpenSeaMap
+            if (hideOverlayButton.value) {
                 TileOverlay(
                     tileProvider = object : UrlTileProvider(256, 256) {
                         override fun getTileUrl(x: Int, y: Int, z: Int): URL {
@@ -108,61 +92,59 @@ fun SeaMapScreen(
                 )
             }
             // pin som plasseres på kartet der brukeren trykker
-            if (markerVisible.value) {
+            if (mapUiState.markerVisible) {
                 Marker(
-                    state = rememberMarkerState(position = markerPosition.value),
-                    visible = markerVisible.value,
+                    state = rememberMarkerState(position = mapUiState.currentLocation),
                     icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                 )
             }
 
         }
-            // TextField with the value from textState and an event handler to update textState
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier.padding(15.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    value = textState.value,
-                    onValueChange = { newText ->
-                        textState.value = newText
-                    },
+        // TextField with the value from textState and an event handler to update textState
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            OutlinedTextField(
+                modifier = Modifier.padding(15.dp),
+                shape = RoundedCornerShape(50.dp),
+                value = textState.value,
+                onValueChange = { newText ->
+                    textState.value = newText
+                },
 
-                    // tekst og ikon som vises i søkefeltet
-                    label = { Text("Søk her") },
-                    maxLines = 1,
+                // tekst og ikon som vises i søkefeltet
+                label = { Text("Søk her") },
+                maxLines = 1,
 
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Search, contentDescription = "Search Icon",
-                            modifier = Modifier.clickable {
-                                if (textState.value.isNotBlank()) {
-                                    getPosition(textState, context,
-                                        cameraPositionState, seaMapViewModel, mapUiState)
-                                }
-                                keyboardController?.hide()
-                                focusManager.clearFocus(true)
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search, contentDescription = "Search Icon",
+                        modifier = Modifier.clickable {
+                            if (textState.value.isNotBlank()) {
+                                seaMapViewModel.getPosition(textState, context,
+                                    cameraPositionState)
                             }
-                        ) },
-                    //colors for search field
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFF_D9_D9_D9),
-                        unfocusedContainerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.9f),
-                        focusedBorderColor = Color(0xFF_D9_D9_D9),
-                        unfocusedBorderColor = Color(0xFF_D9_D9_D9)
-                    ),
-                    // closing Text field after pressing enter
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done
-                    ),
-                    // søker opp området når brukeren trykker på søk-knappen
-                    keyboardActions = KeyboardActions(
+                            keyboardController?.hide()
+                            focusManager.clearFocus(true)
+                        }
+                    ) },
+                //colors for search field
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFF_D9_D9_D9),
+                    unfocusedContainerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.9f),
+                    focusedBorderColor = Color(0xFF_D9_D9_D9),
+                    unfocusedBorderColor = Color(0xFF_D9_D9_D9)
+                ),
+                // closing Text field after pressing enter
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                // søker opp området når brukeren trykker på søk-knappen
+                keyboardActions = KeyboardActions(
                     onDone = {
                         if (textState.value.isNotBlank()) {
-                            getPosition(textState, context, cameraPositionState,
-                                seaMapViewModel, mapUiState)
+                            seaMapViewModel.getPosition(textState, context, cameraPositionState)
                         }
                         keyboardController?.hide()
                         focusManager.clearFocus(true)
@@ -172,7 +154,7 @@ fun SeaMapScreen(
         }
         // Knapp for å aktivere/deaktivere TileOverlay
         Button(
-            onClick = { hideSymbolsButton.value = !hideSymbolsButton.value },
+            onClick = { hideOverlayButton.value = !hideOverlayButton.value },
             modifier = Modifier
                 .padding(start = 2.dp)
                 .align(Alignment.BottomStart),
@@ -180,57 +162,7 @@ fun SeaMapScreen(
                 containerColor = Color(0xFF_13_23_2C)
             )
         ) {
-            Text(text = if (hideSymbolsButton.value) "Deaktiver Overlay" else "Aktiver Overlay")
+            Text(text = if (hideOverlayButton.value) "Deaktiver Overlay" else "Aktiver Overlay")
         }
-    }
-}
-
-fun getPosition(
-    placeName: MutableState<String>,
-    context: Context,
-    cameraPositionState: CameraPositionState,
-    seaMapViewModel: SeaMapViewModel,
-    mapUiState: MapUiState
-){
-    val locationName = placeName.value
-    val geocoder = Geocoder(context)
-
-    try {
-        // Sjekk tilgjengeligheten av nettverkstilgang
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        // Sjekk om enheten kjører på Android Marshmallow (API 23) eller nyere
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Hent informasjon om nettverkstilkoblingen
-            val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-
-            // Sjekk om enheten har en aktiv internettforbindelse via Wi-Fi eller mobilnett (CELLULAR for mobilnett)
-            if (networkCapabilities != null && (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))) {
-
-                // henter posisjonen til stedet som er søkt på
-                val addressList: List<Address>? = geocoder.getFromLocationName(locationName, 1)
-                if (!addressList.isNullOrEmpty()) {
-                    val address: Address = addressList[0]
-                    val lat = address.latitude
-                    val long = address.longitude
-                    val searchLocation = LatLng(lat, long)
-
-                    // oppdater posisjon i UiState, som deretter oppdaterer locationRepository
-                    seaMapViewModel.updateUiStateLocation(searchLocation)
-
-                    // flytter kartet til stedet som er søkt opp
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(searchLocation, 12f)
-                } else {
-                    // viser en "toast", en liten pop-up melding om at stedet ikke ble funnet
-                    Toast.makeText(context, "Location not found", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                // Hvis det ikke er noen aktiv internettforbindelse, vis en passende melding
-                Toast.makeText(context, "No internet connection available", Toast.LENGTH_SHORT).show()
-            }
-        }
-    } catch (e: IOException) {
-        e.printStackTrace()
-        Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
     }
 }
