@@ -1,8 +1,6 @@
-package no.uio.ifi.in2000.team11.havvarselapp.data.OceanForecast
+package no.uio.ifi.in2000.team11.havvarselapp.data.oceanForecast
 
-import no.uio.ifi.in2000.team11.havvarselapp.model.OceanForecast.OceanForecast
-import no.uio.ifi.in2000.team11.havvarselapp.data.OceanForecast.OceanForecastDataSource
-
+import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.OceanForecast
 
 
 /**

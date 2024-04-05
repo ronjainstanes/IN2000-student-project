@@ -37,16 +37,16 @@
         android:pathData="M378.29,173.33C340.8,210.82 272.42,203.22 225.56,156.36C178.7,109.5 171.1,41.11 208.59,3.62L213.46,16.77C220.3,35.25 236.69,51.34 255.18,57.76L266.73,61.76L269.07,69.05C275.45,88.88 293.04,106.47 312.87,112.85L320.15,115.19L324.16,126.73C330.57,145.23 346.67,161.62 365.14,168.46ZM378.29,173.33"
         android:strokeLineJoin="miter"
         android:strokeWidth="4"
-        android:fillColor="#00000000"
-        android:strokeColor="#EE4444"
+        android:fillColor="#EE4444"
+        android:strokeColor="#A30808"
         android:strokeLineCap="butt"/>
   </group>
   <path
       android:pathData="M320.15,115.19C286.97,157.8 225.56,156.36 225.56,156.36C225.56,156.36 224.11,94.95 266.73,61.76"
       android:strokeLineJoin="round"
       android:strokeWidth="4"
-      android:fillColor="#00000000"
-      android:strokeColor="#EE4444"
+      android:fillColor="#EE4444"
+      android:strokeColor="#A30808"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M103.23,145.2C106.06,142.25 110.04,140.41 114.45,140.41C123.04,140.41 130,147.38 130,155.97C130,164.56 123.04,171.53 114.45,171.53L4,171.53"

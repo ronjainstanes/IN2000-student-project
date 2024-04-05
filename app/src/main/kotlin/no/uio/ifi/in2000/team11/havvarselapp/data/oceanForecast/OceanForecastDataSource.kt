@@ -1,6 +1,5 @@
-package no.uio.ifi.in2000.team11.havvarselapp.data.OceanForecast
+package no.uio.ifi.in2000.team11.havvarselapp.data.oceanForecast
 
-import android.annotation.SuppressLint
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -8,7 +7,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
 import io.ktor.serialization.gson.gson
 import io.ktor.util.appendIfNameAbsent
-import no.uio.ifi.in2000.team11.havvarselapp.model.OceanForecast.OceanForecast
+import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.OceanForecast
 
 class OceanForecastDataSource {
     // HTTP client
@@ -23,10 +22,9 @@ class OceanForecastDataSource {
     }
 
     // oslo - lat: 59.9, lon: 10.7
-    @SuppressLint("SuspiciousIndentation")
     suspend fun fetchOceanForecast(lat: String, lon: String): OceanForecast {
-        val oceanForecast: OceanForecast = client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}").body()
-            return oceanForecast
+        return client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}")
+            .body<OceanForecast>()
     }
 }
 

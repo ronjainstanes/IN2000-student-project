@@ -19,6 +19,11 @@
       </group>
     </group>
   </group>
+  <group
+      android:translateX="10"
+      android:translateY="50"
+      android:scaleX="0.75"
+      android:scaleY="0.75">
   <path
       android:pathData="M88,4C39.3,75.97 8,120.99 8,164.75C8,208.53 43.79,244 88,244C132.21,244 168,208.53 168,164.75C168,120.99 136.7,75.97 88,4ZM88,4"
       android:strokeLineJoin="miter"
@@ -26,13 +31,19 @@
       android:fillColor="#00000000"
       android:strokeColor="#E6EEFB"
       android:strokeLineCap="butt"/>
-  <path
+  <group
+      android:translateX="-20"
+      android:translateY="5"
+      android:scaleX="1.2"
+      android:scaleY="0.95">
+    <path
       android:pathData="M200,60L216,60M200,180L216,180M192,124L216,124M184,4L216,4L216,244L184,244"
       android:strokeLineJoin="round"
       android:strokeWidth="8"
       android:fillColor="#00000000"
       android:strokeColor="#D5DFE9"
       android:strokeLineCap="round"/>
+  </group>
   <group>
     <clip-path
         android:pathData="M8,124L168,124L168,244L8,244ZM8,124"/>
@@ -56,8 +67,9 @@
         android:pathData="M88.11,4.55C39.41,76.35 8.11,121.27 8.11,164.93C8.11,208.61 43.9,243.99 88.11,243.99C132.32,243.99 168.11,208.61 168.11,164.93C168.11,121.27 136.81,76.35 88.11,4.55ZM88.11,4.55"
         android:strokeLineJoin="miter"
         android:strokeWidth="4"
-        android:fillColor="#00000000"
-        android:strokeColor="#2885C6"
+        android:fillColor="#31ABFF"
+        android:strokeColor="#FFFFFF"
         android:strokeLineCap="butt"/>
+  </group>
   </group>
 </vector>

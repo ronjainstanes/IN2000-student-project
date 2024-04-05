@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp.model.OceanForecast
+package no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast
 
 
 data class OceanForecast(

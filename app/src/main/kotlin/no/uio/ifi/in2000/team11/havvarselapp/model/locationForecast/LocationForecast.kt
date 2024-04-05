@@ -131,7 +131,7 @@ data class Next_1_hours(
 )
 
 data class Summary1(
-    val symbol_code: String?,
+    val symbol_code: String,
 )
 
 
