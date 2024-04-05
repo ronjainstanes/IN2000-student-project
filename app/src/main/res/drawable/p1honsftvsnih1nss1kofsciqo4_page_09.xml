@@ -23,7 +23,7 @@
       android:pathData="M160.62,107.4C113.45,107.4 75.21,69.68 75.21,23.14C75.21,15.82 76.25,8.77 78.02,2C35.27,6.61 2,42.32 2,85.73C2,132.27 40.24,170 87.41,170C127.16,170 160.48,143.16 170,106.87C166.91,107.2 163.79,107.4 160.62,107.4ZM160.62,107.4"
       android:strokeLineJoin="round"
       android:strokeWidth="4"
-      android:fillColor="#00000000"
+      android:fillColor="#71B8D4"
       android:strokeColor="#71B8D4"
       android:strokeLineCap="round"/>
   <group>
@@ -46,7 +46,7 @@
       android:pathData="M292,131C291.14,131 290.32,131.09 289.47,131.13C291.06,124.67 292,117.95 292,111C292,64.61 254.39,27 208,27C177.8,27 151.4,42.99 136.6,66.91C128.22,61.92 118.46,59 108,59C77.07,59 52,84.07 52,115C52,118.1 52.32,121.12 52.8,124.08C25.02,129.33 4,153.7 4,183C4,216.14 30.86,243 64,243C65.35,243 66.67,242.89 68,242.8L68,243L292,243C322.93,243 348,217.93 348,187C348,156.07 322.93,131 292,131ZM292,131"
       android:strokeLineJoin="miter"
       android:strokeWidth="4"
-      android:fillColor="#00000000"
+      android:fillColor="#E6EEFB"
       android:strokeColor="#E6EEFB"
       android:strokeLineCap="butt"/>
 </vector>

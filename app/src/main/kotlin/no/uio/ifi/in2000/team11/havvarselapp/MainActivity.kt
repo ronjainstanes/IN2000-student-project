@@ -6,9 +6,13 @@ import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -16,18 +20,15 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import no.uio.ifi.in2000.team11.havvarselapp.BuildConfig.MAPS_API_KEY
-import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
-import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.theme.HavvarselAppTheme
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var connectivityObserver: ConnectivityObserver
+
     // klient for å kunne hente posisjon
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-    // repository for posisjons-data som alle skjermer trenger tilgang til
-    private val locationRepository: LocationRepository = LocationRepositoryImpl()
 
     private lateinit var placesClient: PlacesClient
 
@@ -56,15 +57,23 @@ class MainActivity : ComponentActivity() {
                 }
         }
 
+        connectivityObserver = NetworkConnectivityObserver(applicationContext)
 
         setContent {
             HavvarselAppTheme {
+                val status by connectivityObserver.observe().collectAsState(
+                    initial = ConnectivityObserver.Status.Unavailable
+                )
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NavScreen("Oslo", placesClient)
+                    Box(modifier = Modifier
+                        .fillMaxSize()) {
+                        Text(text = "Network status: $status")
+                    }
                 }
             }
         }
