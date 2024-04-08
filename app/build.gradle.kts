@@ -1,3 +1,5 @@
+
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -80,6 +82,7 @@ dependencies {
 
     // Jetpack Compose ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
 
     // Testing (Junit, Espresso, Compose UI testing)
     testImplementation("junit:junit:4.13.2")
@@ -98,6 +101,9 @@ dependencies {
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+
+    // extended icons
+    implementation("androidx.compose.material:material-icons-extended:1.6.5")
 
     // JSON
     implementation("org.json:json:20240303")
@@ -118,4 +124,11 @@ dependencies {
 
     // Android Desugaring for å kunne bruke ZonedDateTime
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+
+
+    //api places for autocompleate textfield?
+    implementation("com.google.android.libraries.places:places:3.1.0")
+
+
 }

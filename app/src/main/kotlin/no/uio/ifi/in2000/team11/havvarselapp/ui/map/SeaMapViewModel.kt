@@ -6,7 +6,6 @@ import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.widget.Toast
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -72,11 +71,10 @@ class SeaMapViewModel : ViewModel() {
      * Det kommer en pop-up melding hvis posisjonen ikke ble funnet.
      */
     fun getPosition(
-        placeName: MutableState<String>,
+        placeName: String,
         context: Context,
         cameraPositionState: CameraPositionState
     ) {
-        val locationName = placeName.value
         val geocoder = Geocoder(context)
 
         try {
@@ -95,7 +93,7 @@ class SeaMapViewModel : ViewModel() {
             ) {
 
                 // henter posisjonen til stedet som er søkt på
-                val addressList: List<Address>? = geocoder.getFromLocationName(locationName, 1)
+                val addressList: List<Address>? = geocoder.getFromLocationName(placeName, 1)
                 if (!addressList.isNullOrEmpty()) {
                     val address: Address = addressList[0]
                     val lat = address.latitude

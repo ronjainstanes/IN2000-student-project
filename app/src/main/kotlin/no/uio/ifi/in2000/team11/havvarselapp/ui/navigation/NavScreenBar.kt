@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.libraries.places.api.net.PlacesClient
+import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
 import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMapScreen
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.AppUiState
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.CurrentLocationAlert
@@ -52,6 +54,7 @@ data class BottomNavigationItem(
 @Composable
 fun NavScreen(
     region: String,
+    placesClient: PlacesClient,
     navScreenViewModel: NavScreenViewModel = viewModel()
 ) {
 
@@ -161,12 +164,12 @@ fun NavScreen(
 
                 when (selectedItemIndex) {
 
-                    0 -> SeaMapScreen()
+                    0 -> SeaMapScreen(placesClient)
                     1 -> WeatherScreen()
                     2 -> Profil()
                     // 3 -> SimpleMetAlertScreen()
                     3 -> CurrentLocationAlert("")
-                    else -> SeaMapScreen()
+                    else -> SeaMapScreen(placesClient)
                 }
             }
         }
