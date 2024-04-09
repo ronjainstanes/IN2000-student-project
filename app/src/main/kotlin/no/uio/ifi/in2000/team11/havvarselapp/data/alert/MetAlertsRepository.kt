@@ -13,7 +13,7 @@ interface MetAlertsRepository {
 
 class MetAlertsRepositoryImpl(
     // Data source for met-alerts
-    private val dataSource: MetAlertsDataSource = MetAlertsDataSource(),
+    private val dataSource: MetAlertsDataSource = MetAlertsDataSourceImpl()
 
 ) : MetAlertsRepository {
 

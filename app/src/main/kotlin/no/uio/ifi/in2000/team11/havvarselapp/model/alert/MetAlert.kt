@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000.team11.havvarselapp.model.alert
 
-import java.time.ZonedDateTime
-
 /**
  * Inneholder info om et farevarsel
  */
@@ -59,12 +57,6 @@ data class MetAlert(
     val awarenessType: List<String>,
 
     /**
-     * Et StartStopDate-objekt som inneholder
-     * start- og sluttidspunkt der varselet gjelder
-     */
-    val duration: StartStopDate,
-
-    /**
      * Meter per sekund, kan være null
      */
     val triggerLevel: String?
@@ -89,8 +81,3 @@ data class MetAlert(
         return id.hashCode()
     }
 }
-
-data class StartStopDate(
-    val start: ZonedDateTime,
-    val stop: ZonedDateTime
-)

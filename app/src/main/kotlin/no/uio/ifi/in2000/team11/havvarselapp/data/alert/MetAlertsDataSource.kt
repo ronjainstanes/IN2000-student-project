@@ -7,18 +7,25 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.util.appendIfNameAbsent
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
-import no.uio.ifi.in2000.team11.havvarselapp.model.alert.StartStopDate
 import org.json.JSONObject
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.time.ZonedDateTime
 
 /**
- * Fetches data from Met Alerts
+ * Data source used to fetch data from Met Alerts API
  */
-class MetAlertsDataSource {
+interface MetAlertsDataSource {
+    suspend fun fetchMetAlertsInNorway(): List<MetAlert>
+    suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert>
+}
 
-    // sett opp klienten
+/**
+ * An implementation of a met-alert data source,
+ * used to fetch data from Met Alerts API
+ */
+class MetAlertsDataSourceImpl : MetAlertsDataSource {
+
+    // set up client that will do the api-call
     private val client = HttpClient {
         defaultRequest {
             url("https://gw-uio.intark.uh-it.no/in2000/")
@@ -27,10 +34,10 @@ class MetAlertsDataSource {
     }
 
     /**
-     * Returnerer alle farevarsler for hele Norge, som en liste med MetAlerts.
-     * Sjekk ut filen "MetAlerts" for å se hvordan dataen er strukturert.
+     * Returns a list of all active met-alerts in Norway.
+     * See the file "MetAlert" to see what this object contains and how the data is structured.
      */
-    suspend fun fetchMetAlertsInNorway(): List<MetAlert> {
+    override suspend fun fetchMetAlertsInNorway(): List<MetAlert> {
         return fetchMetAlerts(
             "https://gw-uio.intark.uh-it.no/in2000/" +
                     "weatherapi/metalerts/2.0/current.json"
@@ -38,10 +45,10 @@ class MetAlertsDataSource {
     }
 
     /**
-     * Returnerer en liste med alle farevarsler som gjelder for posisjonen.
-     * Sjekk ut filen "MetAlerts" for å se hvordan dataen er strukturert.
+     * Returns a list of active met-alerts for the gicen location.
+     * See the file "MetAlert" to see what this object contains and how the data is structured.
      */
-    suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert> {
+    override suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert> {
         return fetchMetAlerts(
             "https://gw-uio.intark.uh-it.no/in2000/" +
                     "weatherapi/metalerts/2.0/current.json?lat=${lat}&lon=${lon}"
@@ -49,8 +56,8 @@ class MetAlertsDataSource {
     }
 
     /**
-     * Tar inn en URL, og henter alle farevarsler fra denne URL-en.
-     * Parser dataen slik at det returneres som en liste med MetAlert-objekter.
+     * Takes a URL as an argument, fetches and parses the data,
+     * and returns a list of MetAlert-objects.
      */
     private suspend fun fetchMetAlerts(url: String): List<MetAlert> {
         try {
@@ -59,21 +66,21 @@ class MetAlertsDataSource {
 
             Log.d(
                 "MET_ALERTS_DATA_SOURCE",
-                "Statuskode for MetAlerts API-kall: ${response.status} \n"
+                "Status code for MetAlerts API: ${response.status} \n"
             )
 
-            // JSONObjekt som inneholder en array med features (farevarsler)
+            // JSONObject containing an array of "features" (met-alerts)
             val allMetAlerts = JSONObject(response.bodyAsText())
             val features = allMetAlerts.getJSONArray("features")
 
-            // liste der vi lagrer farevarslene som MetAlerts
+            // list to save all MetAlerts
             val allAlerts: MutableList<MetAlert> = mutableListOf()
 
-            // gå gjennom alle farevarsler, parse til MetAlerts-objekter
+            // go through all met-alerts, parse into MetAlert-objects
             for (i in 0 until features.length()) {
                 val alert = features.getJSONObject(i)
 
-                // id bør aldri være null, hvis det er det lagrer vi ikke dette farevarselet
+                // ID should never be null, in that case we will not save this met-alert
                 val id = alert.getJSONObject("properties").optString("id")
                 if (id.isBlank()) {
                     continue
@@ -87,7 +94,7 @@ class MetAlertsDataSource {
                 val triggerLevel = alert.getJSONObject("properties").optString("triggerLevel")
                 val riskMatrixColor = alert.getJSONObject("properties").optString("riskMatrixColor")
 
-                // parser fra "2; yellow; Moderate" til en List<String>
+                // parses from "2; yellow; Moderate" to a List<String>
                 val awarenessLevelStr =
                     alert.getJSONObject("properties").getString("awareness_level")
                 val awarenessLevel =
@@ -97,14 +104,7 @@ class MetAlertsDataSource {
                 val awarenessTypeStr = alert.getJSONObject("properties").getString("awareness_type")
                 val awarenessType = awarenessTypeStr.split(";")
 
-                // parser datoene til et StartStopDate-objekt
-                val twoDates = alert.getJSONObject("when").getJSONArray("interval")
-                val duration = StartStopDate(
-                    ZonedDateTime.parse(twoDates.getString(0)),
-                    ZonedDateTime.parse(twoDates.getString(1))
-                )
-
-                // lagre det i et MetAlert, og legg til i listen
+                // save info in a MetAlert-object and add to list
                 val metAlert = MetAlert(
                     id,
                     area,
@@ -115,34 +115,33 @@ class MetAlertsDataSource {
                     awarenessLevel,
                     riskMatrixColor,
                     awarenessType,
-                    duration,
                     triggerLevel
                 )
                 allAlerts.add(metAlert)
             }
             return allAlerts
 
-            // ikke koblet til internett, mulighet 1
+            // no internet
         } catch (e: UnknownHostException) {
             Log.e(
                 "MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. UnknownHostException. Ingen internett-tilkobling.\n"
+                "Met Alerts API call failed. No internet access.\n"
             )
             return mutableListOf()
 
-            // ikke koblet til internett, mulighet 2
+            // no internet
         } catch (e: ConnectException) {
             Log.e(
                 "MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. ConnectException. Ingen internett-tilkobling.\n"
+                "Met Alerts API call failed. No internet access.\n"
             )
             return mutableListOf()
 
-            // noe annet gikk galt
+            // something went wrong
         } catch (e: Exception) {
             Log.e(
                 "MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. Noe gikk galt.\n"
+                "Met Alerts API call failed.\n"
             )
             return mutableListOf()
         }
