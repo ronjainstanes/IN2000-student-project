@@ -34,7 +34,8 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 fun CurrentLocationAlert(
     region: String,
     textStyle: TextStyle = TextStyle(
-        fontSize = 35.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal ),
+        fontSize = 35.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal
+    ),
     simpleViewModel: SimpleViewModel = viewModel()
 ) {
     val currentLocation: String = region
@@ -42,7 +43,7 @@ fun CurrentLocationAlert(
     // Observe the UI state object from the ViewModel
     val appUiState: AppUiState by simpleViewModel.appUiState.collectAsState()
 
-// Bruker funksjonen for å filtrere 'allMetAlert' listen basert på 'areal' feltet.
+    // Bruker funksjonen for å filtrere 'allMetAlert' listen basert på 'areal' feltet.
 // Funksjon som sjekker om en streng inneholder ordet "oslo" i en case-insensitive måte.
     fun String.containsIgnoreCase(other: String): Boolean {
         return this.contains(other, ignoreCase = true)
@@ -52,7 +53,7 @@ fun CurrentLocationAlert(
         it.area.containsIgnoreCase(currentLocation)
     }
 
-    if(filteredMetAlerts.isEmpty()){
+    if (filteredMetAlerts.isEmpty()) {
         Column {
 
             Text(
@@ -70,8 +71,7 @@ fun CurrentLocationAlert(
                     .paddingFromBaseline(25.dp, 10.dp)
             )
         }
-    }
-    else {
+    } else {
 
         Scaffold { innerPadding ->
             Column(

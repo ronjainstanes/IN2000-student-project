@@ -25,7 +25,7 @@ import kotlin.math.roundToInt
 
 class LocationForecastViewModel(
     private val repository: LocationForecastRepositoryImpl = LocationForecastRepositoryImpl(),
-    private  val repositoryOcean: OceanForecastRepositoryImpl = OceanForecastRepositoryImpl()
+    private val repositoryOcean: OceanForecastRepositoryImpl = OceanForecastRepositoryImpl()
 ) : ViewModel() {
     private val _forecastInfoUiState = MutableStateFlow<LocationForecast?>(null)
     val forecastInfoUiState: StateFlow<LocationForecast?> = _forecastInfoUiState.asStateFlow()
@@ -40,24 +40,24 @@ class LocationForecastViewModel(
     }
 
     fun loadForecast(lat: String, lon: String) {
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    Log.e("API KALL TEST", "BRA")
-                    val forecast = repository.getLocationForecast(lat, lon)
-                    _forecastInfoUiState.update { forecast }
-                    val oceanForecast = repositoryOcean.getOceanForecast(lat, lon)
-                    _oceanForecastUiState.update { oceanForecast }
-                    Log.e("VIEWMODEL", "API-kall")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                Log.e("API KALL TEST", "BRA")
+                val forecast = repository.getLocationForecast(lat, lon)
+                _forecastInfoUiState.update { forecast }
+                val oceanForecast = repositoryOcean.getOceanForecast(lat, lon)
+                _oceanForecastUiState.update { oceanForecast }
+                Log.e("VIEWMODEL", "API-kall")
 
 
-                } catch (e: Exception) {
-                    Log.e(
-                        "ERROR ForeCast ViewModel",
-                        "error in LocationForecastViewModel()loadForecast() ",
-                        e
-                    )
-                }
+            } catch (e: Exception) {
+                Log.e(
+                    "ERROR ForeCast ViewModel",
+                    "error in LocationForecastViewModel()loadForecast() ",
+                    e
+                )
             }
+        }
 
     }
 
@@ -81,19 +81,13 @@ class LocationForecastViewModel(
 
                     if (sublocality != null) {
                         "$sublocality, $country"
-                    }
-                    else if (subAdminArea != null) {
+                    } else if (subAdminArea != null) {
                         "$subAdminArea, $country"
-                    }
-                    else if (adminArea != null) {
+                    } else if (adminArea != null) {
                         "$adminArea, $country"
-                    }
-
-                    else if (city != null) {
+                    } else if (city != null) {
                         "$city, $country"
-                    }
-
-                    else {
+                    } else {
                         addresses[0].getAddressLine(0)
                     }
 
@@ -107,10 +101,10 @@ class LocationForecastViewModel(
             _placeNameState.value = placeName
         }
     }
-    fun getPlaceName(): String {
-        return  _placeNameState.value
-    }
 
+    fun getPlaceName(): String {
+        return _placeNameState.value
+    }
 
 
     /**
@@ -143,14 +137,17 @@ class LocationForecastViewModel(
 
     fun getTemperature(time: Int): String { // grader er i celsius
         val currentForecast = _forecastInfoUiState.value
-        val unit: String? = if (currentForecast?.properties?.meta?.units?.air_temperature == "celsius") "°" else currentForecast?.properties?.meta?.units?.air_temperature
-        val temp = (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.air_temperature)?.roundToInt()
+        val unit: String? =
+            if (currentForecast?.properties?.meta?.units?.air_temperature == "celsius") "°" else currentForecast?.properties?.meta?.units?.air_temperature
+        val temp =
+            (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.air_temperature)?.roundToInt()
         return "$temp$unit"
     }
 
     fun temperaturePositive(time: Int): Boolean {
         val currentForecast = _forecastInfoUiState.value
-        val temp = (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.air_temperature)?.roundToInt()
+        val temp =
+            (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.air_temperature)?.roundToInt()
         return if (temp != null) {
             temp > 0
         } else {
@@ -160,20 +157,30 @@ class LocationForecastViewModel(
 
     fun getWindSpeed(time: Int): String { // UV-indexen under klare himmelforhold
         val currentForecast = _forecastInfoUiState.value
-        val avrSpeed = if (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_speed == 0.0) 0 else (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_speed)?.roundToInt()
-        val highSpeed = if (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_speed_of_gust == 0.0) 0 else (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_speed_of_gust)?.roundToInt()
+        val avrSpeed =
+            if (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_speed == 0.0) 0 else (currentForecast?.properties?.timeseries?.get(
+                time
+            )?.data?.instant?.details?.wind_speed)?.roundToInt()
+        val highSpeed =
+            if (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_speed_of_gust == 0.0) 0 else (currentForecast?.properties?.timeseries?.get(
+                time
+            )?.data?.instant?.details?.wind_speed_of_gust)?.roundToInt()
         return "$avrSpeed ($highSpeed)"
     }
 
     fun getWindDirection(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
-        val direction = currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_from_direction
+        val direction =
+            currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_from_direction
         return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
     }
 
     fun getUVindex(time: Int): Double? { // UV-indexen under klare himmelforhold
         val currentForecast = _forecastInfoUiState.value
-        val uv = if (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.ultraviolet_index_clear_sky == 0.0) 0 else currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.ultraviolet_index_clear_sky
+        val uv =
+            if (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.ultraviolet_index_clear_sky == 0.0) 0 else currentForecast?.properties?.timeseries?.get(
+                time
+            )?.data?.instant?.details?.ultraviolet_index_clear_sky
         return currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.ultraviolet_index_clear_sky
     }
 
@@ -194,26 +201,32 @@ class LocationForecastViewModel(
      * Returnerer nedbørsmengde for neste time.
      * F.eks "0.2-0.6" eller "0-0.3", ingenting  om vind er 0.
      */
-    fun getPrecipitationAmountMaxMin(time: Int): String{
+    fun getPrecipitationAmountMaxMin(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
-        val min = if (currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.precipitation_amount_min == 0.0) 0 else currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.precipitation_amount_min
-        val max = if (currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.precipitation_amount_max == 0.0) 0 else currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.precipitation_amount_max
+        val min =
+            if (currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.precipitation_amount_min == 0.0) 0 else currentForecast?.properties?.timeseries?.get(
+                time
+            )?.data?.next_1_hours?.details?.precipitation_amount_min
+        val max =
+            if (currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.precipitation_amount_max == 0.0) 0 else currentForecast?.properties?.timeseries?.get(
+                time
+            )?.data?.next_1_hours?.details?.precipitation_amount_max
         return if (max == 0) " " else "$min-$max"
     }
 
     // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
-    fun getCloudAreaFraction(time: Int): String{
+    fun getCloudAreaFraction(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.cloud_area_fraction} ${currentForecast?.properties?.meta?.units?.cloud_area_fraction}"
     }
 
     // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
-    fun getProbabilityOfThunder(time: Int): String{
+    fun getProbabilityOfThunder(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.probability_of_thunder} ${currentForecast?.properties?.meta?.units?.probability_of_thunder}"
     }
 
-    fun getWeatherIcon(time: Int) : String {
+    fun getWeatherIcon(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
         return if (currentForecast != null) {
             currentForecast.properties.timeseries[time].data.next_1_hours.summary.symbol_code
@@ -231,19 +244,23 @@ class LocationForecastViewModel(
 
     fun getCoordinatesOcean(): List<Double>? {
         val oceanForecast = _oceanForecastUiState.value
-        return  oceanForecast?.geometry?.coordinates
+        return oceanForecast?.geometry?.coordinates
     }
 
 
     fun getSeaWaterTemperature(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
-        val unit: String? = if (oceanForecast?.properties?.meta?.units?.sea_water_temperature == "celsius") "°" else oceanForecast?.properties?.meta?.units?.sea_water_temperature
-        val temp = (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_temperature)?.roundToInt()
+        val unit: String? =
+            if (oceanForecast?.properties?.meta?.units?.sea_water_temperature == "celsius") "°" else oceanForecast?.properties?.meta?.units?.sea_water_temperature
+        val temp =
+            (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_temperature)?.roundToInt()
         return "$temp$unit"
     }
+
     fun seaTemperaturePositive(time: Int): Boolean {
         val oceanForecast = _oceanForecastUiState.value
-        val temp = (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_temperature)?.roundToInt()
+        val temp =
+            (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_temperature)?.roundToInt()
         return if (temp != null) {
             temp > 0
         } else {
@@ -253,7 +270,10 @@ class LocationForecastViewModel(
 
     fun getCurrentSpeed(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
-        val speed = if (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_speed == 0.0) 0 else oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_speed
+        val speed =
+            if (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_speed == 0.0) 0 else oceanForecast?.properties?.timeseries?.get(
+                time
+            )?.data?.instant?.details?.sea_water_speed
         return "$speed"
     }
 
@@ -270,8 +290,9 @@ class LocationForecastViewModel(
     fun getCurrentDirectionFrom(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
         if (oceanForecast != null && oceanForecast.properties.timeseries.isNotEmpty()) {
-            val direction = oceanForecast.properties.timeseries.get(time).data.instant.details.sea_surface_wave_from_direction
-            return  if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+            val direction =
+                oceanForecast.properties.timeseries.get(time).data.instant.details.sea_surface_wave_from_direction
+            return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
         }
         return ""
     }
@@ -279,8 +300,12 @@ class LocationForecastViewModel(
     // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
     fun getSeaWaveHeight(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
-        val unit: String? = if (oceanForecast?.properties?.meta?.units?.sea_surface_wave_height == "meter") "m" else oceanForecast?.properties?.meta?.units?.sea_surface_wave_height
-        val height = if (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_surface_wave_height == 0.0) 0 else oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_surface_wave_height
+        val unit: String? =
+            if (oceanForecast?.properties?.meta?.units?.sea_surface_wave_height == "meter") "m" else oceanForecast?.properties?.meta?.units?.sea_surface_wave_height
+        val height =
+            if (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_surface_wave_height == 0.0) 0 else oceanForecast?.properties?.timeseries?.get(
+                time
+            )?.data?.instant?.details?.sea_surface_wave_height
         return "${oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_surface_wave_height} $unit"
     }
 
@@ -296,16 +321,16 @@ class LocationForecastViewModel(
      *  Nord-vest(NW):  fra 292.5° til 337.5°.
      */
     private fun getNortEastVestSouthFromDegrees(degree: Double): String {
-        return when  {
-            degree >= 337.5 || degree < 22.5   -> "N"
-            degree >= 22.5 && degree < 67.5    -> "NØ"
-            degree >= 67.5 && degree < 112.5   -> "Ø"
-            degree >= 112.5 && degree < 157.5  -> "SØ"
-            degree >= 157.5 && degree < 202.5  -> "S"
-            degree >= 202.5 && degree < 247.5  -> "SV"
-            degree >= 247.5 && degree < 292.5  -> "V"
-            degree >= 292.5                    -> "NV"
-            else                               -> degree.toString()
+        return when {
+            degree >= 337.5 || degree < 22.5 -> "N"
+            degree >= 22.5 && degree < 67.5 -> "NØ"
+            degree >= 67.5 && degree < 112.5 -> "Ø"
+            degree >= 112.5 && degree < 157.5 -> "SØ"
+            degree >= 157.5 && degree < 202.5 -> "S"
+            degree >= 202.5 && degree < 247.5 -> "SV"
+            degree >= 247.5 && degree < 292.5 -> "V"
+            degree >= 292.5 -> "NV"
+            else -> degree.toString()
         }
     }
 

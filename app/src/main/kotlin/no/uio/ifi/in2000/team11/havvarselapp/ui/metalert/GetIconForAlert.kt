@@ -36,7 +36,7 @@ fun GetIcon(type: String, color: String) {
     // Samme prinsipp, men hvis fare-type ikke finnes
     val otherIconName = "icon_warning_generic_${color}".lowercase()
 
-   @DrawableRes
+    @DrawableRes
     val otherDrawableResId: Int = resources.getIdentifier(
         otherIconName,
         "drawable",
@@ -53,8 +53,7 @@ fun GetIcon(type: String, color: String) {
                 .size(100.dp)
                 .padding(20.dp)
         )
-    }
-    else{
+    } else {
         Image(
             painter = painterResource(id = otherDrawableResId),
             contentDescription = "Farevarsel Ikon",

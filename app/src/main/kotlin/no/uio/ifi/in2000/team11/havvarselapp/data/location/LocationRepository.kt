@@ -17,7 +17,7 @@ class LocationRepositoryImpl(
      */
     private var currentLocation: LatLng = LatLng(59.9, 10.73),
 
-) : LocationRepository {
+    ) : LocationRepository {
 
     override fun getCurrentLocation(): LatLng {
         return currentLocation

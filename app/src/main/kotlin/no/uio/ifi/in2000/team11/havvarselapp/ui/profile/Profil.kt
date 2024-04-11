@@ -11,11 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Profil(){
-    Column(modifier = Modifier.fillMaxWidth()
-        .padding(16.dp),
+fun Profil() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween)
+        verticalArrangement = Arrangement.SpaceBetween
+    )
     {
         Text(text = "Her vil det være innstillinger og brukerprofil")
     }

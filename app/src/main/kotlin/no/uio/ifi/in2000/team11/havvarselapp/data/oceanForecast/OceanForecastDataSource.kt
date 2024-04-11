@@ -28,8 +28,10 @@ class OceanForecastDataSource {
             client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}")
                 .body<OceanForecast>()
         } catch (e: Exception) {
-            Log.e("OCEAN_FORECAST_DATA_SOURCE",
-                "Ocean forecast API call failed.\n")
+            Log.e(
+                "OCEAN_FORECAST_DATA_SOURCE",
+                "Ocean forecast API call failed.\n"
+            )
             null
         }
     }

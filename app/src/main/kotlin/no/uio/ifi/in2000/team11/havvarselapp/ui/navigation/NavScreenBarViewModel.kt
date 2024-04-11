@@ -14,7 +14,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.AppUiState
 
 // This is a copy of SimpleViewModel
 // ViewModel to show amount of metAlerts for given area
-class NavScreenViewModel : ViewModel(){
+class NavScreenViewModel : ViewModel() {
 
     // Create instance of Repository
     private val metAlertsRepository = MetAlertsRepositoryImpl()

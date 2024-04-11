@@ -21,8 +21,9 @@ class MetAlertsDataSource {
     // sett opp klienten
     private val client = HttpClient {
         defaultRequest {
-        url("https://gw-uio.intark.uh-it.no/in2000/")
-        headers.appendIfNameAbsent("X-Gravitee-API-Key", "7c5b6de3-2539-4c5e-bfb3-ec6377399ece") }
+            url("https://gw-uio.intark.uh-it.no/in2000/")
+            headers.appendIfNameAbsent("X-Gravitee-API-Key", "7c5b6de3-2539-4c5e-bfb3-ec6377399ece")
+        }
     }
 
     /**
@@ -30,8 +31,10 @@ class MetAlertsDataSource {
      * Sjekk ut filen "MetAlerts" for å se hvordan dataen er strukturert.
      */
     suspend fun fetchMetAlertsInNorway(): List<MetAlert> {
-        return fetchMetAlerts("https://gw-uio.intark.uh-it.no/in2000/" +
-                "weatherapi/metalerts/2.0/current.json?geographicDomain=marine")
+        return fetchMetAlerts(
+            "https://gw-uio.intark.uh-it.no/in2000/" +
+                    "weatherapi/metalerts/2.0/current.json?geographicDomain=marine"
+        )
     }
 
     /**
@@ -39,8 +42,10 @@ class MetAlertsDataSource {
      * Sjekk ut filen "MetAlerts" for å se hvordan dataen er strukturert.
      */
     suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert> {
-        return fetchMetAlerts("https://gw-uio.intark.uh-it.no/in2000/" +
-                "weatherapi/metalerts/2.0/current.json?geographicDomain=marine&lat=${lat}&lon=${lon}")
+        return fetchMetAlerts(
+            "https://gw-uio.intark.uh-it.no/in2000/" +
+                    "weatherapi/metalerts/2.0/current.json?geographicDomain=marine&lat=${lat}&lon=${lon}"
+        )
     }
 
     /**
@@ -70,7 +75,9 @@ class MetAlertsDataSource {
 
                 // id bør aldri være null, hvis det er det lagrer vi ikke dette farevarselet
                 val id = alert.getJSONObject("properties").optString("id")
-                if (id.isBlank()) { continue }
+                if (id.isBlank()) {
+                    continue
+                }
 
                 val area = alert.getJSONObject("properties").optString("area")
                 val title = alert.getJSONObject("properties").optString("title")
@@ -99,29 +106,44 @@ class MetAlertsDataSource {
 
                 // lagre det i et MetAlert, og legg til i listen
                 val metAlert = MetAlert(
-                    id, area, title, description, consequences,
-                    instruction, awarenessLevel, riskMatrixColor, awarenessType, duration, triggerLevel
+                    id,
+                    area,
+                    title,
+                    description,
+                    consequences,
+                    instruction,
+                    awarenessLevel,
+                    riskMatrixColor,
+                    awarenessType,
+                    duration,
+                    triggerLevel
                 )
                 allAlerts.add(metAlert)
             }
             return allAlerts
 
-        // ikke koblet til internett, mulighet 1
+            // ikke koblet til internett, mulighet 1
         } catch (e: UnknownHostException) {
-            Log.e("MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. UnknownHostException. Ingen internett-tilkobling.\n")
+            Log.e(
+                "MET_ALERTS_DATA_SOURCE",
+                "API-kall mislykket. UnknownHostException. Ingen internett-tilkobling.\n"
+            )
             return mutableListOf()
 
-        // ikke koblet til internett, mulighet 2
+            // ikke koblet til internett, mulighet 2
         } catch (e: ConnectException) {
-            Log.e("MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. ConnectException. Ingen internett-tilkobling.\n")
+            Log.e(
+                "MET_ALERTS_DATA_SOURCE",
+                "API-kall mislykket. ConnectException. Ingen internett-tilkobling.\n"
+            )
             return mutableListOf()
 
-        // noe annet gikk galt
+            // noe annet gikk galt
         } catch (e: Exception) {
-            Log.e("MET_ALERTS_DATA_SOURCE",
-                "API-kall mislykket. Noe gikk galt.\n")
+            Log.e(
+                "MET_ALERTS_DATA_SOURCE",
+                "API-kall mislykket. Noe gikk galt.\n"
+            )
             return mutableListOf()
         }
     }

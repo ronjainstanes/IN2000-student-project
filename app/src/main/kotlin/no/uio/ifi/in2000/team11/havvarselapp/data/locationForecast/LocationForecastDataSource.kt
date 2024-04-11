@@ -28,7 +28,9 @@ class LocationForecastDataSource {
     }
 
     suspend fun fetchLocationForecast(lat: String, lon: String): LocationForecast {
-        return client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/" +
-                "locationforecast/2.0/complete?lat=${lat}&lon=${lon}").body<LocationForecast>()
+        return client.get(
+            "https://gw-uio.intark.uh-it.no/in2000/weatherapi/" +
+                    "locationforecast/2.0/complete?lat=${lat}&lon=${lon}"
+        ).body<LocationForecast>()
     }
 }
