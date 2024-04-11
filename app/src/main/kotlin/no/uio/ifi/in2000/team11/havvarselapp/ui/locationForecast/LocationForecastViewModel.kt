@@ -68,7 +68,7 @@ class LocationForecastViewModel(
     fun setCurrentPlaceName(context: Context, lat: Double, lon: Double) {
         viewModelScope.launch(Dispatchers.IO) {
             val geocoder = Geocoder(context, Locale.getDefault())
-            var placeName = try {
+            val placeName = try {
                 val addresses = geocoder.getFromLocation(lat, lon, 1)
                 if (addresses?.isNotEmpty() == true) {
                     // Returnerer et formatert adresse navn
@@ -259,14 +259,21 @@ class LocationForecastViewModel(
 
     fun getCurrentDirectionTowards(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
-        val direction = oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_to_direction
-        return  if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+        if (oceanForecast != null && oceanForecast.properties.timeseries.isNotEmpty()) {
+            val direction =
+                oceanForecast.properties.timeseries.get(time).data.instant.details.sea_water_to_direction
+            return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+        }
+        return ""
     }
 
     fun getCurrentDirectionFrom(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
-        val direction = oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_surface_wave_from_direction
-        return  if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+        if (oceanForecast != null && oceanForecast.properties.timeseries.isNotEmpty()) {
+            val direction = oceanForecast.properties.timeseries.get(time).data.instant.details.sea_surface_wave_from_direction
+            return  if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+        }
+        return ""
     }
 
     // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere

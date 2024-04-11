@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.team11.havvarselapp.data.oceanForecast
 
+import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -22,9 +23,15 @@ class OceanForecastDataSource {
     }
 
     // oslo - lat: 59.9, lon: 10.7
-    suspend fun fetchOceanForecast(lat: String, lon: String): OceanForecast {
-        return client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}")
-            .body<OceanForecast>()
+    suspend fun fetchOceanForecast(lat: String, lon: String): OceanForecast? {
+        return try {
+            client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}")
+                .body<OceanForecast>()
+        } catch (e: Exception) {
+            Log.e("OCEAN_FORECAST_DATA_SOURCE",
+                "Ocean forecast API call failed.\n")
+            null
+        }
     }
 }
 

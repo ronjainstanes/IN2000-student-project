@@ -15,7 +15,7 @@ class OceanForecastRepositoryImpl(
     private val dataSource: OceanForecastDataSource = OceanForecastDataSource()
 ): OceanForecastRepository {
 
-    override suspend fun getOceanForecast(lat: String, lon: String): OceanForecast {
+    override suspend fun getOceanForecast(lat: String, lon: String): OceanForecast? {
         return dataSource.fetchOceanForecast(lat, lon)
     }
 }

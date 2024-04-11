@@ -65,13 +65,18 @@ enum class Expanded {
  */
 @SuppressLint("DiscouragedApi", "FlowOperatorInvokedInComposition")
 @Composable
-fun WeatherScreen( forecastViewModel: LocationForecastViewModel = viewModel(), seaMapViewModel: SeaMapViewModel = viewModel()){
+fun WeatherScreen(
+    forecastViewModel: LocationForecastViewModel = viewModel(),
+    seaMapViewModel: SeaMapViewModel = viewModel()
+){
     val displayInfo = remember { mutableStateOf(DisplayInfo.Weather) } // endret fra by til = slik at funksjonene kan være utenfor hovedmetoden
     val expanded = remember { mutableStateOf(Expanded.Short) }
     val context = LocalContext.current
 
     // Henter MapUiState fra SeaMapViewModel
     val mapUiState by seaMapViewModel.mapUiState.collectAsState()
+    val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()
+    val oceanForecastUiState by forecastViewModel.oceanForecastUiState.collectAsState()
 
     // Bruker LaunchedEffect for å laste værdata når posisjonen endres via søk / pin
     LaunchedEffect(mapUiState.currentLocation.hashCode()) {
@@ -146,7 +151,8 @@ fun WeatherScreen( forecastViewModel: LocationForecastViewModel = viewModel(), s
                             // RAD MED IKON ØVERST
                             WeatherHeader(headerColor = weatherHeader, font = fontNormal)
                             // LASTER INN RADER MED VÆR-INFO
-                            if (forecastViewModel.forecastInfoUiState.collectAsState().value != null) {
+                            if (forecastViewModel.forecastInfoUiState.collectAsState().value != null &&
+                                locationForecastUiState?.properties?.timeseries?.isNotEmpty() == true) {
                                 when (expanded.value) {
 
                                     Expanded.Short -> {
@@ -208,7 +214,9 @@ fun WeatherScreen( forecastViewModel: LocationForecastViewModel = viewModel(), s
                             OceanHeader(headerColor = oceanHeader, font = fontNormal)
 
                             // LASTER INN RADENE MED HAV-INFO
-                            if (forecastViewModel.oceanForecastUiState.collectAsState().value != null) {
+                            if (forecastViewModel.oceanForecastUiState.collectAsState().value != null &&
+                                oceanForecastUiState?.properties?.timeseries?.isNotEmpty() == true
+                            ) {
                                 when (expanded.value) {
 
                                     Expanded.Short -> {
@@ -678,7 +686,8 @@ fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth().padding(bottom = 7.dp)
+            .fillMaxWidth()
+            .padding(bottom = 7.dp)
     ) {
         Row(
             modifier = Modifier
@@ -695,7 +704,10 @@ fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
             Button(
                 onClick = { currentScreen.value = DisplayInfo.Weather },
                 colors = ButtonDefaults.buttonColors(weatherColor),
-                modifier = Modifier.weight(1f).padding(4.dp).fillMaxSize(),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+                    .fillMaxSize(),
                 shape = RoundedCornerShape(10.dp) ) {
                 Text(
                     text = "Vær",
@@ -714,7 +726,9 @@ fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
             Button(
                 onClick = { currentScreen.value = DisplayInfo.Sea },
                 colors = ButtonDefaults.buttonColors(oceanColor),
-                modifier = Modifier.weight(1f).padding(4.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp),
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
