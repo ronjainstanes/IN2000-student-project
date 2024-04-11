@@ -20,8 +20,8 @@ fun TestLocationForecastDataSource() {
         coroutineScope.launch {
             try {
                 val locationForecast = dataSource.fetchLocationForecast( "59.9", "10.7")
-                val tid_String: String = "${locationForecast.properties.timeseries.firstOrNull()?.time}"
-                var parsedDate = ZonedDateTime.parse(tid_String)
+                val timeString = "${locationForecast.properties.timeseries.firstOrNull()?.time}"
+                val parsedDate = ZonedDateTime.parse(timeString)
                 val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm")
                 val tid = parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formatter)
 

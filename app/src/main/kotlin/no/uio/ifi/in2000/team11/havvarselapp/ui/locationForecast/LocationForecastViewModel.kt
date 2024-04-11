@@ -1,9 +1,8 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.locationForecast
 
+import android.content.Context
+import android.location.Geocoder
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -16,14 +15,13 @@ import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForec
 import no.uio.ifi.in2000.team11.havvarselapp.data.oceanForecast.OceanForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationForecast
 import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.OceanForecast
+import java.io.IOException
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.roundToInt
 
-data class IsAPiCalled( // for å unngå for mange API kall
-    var iscalled: Boolean = false
-)
 
 class LocationForecastViewModel(
     private val repository: LocationForecastRepositoryImpl = LocationForecastRepositoryImpl(),
@@ -33,20 +31,18 @@ class LocationForecastViewModel(
     val forecastInfoUiState: StateFlow<LocationForecast?> = _forecastInfoUiState.asStateFlow()
     private val _oceanForecastUiState = MutableStateFlow<OceanForecast?>(null)
     val oceanForecastUiState: StateFlow<OceanForecast?> = _oceanForecastUiState.asStateFlow()
-    private var isAPiCalled by mutableStateOf(IsAPiCalled())
+
+    private val _placeNameState = MutableStateFlow<String>("Laster...")
+    val placeNameState: StateFlow<String> = _placeNameState.asStateFlow()
 
     init {
         loadForecast("59.91", "10.75") // starter opp med Latitude og longitude tilsvarende Oslo
     }
 
     fun loadForecast(lat: String, lon: String) {
-        if (isAPiCalled.iscalled) {
-            return
-        }
-        else {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    isAPiCalled.iscalled = true
+                    Log.e("API KALL TEST", "BRA")
                     val forecast = repository.getLocationForecast(lat, lon)
                     _forecastInfoUiState.update { forecast }
                     val oceanForecast = repositoryOcean.getOceanForecast(lat, lon)
@@ -62,8 +58,60 @@ class LocationForecastViewModel(
                     )
                 }
             }
+
+    }
+
+    /**
+     * Funksjon for å reverse geocode koordinatene til stedsnavn, gjorde den så bra som mulig.
+     * Google sin geocoder er bedre men den koster penger uansett om man har få API-kall... :(
+     */
+    fun setCurrentPlaceName(context: Context, lat: Double, lon: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val geocoder = Geocoder(context, Locale.getDefault())
+            var placeName = try {
+                val addresses = geocoder.getFromLocation(lat, lon, 1)
+                if (addresses?.isNotEmpty() == true) {
+                    // Returnerer et formatert adresse navn
+                    val city = addresses[0].locality
+                    val adminArea = addresses[0].adminArea
+                    val subAdminArea = addresses[0].subAdminArea
+
+                    val sublocality = addresses[0].subLocality
+                    val country = addresses[0].countryName
+
+                    if (sublocality != null) {
+                        "$sublocality, $country"
+                    }
+                    else if (subAdminArea != null) {
+                        "$subAdminArea, $country"
+                    }
+                    else if (adminArea != null) {
+                        "$adminArea, $country"
+                    }
+
+                    else if (city != null) {
+                        "$city, $country"
+                    }
+
+                    else {
+                        addresses[0].getAddressLine(0)
+                    }
+
+                } else {
+                    "Ukjent"
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                "Laster..."
+            }
+            _placeNameState.value = placeName
         }
     }
+    fun getPlaceName(): String {
+        return  _placeNameState.value
+    }
+
+
 
     /**
      * Denne returnerer dato og tid typ: '20 March 2024 16:00' i NORSK TID
@@ -76,24 +124,15 @@ class LocationForecastViewModel(
         return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formats)
     }
 
-    /**
-     * Denne returnerer norsk tid - f.eks '16'
-     */
-    fun getNorwegianTime(time: Int): String {
-        val currentForecast = _forecastInfoUiState.value
-        val timeString = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
-        val parsedDate = ZonedDateTime.parse(timeString)
-        return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).hour.toString()
-    }
 
     /**
-     * Denne returnerer norsk tid - f.eks '16:00'
+     * Denne returnerer norsk tid - f.eks '16' brukes øverst på vær-siden - I dag 14-15
      */
-    fun getNorwegianTimeAndMin(time: Int): String {
+    fun getNorwegianTimeWeather(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
         val timeString = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
         val parsedDate = ZonedDateTime.parse(timeString)
-        val formats = DateTimeFormatter.ofPattern("HH:mm")
+        val formats = DateTimeFormatter.ofPattern("HH")
         return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formats)
     }
 
@@ -105,7 +144,18 @@ class LocationForecastViewModel(
     fun getTemperature(time: Int): String { // grader er i celsius
         val currentForecast = _forecastInfoUiState.value
         val unit: String? = if (currentForecast?.properties?.meta?.units?.air_temperature == "celsius") "°" else currentForecast?.properties?.meta?.units?.air_temperature
-        return "${currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.air_temperature}$unit"
+        val temp = (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.air_temperature)?.roundToInt()
+        return "$temp$unit"
+    }
+
+    fun temperaturePositive(time: Int): Boolean {
+        val currentForecast = _forecastInfoUiState.value
+        val temp = (currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.air_temperature)?.roundToInt()
+        return if (temp != null) {
+            temp > 0
+        } else {
+            true
+        }
     }
 
     fun getWindSpeed(time: Int): String { // UV-indexen under klare himmelforhold
@@ -115,10 +165,10 @@ class LocationForecastViewModel(
         return "$avrSpeed ($highSpeed)"
     }
 
-    fun getWindDirection(time: Int): String { // UV-indexen under klare himmelforhold
+    fun getWindDirection(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
         val direction = currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.wind_from_direction
-        return if (direction != null) "fra " + getNortEastVestSouthFromDegrees(direction) else " "
+        return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
     }
 
     fun getUVindex(time: Int): Double? { // UV-indexen under klare himmelforhold
@@ -127,11 +177,13 @@ class LocationForecastViewModel(
         return currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.ultraviolet_index_clear_sky
     }
 
-    fun getFogAreaFraction(time: Int): String { // UV-indexen under klare himmelforhold
+    // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
+    fun getFogAreaFraction(time: Int): String {
         val currentForecast = _forecastInfoUiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.fog_area_fraction} ${currentForecast?.properties?.meta?.units?.fog_area_fraction}"
     }
 
+    // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
     fun getRelativeHumidity(time: Int): String { //Relativ fuktighet
         val currentForecast = _forecastInfoUiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.relative_humidity} ${currentForecast?.properties?.meta?.units?.relative_humidity}"
@@ -149,11 +201,13 @@ class LocationForecastViewModel(
         return if (max == 0) " " else "$min-$max"
     }
 
+    // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
     fun getCloudAreaFraction(time: Int): String{
         val currentForecast = _forecastInfoUiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.cloud_area_fraction} ${currentForecast?.properties?.meta?.units?.cloud_area_fraction}"
     }
 
+    // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
     fun getProbabilityOfThunder(time: Int): String{
         val currentForecast = _forecastInfoUiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.probability_of_thunder} ${currentForecast?.properties?.meta?.units?.probability_of_thunder}"
@@ -168,46 +222,39 @@ class LocationForecastViewModel(
         }
     }
 
+    // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
     fun probabilityOfPrecipitation12hours(): Double? { // Sannsynlighet for nedbør om 12 timer
         val currentForecast = _forecastInfoUiState.value
         return currentForecast?.properties?.timeseries?.firstOrNull()?.data?.next_12_hours?.details?.probability_of_precipitation
     }
 
-    /**
-     * Denne returnerer dato og tid typ: '20 March 2024 16:00' i NORSK TID
-     */
-    fun convertDateAndTimeOcean(time: Int): String {
-        val oceanForecast = _oceanForecastUiState.value
-        val timeString = "${oceanForecast?.properties?.timeseries?.get(time)?.time}"
-        val parsedDate = ZonedDateTime.parse(timeString)
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm")
-        return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formatter)
-    }
-
-    /**
-     * Denne returnerer norsk tid - typ: '16:00'
-     */
-    fun getNorwegianTimeOcean(time: Int): String {
-        val oceanForecast = _oceanForecastUiState.value
-        val timeString = "${oceanForecast?.properties?.timeseries?.get(time)?.time}"
-        val parsedDate = ZonedDateTime.parse(timeString)
-        return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).hour.toString()
-    }
 
     fun getCoordinatesOcean(): List<Double>? {
         val oceanForecast = _oceanForecastUiState.value
         return  oceanForecast?.geometry?.coordinates
     }
 
+
     fun getSeaWaterTemperature(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
         val unit: String? = if (oceanForecast?.properties?.meta?.units?.sea_water_temperature == "celsius") "°" else oceanForecast?.properties?.meta?.units?.sea_water_temperature
-        return "${oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_temperature}$unit"
+        val temp = (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_temperature)?.roundToInt()
+        return "$temp$unit"
     }
+    fun seaTemperaturePositive(time: Int): Boolean {
+        val oceanForecast = _oceanForecastUiState.value
+        val temp = (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_temperature)?.roundToInt()
+        return if (temp != null) {
+            temp > 0
+        } else {
+            true
+        }
+    }
+
     fun getCurrentSpeed(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
         val speed = if (oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_speed == 0.0) 0 else oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_speed
-        return "$speed ${oceanForecast?.properties?.meta?.units?.sea_water_speed}"
+        return "$speed"
     }
 
     fun getCurrentDirectionTowards(time: Int): String {
@@ -222,16 +269,7 @@ class LocationForecastViewModel(
         return  if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
     }
 
-    fun getCurrent(time: Int): String {
-        val oceanForecast = _oceanForecastUiState.value
-        val directionFrom = oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_surface_wave_from_direction
-        val directionTowards = oceanForecast?.properties?.timeseries?.get(time)?.data?.instant?.details?.sea_water_to_direction
-        val from: String? = if (directionFrom != null) getNortEastVestSouthFromDegrees(directionFrom) else null
-        val towards: String? = if (directionTowards != null) getNortEastVestSouthFromDegrees(directionTowards) else null
-
-        return "$from --> $towards: ${getCurrentSpeed(time)} "
-    }
-
+    // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
     fun getSeaWaveHeight(time: Int): String {
         val oceanForecast = _oceanForecastUiState.value
         val unit: String? = if (oceanForecast?.properties?.meta?.units?.sea_surface_wave_height == "meter") "m" else oceanForecast?.properties?.meta?.units?.sea_surface_wave_height
@@ -252,14 +290,14 @@ class LocationForecastViewModel(
      */
     private fun getNortEastVestSouthFromDegrees(degree: Double): String {
         return when  {
-            degree >= 337.5 || degree < 22.5   -> "Nord"
-            degree >= 22.5 && degree < 67.5    -> "Nord-øst"
-            degree >= 67.5 && degree < 112.5   -> "Øst"
-            degree >= 112.5 && degree < 157.5  -> "Sør-øst"
-            degree >= 157.5 && degree < 202.5  -> "Sør"
-            degree >= 202.5 && degree < 247.5  -> "Sør-vest"
-            degree >= 247.5 && degree < 292.5  -> "Vest"
-            degree >= 292.5                    -> "Nord-vest"
+            degree >= 337.5 || degree < 22.5   -> "N"
+            degree >= 22.5 && degree < 67.5    -> "NØ"
+            degree >= 67.5 && degree < 112.5   -> "Ø"
+            degree >= 112.5 && degree < 157.5  -> "SØ"
+            degree >= 157.5 && degree < 202.5  -> "S"
+            degree >= 202.5 && degree < 247.5  -> "SV"
+            degree >= 247.5 && degree < 292.5  -> "V"
+            degree >= 292.5                    -> "NV"
             else                               -> degree.toString()
         }
     }
@@ -267,11 +305,11 @@ class LocationForecastViewModel(
     /**
      * Denne returnerer norsk tid - f.eks '16:00'
      */
-    fun getNorwegianTimeAndMinOcean(time: Int): String {
+    fun getNorwegianTimeOcean(time: Int): String {
         val currentForecast = _oceanForecastUiState.value
         val timeString = "${currentForecast?.properties?.timeseries?.get(time)?.time}"
         val parsedDate = ZonedDateTime.parse(timeString)
-        val formats = DateTimeFormatter.ofPattern("HH:mm")
+        val formats = DateTimeFormatter.ofPattern("HH")
         return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formats)
     }
 
