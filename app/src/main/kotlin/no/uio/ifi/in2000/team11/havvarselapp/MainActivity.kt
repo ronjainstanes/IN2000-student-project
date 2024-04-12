@@ -20,7 +20,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import no.uio.ifi.in2000.team11.havvarselapp.BuildConfig.MAPS_API_KEY
-import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavScreen
+import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.SetUpNavigation
 import no.uio.ifi.in2000.team11.havvarselapp.ui.theme.HavvarselAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -69,7 +69,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavScreen("Oslo", placesClient)
+                    SetUpNavigation(placesClient = placesClient)
+
+                    // Debug info showing if app is connected to internet TODO: remove
                     Box(modifier = Modifier
                         .fillMaxSize()) {
                         Text(text = "Network status: $status")

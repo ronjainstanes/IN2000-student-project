@@ -7,101 +7,25 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.UrlTileProvider
 import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.TileOverlay
-import com.google.maps.android.compose.rememberCameraPositionState
-import no.uio.ifi.in2000.team11.havvarselapp.R
-import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsPair
 import java.io.IOException
-import java.net.URL
 
 
 @Composable
 @Preview(showBackground = true)
 fun SeaMap() {
+    /*
     val textState = remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val hideSymbolsButton = remember { mutableStateOf(true) }
     var showExplanation by remember { mutableStateOf(false) }
-    //Listen over symbolene
-    val listOfSymbols = listOf(
-        SeaSymbolsPair(R.drawable.east_cardinal,"Øst kardinal" ),
-        SeaSymbolsPair(R.drawable.west_cardinal,"Vest kardinal" ),
-        SeaSymbolsPair(R.drawable.north_cardinal,"Nord kardinal" ),
-        SeaSymbolsPair(R.drawable.south_cardinal,"Sør kardinal" ),
-        SeaSymbolsPair(R.drawable.isolatedcardinal,"Isolert kardinal" ),
-        SeaSymbolsPair(R.drawable.lateral_safewater,"Lateral senterledsmerke" ),
-        SeaSymbolsPair(R.drawable.port_mark,"Portmerke" ),
-        SeaSymbolsPair(R.drawable.preferred_channel_port,"Foretrukket kanal babord" ),
-        SeaSymbolsPair(R.drawable.preferred_channel_starboard,"Foretrukket kanal styrbord" ),
-        SeaSymbolsPair(R.drawable.special_mark,"Spesielt merke" ),
-        SeaSymbolsPair(R.drawable.starboardmark,"Styrbord merke" ),
-        SeaSymbolsPair(R.drawable.red_beacon,"Rødt signallys" ),
-        SeaSymbolsPair(R.drawable.yellow_beacon,"Gult signallys" ),
-        SeaSymbolsPair(R.drawable.green_beacon,"Grønt signallys" ),
-        SeaSymbolsPair(R.drawable.harbour,"Havn" ),
-        SeaSymbolsPair(R.drawable.anchorage,"Ankerplass" ),
-        SeaSymbolsPair(R.drawable.fishing_harbour,"Fiskehavn" ),
-        SeaSymbolsPair(R.drawable.marina,"Marina" ),
-        SeaSymbolsPair(R.drawable.breakwater,"Molo" ),
-        SeaSymbolsPair(R.drawable.pier,"Brygge" ),
-        SeaSymbolsPair(R.drawable.crane,"Kran" ),
-        SeaSymbolsPair(R.drawable.slipway,"Slipp" ),
-        SeaSymbolsPair(R.drawable.harbour_master,"Havnemester" ),
-        SeaSymbolsPair(R.drawable.waste_disposal,"Avfallshåndtering" ))
+    val listOfSymbols : List<SeaSymbolsPair> = SeaSymbolsList().symbolDescription
 
     // her trengs 'context' for å kunne hente utseende av kartet
     val context = LocalContext.current
@@ -210,7 +134,7 @@ fun SeaMap() {
             Text(text = if (hideSymbolsButton.value) "Deaktiver Overlay" else "Aktiver Overlay")
         }
     }
-
+*/
 }
 
 fun getPosition(placeName: MutableState<String>, context: Context, cameraPositionState: CameraPositionState){
@@ -258,7 +182,8 @@ fun getPosition(placeName: MutableState<String>, context: Context, cameraPositio
 
 //Funksjonen som viser symbolforklaringene
 @Composable
-fun ExplanationBox(symbolDescription: List<SeaSymbolsPair>, onDismiss:() -> Unit){
+fun ExplanationBox(){
+    /*
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -297,5 +222,6 @@ fun ExplanationBox(symbolDescription: List<SeaSymbolsPair>, onDismiss:() -> Unit
             }
         }
     }
+    */
 }
 

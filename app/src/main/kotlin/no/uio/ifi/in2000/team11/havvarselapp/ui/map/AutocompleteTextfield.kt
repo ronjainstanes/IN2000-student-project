@@ -1,6 +1,11 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.map
 
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -29,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -37,12 +44,18 @@ import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 
 class AutocompleteTextFieldActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun AutocompleteTextField(seaMapViewModel: SeaMapViewModel, context: Context, cameraPositionState: CameraPositionState, placesClient: PlacesClient) {
+    fun AutocompleteTextField(
+        context: Context,
+        updateLocation: (loc: LatLng) -> Unit,
+        cameraPositionState: CameraPositionState,
+        placesClient: PlacesClient
+    ) {
         var historyItems = remember {
             mutableStateListOf(
                 "Oslo",
@@ -72,25 +85,27 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                         predictions = fetchedPredictions
                     }
                 },
-                onSearch = {active = false},
+                onSearch = { active = false },
                 active = active,
                 onActiveChange = { active = it },
-                placeholder = {Text("Søk her")},
+                placeholder = { Text("Søk her") },
                 leadingIcon = {
-                         Icon(
-                             imageVector = Icons.Default.Search,
-                             contentDescription = "Search Icon"
-                         )},
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search Icon"
+                    )
+                },
                 trailingIcon = {
-                    if (active){
+                    if (active) {
                         Icon(
                             modifier = Modifier.clickable {
-                                if(text.isNotEmpty()){
+                                if (text.isNotEmpty()) {
                                     text = ""
                                     predictions = emptyList() //clears up predictions list
                                 } else {
                                     active = false
-                                } },
+                                }
+                            },
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close Icon"
                         )
@@ -100,10 +115,10 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                 colors = SearchBarDefaults.colors(
                     containerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.95f),
 
-                )
+                    )
             ) {
-                if(predictions.isEmpty()){
-                    historyItems.forEach{historyItem ->
+                if (predictions.isEmpty()) {
+                    historyItems.forEach { historyItem ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -111,9 +126,10 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                 .clickable(onClick = {
                                     active = false
                                     text = historyItem
-                                    seaMapViewModel.getPosition(
+                                    getPosition(
                                         historyItem,
                                         context,
+                                        updateLocation,
                                         cameraPositionState
                                     )
                                     if (historyItems.contains(historyItem)) {
@@ -123,14 +139,17 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                         historyItems.removeAt(4)
                                     }
                                     historyItems.add(0, historyItem)
-                                })){
-                            Icon(modifier = Modifier.padding(end = 10.dp),
+                                })
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(end = 10.dp),
                                 imageVector = Icons.Default.History,
-                                contentDescription = "History Icon")
+                                contentDescription = "History Icon"
+                            )
                             Text(historyItem)
                         }
                     }
-                }else{
+                } else {
                     predictions.forEach { prediction ->
                         val predictionText = prediction.getPrimaryText(null).toString()
                         Row(
@@ -140,9 +159,10 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                 .clickable(onClick = {
                                     active = false
                                     text = predictionText
-                                    seaMapViewModel.getPosition(
+                                    getPosition(
                                         predictionText,
                                         context,
+                                        updateLocation,
                                         cameraPositionState
                                     )
                                     // save chosen to the history list
@@ -156,8 +176,11 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                     }
                                     historyItems.add(0, predictionText)
                                 })
-                        ){
-                            Text(modifier = Modifier.padding(start = 5.dp), text = prediction.getPrimaryText(null).toString())
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(start = 5.dp),
+                                text = prediction.getPrimaryText(null).toString()
+                            )
                         }
                     }
                 }
@@ -166,8 +189,11 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
     }
 
 
-
-    fun fetchPredictions(query: String, placesClient: PlacesClient, onPredictionsFetched: (List<AutocompletePrediction>) -> Unit) {
+    fun fetchPredictions(
+        query: String,
+        placesClient: PlacesClient,
+        onPredictionsFetched: (List<AutocompletePrediction>) -> Unit
+    ) {
         // Use Places API to fetch predictions
         val token = AutocompleteSessionToken.newInstance()
 
@@ -184,6 +210,62 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
             }.addOnFailureListener { exception ->
                 println(exception)
             }
+        }
+    }
+
+
+    /**
+     * Flytter kartet til området som brukeren har søkt opp.
+     * Det kommer en pop-up melding hvis posisjonen ikke ble funnet.
+     */
+    fun getPosition(
+        placeName: String,
+        context: Context,
+        updateLocation: (loc: LatLng) -> Unit,
+        cameraPositionState: CameraPositionState
+    ) {
+        val geocoder = Geocoder(context)
+
+        try {
+            // Sjekk tilgjengeligheten av nettverkstilgang
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+            // Hent informasjon om nettverkstilkoblingen
+            val networkCapabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+
+            // Sjekk om enheten har en aktiv internettforbindelse via Wi-Fi eller mobilnett (CELLULAR for mobilnett)
+            if (networkCapabilities != null && (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || networkCapabilities.hasTransport(
+                    NetworkCapabilities.TRANSPORT_CELLULAR
+                ))
+            ) {
+
+                // henter posisjonen til stedet som er søkt på
+                val addressList: List<Address>? = geocoder.getFromLocationName(placeName, 1)
+                if (!addressList.isNullOrEmpty()) {
+                    val address: Address = addressList[0]
+                    val lat = address.latitude
+                    val long = address.longitude
+                    val searchLocation = LatLng(lat, long)
+
+                    // oppdater posisjon i UiState, som deretter oppdaterer locationRepository
+                    updateLocation(searchLocation)
+
+                    // flytter kartet til stedet som er søkt opp
+                    cameraPositionState.position =
+                        CameraPosition.fromLatLngZoom(searchLocation, 12f)
+                } else {
+                    // viser en "toast", en liten pop-up melding om at stedet ikke ble funnet
+                    Toast.makeText(context, "Posisjonen ble ikke funnet", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                // Hvis det ikke er noen aktiv internettforbindelse, vis en passende melding
+                Toast.makeText(context, "Ingen internettforbindelse", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 }

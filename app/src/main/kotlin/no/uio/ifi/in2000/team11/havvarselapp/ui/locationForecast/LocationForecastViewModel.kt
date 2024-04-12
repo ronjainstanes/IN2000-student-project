@@ -32,7 +32,7 @@ class LocationForecastViewModel(
     private val _oceanForecastUiState = MutableStateFlow<OceanForecast?>(null)
     val oceanForecastUiState: StateFlow<OceanForecast?> = _oceanForecastUiState.asStateFlow()
 
-    private val _placeNameState = MutableStateFlow<String>("Laster...")
+    private val _placeNameState = MutableStateFlow("Laster...")
     val placeNameState: StateFlow<String> = _placeNameState.asStateFlow()
 
     init {
@@ -226,10 +226,10 @@ class LocationForecastViewModel(
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.probability_of_thunder} ${currentForecast?.properties?.meta?.units?.probability_of_thunder}"
     }
 
-    fun getWeatherIcon(time: Int): String {
+    fun getWeatherIcon(time: Int): String? {
         val currentForecast = _forecastInfoUiState.value
         return if (currentForecast != null) {
-            currentForecast.properties.timeseries[time].data.next_1_hours.summary.symbol_code
+            currentForecast.properties.timeseries[time].data.next_1_hours?.summary?.symbol_code
         } else {
             "fair_day"
         }
@@ -281,7 +281,7 @@ class LocationForecastViewModel(
         val oceanForecast = _oceanForecastUiState.value
         if (oceanForecast != null && oceanForecast.properties.timeseries.isNotEmpty()) {
             val direction =
-                oceanForecast.properties.timeseries.get(time).data.instant.details.sea_water_to_direction
+                oceanForecast.properties.timeseries[time].data.instant.details.sea_water_to_direction
             return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
         }
         return ""
@@ -291,7 +291,7 @@ class LocationForecastViewModel(
         val oceanForecast = _oceanForecastUiState.value
         if (oceanForecast != null && oceanForecast.properties.timeseries.isNotEmpty()) {
             val direction =
-                oceanForecast.properties.timeseries.get(time).data.instant.details.sea_surface_wave_from_direction
+                oceanForecast.properties.timeseries[time].data.instant.details.sea_surface_wave_from_direction
             return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
         }
         return ""
