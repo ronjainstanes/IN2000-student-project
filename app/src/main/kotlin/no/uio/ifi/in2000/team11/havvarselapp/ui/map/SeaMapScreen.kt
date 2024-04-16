@@ -24,12 +24,12 @@ import com.google.android.gms.maps.model.UrlTileProvider
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.TileOverlay
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import no.uio.ifi.in2000.team11.havvarselapp.R
-import no.uio.ifi.in2000.team11.havvarselapp.data.location.LocationRepository
 import java.net.URL
 
 @Composable
@@ -37,7 +37,7 @@ fun SeaMapScreen(
     placesClient: PlacesClient,
     seaMapViewModel: SeaMapViewModel = viewModel()
 ) {
-    val autocompleteTextFieldActivity : AutocompleteTextFieldActivity = AutocompleteTextFieldActivity()
+    val autocompleteTextFieldActivity = AutocompleteTextFieldActivity()
     // observerer UiState fra ViewModel
     val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
 
@@ -61,6 +61,10 @@ fun SeaMapScreen(
             onMapClick = { clickedPosition ->
                 seaMapViewModel.placeOrRemoveMarker(clickedPosition)
             },
+            uiSettings = MapUiSettings(
+                mapToolbarEnabled = false,
+                myLocationButtonEnabled = true
+            ),
             properties = MapProperties(
                 // dette er utseende av kartet, som man finner i filen "mapstyle" i raw-mappen
                 mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle),
@@ -69,11 +73,7 @@ fun SeaMapScreen(
             // kartlag fra OpenSeaMap
             if (hideOverlayButton.value) {
                 TileOverlay(
-                    tileProvider = object : UrlTileProvider(256, 256) {
-                        override fun getTileUrl(x: Int, y: Int, z: Int): URL {
-                            return URL("https://t1.openseamap.org/seamark/$z/$x/$y.png")
-                        }
-                    }
+                    tileProvider = tileProvider
                 )
             }
             // pin som plasseres på kartet der brukeren trykker
@@ -85,7 +85,12 @@ fun SeaMapScreen(
             }
 
         }
-        autocompleteTextFieldActivity.AutocompleteTextField(seaMapViewModel, context, cameraPositionState, placesClient)
+        autocompleteTextFieldActivity.AutocompleteTextField(
+            seaMapViewModel,
+            context,
+            cameraPositionState,
+            placesClient
+        )
 
         // Knapp for å aktivere/deaktivere TileOverlay
         Button(
@@ -99,5 +104,11 @@ fun SeaMapScreen(
         ) {
             Text(text = if (hideOverlayButton.value) "Deaktiver Overlay" else "Aktiver Overlay")
         }
+    }
+}
+
+val tileProvider = object : UrlTileProvider(256, 256) {
+    override fun getTileUrl(x: Int, y: Int, z: Int): URL {
+        return URL("https://t1.openseamap.org/seamark/$z/$x/$y.png")
     }
 }
