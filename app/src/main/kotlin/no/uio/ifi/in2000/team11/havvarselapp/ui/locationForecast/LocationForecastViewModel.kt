@@ -221,15 +221,15 @@ class LocationForecastViewModel(
     }
 
     // bruker ikke denne. Kan gjerne slette den men beholder den i tilfellet vi skulle trenge den senere
-    fun getProbabilityOfThunder(time: Int): String {
+    fun getProbabilityOfThunder(time: Int): String? {
         val currentForecast = _forecastInfoUiState.value
         return "${currentForecast?.properties?.timeseries?.get(time)?.data?.next_1_hours?.details?.probability_of_thunder} ${currentForecast?.properties?.meta?.units?.probability_of_thunder}"
     }
 
-    fun getWeatherIcon(time: Int): String {
+    fun getWeatherIcon(time: Int): String? {
         val currentForecast = _forecastInfoUiState.value
         return if (currentForecast != null) {
-            currentForecast.properties.timeseries[time].data.next_1_hours.summary.symbol_code
+            currentForecast.properties.timeseries[time].data.next_1_hours?.summary?.symbol_code
         } else {
             "fair_day"
         }
