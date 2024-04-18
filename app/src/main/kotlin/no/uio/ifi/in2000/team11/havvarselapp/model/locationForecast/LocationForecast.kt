@@ -68,7 +68,7 @@ data class Timeseries(
 data class Data(
     val instant: Instant,
     val next_12_hours: Next_12_hours,
-    val next_1_hours: Next_1_hours?,
+    val next_1_hours: Next_1_hours,
     val next_6_hours: Next_6_hours
 )
 
@@ -117,12 +117,12 @@ data class Details12(
 
 
 data class Next_1_hours(
-    val summary: Summary1?,
-    val details: Details1?,
+    val summary: Summary1,
+    val details: Details1,
 )
 
 data class Summary1(
-    val symbol_code: String?,
+    val symbol_code: String,
 )
 
 
