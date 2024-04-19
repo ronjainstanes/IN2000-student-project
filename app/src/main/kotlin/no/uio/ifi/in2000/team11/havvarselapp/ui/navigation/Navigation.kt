@@ -58,9 +58,6 @@ fun SetUpNavigation(
                 WeatherScreen(
                     sharedUiState = state,
                     navController = navController,
-                    updateLocation = {
-                        viewModel.updateLocation(it)
-                    }
                 )
             }
         }

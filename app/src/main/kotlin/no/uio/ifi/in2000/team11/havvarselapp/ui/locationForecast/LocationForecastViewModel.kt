@@ -70,6 +70,7 @@ class LocationForecastViewModel(
             val geocoder = Geocoder(context, Locale.getDefault())
             val placeName = try {
                 val addresses = geocoder.getFromLocation(lat, lon, 1)
+                println(addresses)
                 if (addresses?.isNotEmpty() == true) {
                     // Returnerer et formatert adresse navn
                     val city = addresses[0].locality
@@ -79,17 +80,29 @@ class LocationForecastViewModel(
                     val sublocality = addresses[0].subLocality
                     val country = addresses[0].countryName
 
-                    if (sublocality != null) {
+                    if (city != null) {
+                        "$city, $country"
+                    } else if (sublocality != null) {
                         "$sublocality, $country"
                     } else if (subAdminArea != null) {
                         "$subAdminArea, $country"
                     } else if (adminArea != null) {
                         "$adminArea, $country"
-                    } else if (city != null) {
-                        "$city, $country"
                     } else {
                         addresses[0].getAddressLine(0)
                     }
+
+//                    if (sublocality != null) {
+//                        "$sublocality, $country"
+//                    } else if (subAdminArea != null) {
+//                        "$subAdminArea, $country"
+//                    } else if (adminArea != null) {
+//                        "$adminArea, $country"
+//                    } else if (city != null) {
+//                        "$city, $country"
+//                    } else {
+//                        addresses[0].getAddressLine(0)
+//                    }
 
                 } else {
                     "Ukjent"
