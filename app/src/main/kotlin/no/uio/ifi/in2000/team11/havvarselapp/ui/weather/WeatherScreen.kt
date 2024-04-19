@@ -107,41 +107,44 @@ fun WeatherScreen(
     val fontNormal = fonts3[2]
     val fontBold = fonts3[3]
 
-    // knappene for vær og hav, sitter fast på bunn av siden
-    Scaffold(
-        bottomBar = { BottomNavBar(currentScreen = displayInfo, fontNormal) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(innerPadding)
-        ) {
 
+    Column (modifier = Modifier.fillMaxSize()){
+        // knappene for vær og hav, sitter fast på bunn av siden
+        Scaffold(modifier = Modifier.weight(1f),
+            bottomBar = { BottomNavBar(currentScreen = displayInfo, fontNormal) }
+        ) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(2.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
-            )
-            {
-                // øverste del av skjermen frem til tabellen
-                ScreenTop(
-                    forecastViewModel = forecastViewModel,
-                    displayInfo = displayInfo,
-                    fontNormal = fontNormal,
-                    fontBold = fontBold
-                )
+                    .padding(innerPadding)
+            ) {
 
-                ScreenContent(
-                    forecastViewModel = forecastViewModel,
-                    displayInfo = displayInfo,
-                    fontNormal = fontNormal
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(2.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
                 )
+                {
+                    // øverste del av skjermen frem til tabellen
+                    ScreenTop(
+                        forecastViewModel = forecastViewModel,
+                        displayInfo = displayInfo,
+                        fontNormal = fontNormal,
+                        fontBold = fontBold
+                    )
+
+                    ScreenContent(
+                        forecastViewModel = forecastViewModel,
+                        displayInfo = displayInfo,
+                        fontNormal = fontNormal
+                    )
+                }
             }
         }
+        NavigationBarWithButtons(navController = navController)
     }
-    NavigationBarWithButtons(navController = navController)
 }
 
 fun List<Timeseries>.groupByDay(): Map<LocalDate, List<Timeseries>> {
@@ -1097,7 +1100,7 @@ fun GetWeatherIcon(forecastViewModel: LocationForecastViewModel) {
  */
 @Composable
 fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
-    val pos = Color(69, 79, 92, 167) // Farge til header i tabellen
+    val pos = Color(19, 35, 44, 255) // Farge til header i tabellen
     val neg = Color(155, 163, 174, 255) // Farge til header i tabellen
 
     val weatherColor = if (currentScreen.value == DisplayInfo.Weather) pos else neg
@@ -1106,7 +1109,7 @@ fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 7.dp)
+            .padding(top = 7.dp, bottom = 7.dp)
     ) {
         Row(
             modifier = Modifier
