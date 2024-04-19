@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AutocompletePrediction
@@ -56,7 +57,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         cameraPositionState: CameraPositionState,
         placesClient: PlacesClient
     ) {
-        var historyItems = remember {
+        val historyItems = remember {
             mutableStateListOf(
                 "Oslo",
                 "Bergen",
@@ -68,9 +69,10 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         var predictions by rememberSaveable { mutableStateOf(emptyList<AutocompletePrediction>()) }
         var text by rememberSaveable { mutableStateOf("") }
         var active by rememberSaveable { mutableStateOf(false) }
+        //val keyboardController = LocalSoftwareKeyboardController.current
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().zIndex(2f),
             horizontalAlignment = Alignment.CenterHorizontally
         )
         {
@@ -85,7 +87,24 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                         predictions = fetchedPredictions
                     }
                 },
-                onSearch = { active = false },
+                onSearch = {
+                    if (text.length > 0){
+                        val inputTextUpperCase = text.replaceFirstChar { it.uppercase() }
+                        getPosition(
+                            inputTextUpperCase,
+                            context,
+                            updateLocation,
+                            cameraPositionState
+                        )
+                        if (historyItems.contains(inputTextUpperCase)) {
+                            val indexToRemove = historyItems.indexOf(inputTextUpperCase)
+                            historyItems.removeAt(indexToRemove)
+                        } else {
+                            historyItems.removeAt(4)
+                        }
+                        historyItems.add(0, inputTextUpperCase)
+                    }
+                    active = false },
                 active = active,
                 onActiveChange = { active = it },
                 placeholder = { Text("Søk her") },

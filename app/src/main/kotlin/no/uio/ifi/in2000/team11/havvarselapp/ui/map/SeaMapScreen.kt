@@ -118,6 +118,7 @@ fun SeaMapScreen(
                     tileProvider = tileProvider
                 )
             }
+            
             // pin som plasseres på kartet der brukeren trykker
             if (mapUiState.markerVisible) {
                 Marker(

@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -61,9 +58,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             HavvarselAppTheme {
-                val status by connectivityObserver.observe().collectAsState(
-                    initial = ConnectivityObserver.Status.Unavailable
-                )
+//                val status by connectivityObserver.observe().collectAsState(
+//                    initial = ConnectivityObserver.Status.Unavailable
+//                )
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -74,7 +71,7 @@ class MainActivity : ComponentActivity() {
                     // Debug info showing if app is connected to internet TODO: remove
                     Box(modifier = Modifier
                         .fillMaxSize()) {
-                        Text(text = "Network status: $status")
+                        //Text(text = "Network status: $status")
                     }
                 }
             }
