@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "name": "Sandvika gjestebrygge",
+    "location": [59.8876667, 10.5270251],
+    "description": "Drivstoff, vann, toalett, matservering"
+  },
+  {
+    "id": 2,
+    "name": "Aker brygge gjestehavn",
+    "location": [59.9080398, 10.7234908],
+    "description": "Drivstoff, vann, toalett, matservering"
+  },
+  {
+    "id": 3,
+    "name": "Tjuvholmen Båthavn",
+    "location": [59.9081743, 10.7197015],
+    "description": "Ingen info"
+  },
+  {
+    "id": 4,
+    "name": "Vollen marina og gjestehavn",
+    "location": [59.809600, 10.485750],
+    "description": "Drivstoff, vann, toalett, matservering"
+  },
+  {
+    "id": 5,
+    "name": "Odden Marina båtforening, Slemmestad",
+    "location": [59.782514, 10.500268],
+    "description": "Ingen info"
+  },
+  {
+    "id": 6,
+    "name": "Sætre gjestehavn",
+    "location": [59.6853081, 10.5283555],
+    "description": "Drivstoff, vann, toalett, matservering"
+  },
+  {
+    "id": 7,
+    "name": "Oscarsborg Gjestehavn",
+    "location": [59.6775588, 10.6025561],
+    "description": "Vann, toalett, matservering"
+  }
+]
+
+

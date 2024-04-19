@@ -53,6 +53,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.R
 import no.uio.ifi.in2000.team11.havvarselapp.SharedUiState
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsList
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsPair
+import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.GoogleMarkersGuest
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
 import java.net.URL
 
@@ -74,6 +75,11 @@ fun SeaMapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(sharedUiState.currentLocation, 12f)
     }
+    // Variabel for å endre gjestehavnenes marører synlighet
+    var visibleHarborMarker: Boolean
+
+    // Henter data om gjestehavner fra JSON fil
+    seaMapViewModel.fetchHarborData(context)
  Column (modifier = Modifier.fillMaxSize()){
 
      Box(modifier = Modifier.fillMaxSize().weight(1f)) {
@@ -95,6 +101,17 @@ fun SeaMapScreen(
                 mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle),
             )
         ) {
+
+            // Endrer markørenes synlighent
+            visibleHarborMarker = if(cameraPositionState.position.zoom > 20f){
+                false
+            } else{
+                true
+            }
+            // Viser gjestehavner markører på karten
+            seaMapViewModel.harborData.value?.map { harbor -> GoogleMarkersGuest(harbor, visibleHarborMarker) }
+
+
             // kartlag fra OpenSeaMap
             if (hideOverlayButton.value) {
                 TileOverlay(
