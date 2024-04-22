@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -54,8 +55,9 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
     fun AutocompleteTextField(
         context: Context,
         updateLocation: (loc: LatLng) -> Unit,
-        cameraPositionState: CameraPositionState,
-        placesClient: PlacesClient
+        cameraPositionState: CameraPositionState, 
+        placesClient: PlacesClient,
+        active: MutableState<Boolean>
     ) {
         val historyItems = remember {
             mutableStateListOf(
@@ -68,7 +70,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         }
         var predictions by rememberSaveable { mutableStateOf(emptyList<AutocompletePrediction>()) }
         var text by rememberSaveable { mutableStateOf("") }
-        var active by rememberSaveable { mutableStateOf(false) }
+        // var active by rememberSaveable { mutableStateOf(false) }
         //val keyboardController = LocalSoftwareKeyboardController.current
 
         Column(
@@ -104,9 +106,9 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                         }
                         historyItems.add(0, inputTextUpperCase)
                     }
-                    active = false },
-                active = active,
-                onActiveChange = { active = it },
+                    active.value = false },
+                active = active.value,
+                onActiveChange = { active.value = it },
                 placeholder = { Text("Søk her") },
                 leadingIcon = {
                     Icon(
@@ -115,14 +117,14 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                     )
                 },
                 trailingIcon = {
-                    if (active) {
+                    if (active.value) {
                         Icon(
                             modifier = Modifier.clickable {
                                 if (text.isNotEmpty()) {
                                     text = ""
                                     predictions = emptyList() //clears up predictions list
                                 } else {
-                                    active = false
+                                    active.value = false
                                 }
                             },
                             imageVector = Icons.Default.Close,
@@ -143,7 +145,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                 .fillMaxWidth()
                                 .padding(all = 12.dp)
                                 .clickable(onClick = {
-                                    active = false
+                                    active.value = false
                                     text = historyItem
                                     getPosition(
                                         historyItem,
@@ -176,7 +178,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                 .fillMaxWidth()
                                 .padding(all = 12.dp)
                                 .clickable(onClick = {
-                                    active = false
+                                    active.value = false
                                     text = predictionText
                                     getPosition(
                                         predictionText,
