@@ -1,11 +1,15 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.WbCloudy
@@ -30,7 +34,7 @@ var selectedButtonWeather = false
  */
 @Composable
 fun NavigationBarWithButtons(navController: NavController) {
-    val white = Color(69, 79, 92, 167) // button is active
+    val white = Color(69, 79, 92, 255) // button is active
     val gray = Color(19, 35, 44, 255)  // button is inactive
     val boardersWidth = 2.dp
 
@@ -41,21 +45,24 @@ fun NavigationBarWithButtons(navController: NavController) {
         verticalArrangement = Arrangement.Bottom,
     ) {
         Row(
+            horizontalArrangement = Arrangement.Center, // Sentrerer knappene i raden
             modifier = Modifier
-                .fillMaxWidth() // Ensures that the Row fills up the entire screen width
-                .wrapContentHeight(align = Alignment.Bottom)
+                .fillMaxWidth()
+                .padding(1.dp)
+                .background(gray)
         ) {
 
             // button for seamap-screen
             Button(
                 modifier = Modifier
+                    .size(60.dp) // Definerer en eksakt størrelse for knappen
+
                     .weight(1f)
-                    .border(
+                    /*.border(
                         width = boardersWidth,
-                        // changes color if button is active/inactive
-                        color = if (selectedButtonMap) gray else white,
+                        color = white,
                         shape = RectangleShape
-                    ),
+                    )*/,
                 // when clicked: navigate, change color
                 onClick = {
                     selectedButtonMap = true
@@ -63,11 +70,8 @@ fun NavigationBarWithButtons(navController: NavController) {
                     selectedButtonWeather = false
                 },
                 colors = ButtonDefaults.buttonColors(
-
-                    if (selectedButtonMap) gray else white
-
-                ),
-                shape = RectangleShape,
+                    if (selectedButtonMap) white else gray),
+                shape = CircleShape,
 
                 ) {
                 ButtonMapContext()
@@ -76,20 +80,23 @@ fun NavigationBarWithButtons(navController: NavController) {
             // button for weather-screen
             Button(
                 modifier = Modifier
+                    .size(60.dp) // Definerer en eksakt størrelse for knappen
+
                     .weight(1f)
-                    .border(
+                    /*.border(
                         width = boardersWidth,
                         // changes color if button is active/inactive
-                        color = if (selectedButtonWeather) gray else white,
+                        color = white,
                         shape = RectangleShape
                     // when clicked: navigate, change color
-                    ), onClick = {
+                    )*/, onClick = {
                     selectedButtonWeather = true
                     navController.navigate("weather_screen")
                     selectedButtonMap = false
                 }, colors = ButtonDefaults.buttonColors(
-                    if (selectedButtonWeather) gray else white
-                ), shape = RectangleShape
+                    if (selectedButtonWeather) white else gray
+                ),
+                shape = CircleShape
 
             ) {
                 ButtonWeatherContext()
