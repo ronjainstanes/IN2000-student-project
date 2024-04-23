@@ -1,13 +1,15 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -37,7 +39,6 @@ var selectedButtonWeather = false
 fun NavigationBarWithButtons(navController: NavController) {
     val white = Color(69, 79, 92, 167) // button is active
     val gray = Color(19, 35, 44, 255)  // button is inactive
-    val boardersWidth = 2.dp
 
     Column(
         modifier = Modifier
@@ -49,18 +50,19 @@ fun NavigationBarWithButtons(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth() // Ensures that the Row fills up the entire screen width
                 .wrapContentHeight(align = Alignment.Bottom)
+                .height(55.dp)
         ) {
 
             // button for seamap-screen
             Button(
                 modifier = Modifier
                     .weight(1f)
-                    .border(
+                    /*.border(
                         width = boardersWidth,
                         // changes color if button is active/inactive
                         color = white,
                         shape = RectangleShape
-                    ),
+                    )*/,
                 // when clicked: navigate, change color
                 onClick = {
                     selectedButtonMap = true
@@ -74,17 +76,19 @@ fun NavigationBarWithButtons(navController: NavController) {
                 ButtonMapContext(selectedButtonMap)
             }
 
+            Spacer(modifier = Modifier.width(3.dp).height(55.dp).background(white))
+
             // button for weather-screen
             Button(
                 modifier = Modifier
                     .weight(1f)
-                    .border(
+                    /*.border(
                         width = boardersWidth,
                         // changes color if button is active/inactive
                         color = white,
                         shape = RectangleShape
                         // when clicked: navigate, change color
-                    ), onClick = {
+                    )*/, onClick = {
                     selectedButtonWeather = true
                     navController.navigate("weather_screen")
                     selectedButtonMap = false
@@ -100,11 +104,11 @@ fun NavigationBarWithButtons(navController: NavController) {
 @Composable
 fun ButtonMapContext(isSelected: Boolean) {
     val white = Color(100, 110, 125, 200)
-    val gray = Color(19, 35, 44, 255)
+    val gray = Color(19, 35, 44, 200)
     Box(
         contentAlignment = Alignment.Center, // Senterer innholdet i Box
         modifier = Modifier
-            .size(52.dp) // Setter størrelsen på Box, denne må matche størrelsen du setter for Button
+            .size(70.dp, 50.dp) // Setter størrelsen på Box, denne må matche størrelsen du setter for Button
             .clip(CircleShape) // Gjør at Box får en rund form
             .background(if (isSelected) white else gray) // Endrer bakgrunnsfarge basert på om knappen er valgt
     ) {
@@ -121,11 +125,11 @@ fun ButtonMapContext(isSelected: Boolean) {
 @Composable
 fun ButtonWeatherContext(isSelected: Boolean) {
     val white = Color(100, 110, 125, 200)
-    val gray = Color(19, 35, 44, 255)
+    val gray = Color(19, 35, 44, 200)
     Box(
         contentAlignment = Alignment.Center, // Senterer innholdet i Box
         modifier = Modifier
-            .size(52.dp) // Setter størrelsen på Box, denne må matche størrelsen du setter for Button
+            .size(70.dp,50.dp) // Setter størrelsen på Box, denne må matche størrelsen du setter for Button
             .clip(CircleShape) // Gjør at Box får en rund form
             .background(if (isSelected) white else gray) // Endrer bakgrunnsfarge basert på om knappen er valgt
     ) {
