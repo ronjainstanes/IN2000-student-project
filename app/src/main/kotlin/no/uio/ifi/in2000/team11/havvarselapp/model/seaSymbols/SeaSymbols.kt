@@ -14,6 +14,8 @@ data class SeaSymbolsPair (
 
 data class SeaSymbolsList(
     val symbolDescription: List<SeaSymbolsPair> = listOf(
+        SeaSymbolsPair(R.drawable.with_gas_harbor,"Parkering med bensinstasjon" ),
+        SeaSymbolsPair(R.drawable.without_gas_harbor,"Parkering uten bensinstasjon" ),
         SeaSymbolsPair(R.drawable.east_cardinal,"Øst kardinal" ),
         SeaSymbolsPair(R.drawable.west_cardinal,"Vest kardinal" ),
         SeaSymbolsPair(R.drawable.north_cardinal,"Nord kardinal" ),
