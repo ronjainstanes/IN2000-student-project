@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.team11.havvarselapp
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -52,7 +51,7 @@ class SharedViewModel: ViewModel() {
         _sharedUiState.update { currentState ->
             currentState.copy(currentLocation = newLocation)
         }
-        Log.e("SHARED_VIEW_MODEL", "Location is updated to $newLocation!") //TODO: FJERN DENNE
+        loadMetAlerts()
     }
 
     private fun loadMetAlerts() {
@@ -61,7 +60,7 @@ class SharedViewModel: ViewModel() {
 
             // Updates UiState with list of MetAlerts
             _sharedUiState.update { currentState ->
-                val metAlerts = metAlertsRepository.getMetAlertsInNorway()
+                val metAlerts = metAlertsRepository.getMetAlertsAtLocation(sharedUiState.value.currentLocation)
 
                 // Return a new UiState with MetAlerts and replace the old UiState
                 currentState.copy(allMetAlerts = metAlerts)
