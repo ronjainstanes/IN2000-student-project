@@ -33,7 +33,7 @@ class MetAlertsDataSource {
     suspend fun fetchMetAlertsInNorway(): List<MetAlert> {
         return fetchMetAlerts(
             "https://gw-uio.intark.uh-it.no/in2000/" +
-                    "weatherapi/metalerts/2.0/current.json?geographicDomain=marine"
+                    "weatherapi/metalerts/2.0/current.json"
         )
     }
 
@@ -44,7 +44,7 @@ class MetAlertsDataSource {
     suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert> {
         return fetchMetAlerts(
             "https://gw-uio.intark.uh-it.no/in2000/" +
-                    "weatherapi/metalerts/2.0/current.json?geographicDomain=marine&lat=${lat}&lon=${lon}"
+                    "weatherapi/metalerts/2.0/current.json?lat=${lat}&lon=${lon}"
         )
     }
 

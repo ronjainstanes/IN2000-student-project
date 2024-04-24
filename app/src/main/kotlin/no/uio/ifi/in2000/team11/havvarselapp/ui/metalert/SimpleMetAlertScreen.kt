@@ -59,7 +59,7 @@ fun SimpleMetAlertScreen(
 }
 
 @Composable
-fun MetAlertCard(metAlert: MetAlert) {
+fun MetAlertCardFirst(metAlert: MetAlert) {
     Card(
         modifier = Modifier
             .clipToBounds()

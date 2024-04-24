@@ -1,110 +1,95 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.metalert
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.zIndex
+import no.uio.ifi.in2000.team11.havvarselapp.SharedUiState
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 
 
 @Composable
-fun CurrentLocationAlert(
-    region: String,
-    textStyle: TextStyle = TextStyle(
-        fontSize = 35.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal
-    ),
-    simpleViewModel: SimpleViewModel = viewModel()
-) {
-    val currentLocation: String = region
-
-    // Observe the UI state object from the ViewModel
-    val appUiState: AppUiState by simpleViewModel.appUiState.collectAsState()
-
-    // Bruker funksjonen for å filtrere 'allMetAlert' listen basert på 'areal' feltet.
-// Funksjon som sjekker om en streng inneholder ordet "oslo" i en case-insensitive måte.
-    fun String.containsIgnoreCase(other: String): Boolean {
-        return this.contains(other, ignoreCase = true)
-    }
-
-    val filteredMetAlerts = appUiState.allMetAlerts.filter {
-        it.area.containsIgnoreCase(currentLocation)
-    }
-
-    if (filteredMetAlerts.isEmpty()) {
-        Column {
-
-            Text(
-                text = "Ingen farevarsler i",
-                style = textStyle,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .paddingFromBaseline(45.dp, 10.dp)
-            )
-            Text(
-                text = "${currentLocation} området!",
-                style = textStyle,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .paddingFromBaseline(25.dp, 10.dp)
-            )
-        }
-    } else {
-
+fun MetAlertsDialog(
+    sharedUiState: SharedUiState,
+    onDismiss:() -> Unit,
+){
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .zIndex(2f)
+            .heightIn(max = 700.dp)
+            .padding(16.dp)
+            .background(Color.White, shape = RoundedCornerShape(8.dp))
+            .shadow(4.dp, shape = RoundedCornerShape(8.dp)),
+        contentAlignment = Alignment.Center
+    ) {
         Scaffold { innerPadding ->
             Column(
                 modifier = Modifier.padding(innerPadding)
             ) {
-                // Title
+                // Tittel
                 Text(
                     text = "Farevarsler",
-                    style = textStyle,
+                    fontSize = 35.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .paddingFromBaseline(50.dp, 10.dp)
                 )
 
-                // Display all parties
+                // Viser frem alle farevarsler
                 LazyVerticalGrid(
                     modifier = Modifier.padding(innerPadding),
                     columns = GridCells.Fixed(1)
                 ) {
                     items(
-                        count = filteredMetAlerts.size,
-                        key = { index -> filteredMetAlerts[index].id }
+                        count = sharedUiState.allMetAlerts.size,
+                        key = { index -> sharedUiState.allMetAlerts[index].id }
                     ) { index ->
-                        MetAlertCardOld(metAlert = filteredMetAlerts[index])
+                        MetAlertCard(metAlert = sharedUiState.allMetAlerts[index])
                     }
                 }
             }
         }
+
+        Button(
+            onClick = onDismiss,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF_13_23_2C)
+            )
+        ) {
+            Text("Skjønner")
+        }
     }
 }
 
+
 @Composable
-fun MetAlertCardOld(metAlert: MetAlert) {
+fun MetAlertCard(metAlert: MetAlert) {
 
     Card(
         modifier = Modifier

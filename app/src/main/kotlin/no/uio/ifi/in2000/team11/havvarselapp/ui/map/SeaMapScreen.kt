@@ -63,6 +63,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.SharedUiState
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsList
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsPair
 import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.CheckHarborColor
+import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.MetAlertsDialog
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectionStatus
@@ -80,11 +81,12 @@ fun SeaMapScreen(
     val autocompleteTextFieldActivity = AutocompleteTextFieldActivity()
     val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
     val showSymbols = rememberSaveable { mutableStateOf(true) }
+    var showMetAlerts by rememberSaveable { mutableStateOf(false) }
     val showHarborWithGas = rememberSaveable { mutableStateOf(true) }
     val showHarborWithoutGas = rememberSaveable { mutableStateOf(true) }
     var showExplanation by rememberSaveable { mutableStateOf(false) }
     /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
-    val listOfSymbols : List<SeaSymbolsPair> = SeaSymbolsList().symbolDescription
+    val listOfSymbols: List<SeaSymbolsPair> = SeaSymbolsList().symbolDescription
     val context = LocalContext.current
 
     val showDialog = rememberSaveable { mutableStateOf(false) } // when true, filter will show up
@@ -99,9 +101,11 @@ fun SeaMapScreen(
     // get data about guest harbors from a JSON file
     seaMapViewModel.fetchHarborData(context)
 
-    Box(modifier = Modifier
-        .fillMaxSize(),
-        contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
 
         Column(modifier = Modifier.fillMaxSize()) {
 
@@ -111,95 +115,125 @@ fun SeaMapScreen(
                     .weight(1f)
             ) {
 
-            // composable of the map itself
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState,
-                // when map is clicked
-                onMapClick = { clickedPosition ->
-                    updateLocation(clickedPosition)
-                    seaMapViewModel.placeOrRemoveMarker()
-                    showDialog.value = false
-                    activateSearch.value = false
-                },
-                // stops a google map button to pop up in the corner at random times
-                uiSettings = MapUiSettings(
-                    mapToolbarEnabled = false
-                ),
-                properties = MapProperties(
-                    // The appearance of the map, from the file 'mapstyle'
-                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.mapstyle),
-                )
-            ) {
+                // composable of the map itself
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    // when map is clicked
+                    onMapClick = { clickedPosition ->
+                        updateLocation(clickedPosition)
+                        seaMapViewModel.placeOrRemoveMarker()
+                        showDialog.value = false
+                        activateSearch.value = false
+                    },
+                    // stops a google map button to pop up in the corner at random times
+                    uiSettings = MapUiSettings(
+                        mapToolbarEnabled = false
+                    ),
+                    properties = MapProperties(
+                        // The appearance of the map, from the file 'mapstyle'
+                        mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
+                            context,
+                            R.raw.mapstyle
+                        ),
+                    )
+                ) {
 
-                // the two types of harbor markers
-                seaMapViewModel.harborData.value?.forEach { harbor ->
-                    if (harbor.description.contains("Drivstoff") && showHarborWithGas.value) {
-                        CheckHarborColor(harbor = harbor, visible = true)
-                    } else if (!harbor.description.contains("Drivstoff") && showHarborWithoutGas.value) {
-                        CheckHarborColor(harbor = harbor, visible = true)
+                    // the two types of harbor markers
+                    seaMapViewModel.harborData.value?.forEach { harbor ->
+                        if (harbor.description.contains("Drivstoff") && showHarborWithGas.value) {
+                            CheckHarborColor(harbor = harbor, visible = true)
+                        } else if (!harbor.description.contains("Drivstoff") && showHarborWithoutGas.value) {
+                            CheckHarborColor(harbor = harbor, visible = true)
+                        }
+                    }
+
+
+                    // map overlay from OpenSeaMap
+                    if (showSymbols.value) {
+                        TileOverlay(
+                            tileProvider = tileProvider
+                        )
+                    }
+
+                    // places a location-marker on the map where the user clicks, or hides the marker
+                    if (mapUiState.markerVisible) {
+                        Marker(
+                            state = rememberMarkerState(position = sharedUiState.currentLocation),
+                            icon = BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                        )
                     }
                 }
 
+                // Hide the dialog when the camera position changes
+                LaunchedEffect(cameraPositionState.position) {
+                    showDialog.value = false
+                    activateSearch.value = false
+                }
 
-                // map overlay from OpenSeaMap
-                if (showSymbols.value) {
-                    TileOverlay(
-                        tileProvider = tileProvider
+                // the search bar, with an autocomplete drop-down menu
+                autocompleteTextFieldActivity.AutocompleteTextField(
+                    context,
+                    updateLocation,
+                    cameraPositionState,
+                    placesClient,
+                    activateSearch
+                )
+
+                // button that opens a dialog that explains maritime symbols on the map
+                Button(
+                    onClick = { showExplanation = true },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = 16.dp, top = 100.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF_13_23_2C)
+                    )
+                ) {
+                    Text(text = "?", fontSize = (15.sp))
+                }
+
+                // the dialog with maritime symbols
+                if (showExplanation) {
+                    ExplanationBox(
+                        symbolDescription = listOfSymbols,
+                        onDismiss = { showExplanation = false }
                     )
                 }
 
-                // places a location-marker on the map where the user clicks, or hides the marker
-                if (mapUiState.markerVisible) {
-                    Marker(
-                        state = rememberMarkerState(position = sharedUiState.currentLocation),
-                        icon = BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                // button for active met alerts at this location
+                Button(
+                    onClick = { showMetAlerts = true },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = 316.dp, top = 100.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF_13_23_2C)
+                    )
+                ) {
+                    Text(text = "Varsler")
+                }
+
+                // if clicked on, show met-alert dialog
+                if (showMetAlerts) {
+                    MetAlertsDialog(
+                        sharedUiState = sharedUiState,
+                        onDismiss = { showMetAlerts = false }
                     )
                 }
-            }
 
-            // Hide the dialog when the camera position changes
-            LaunchedEffect(cameraPositionState.position) {
-                showDialog.value = false
-                activateSearch.value = false
-            }
-
-            // the search bar, with an autocomplete drop-down menu
-            autocompleteTextFieldActivity.AutocompleteTextField(
-                context,
-                updateLocation,
-                cameraPositionState,
-                placesClient,
-                activateSearch
-            )
-
-            // button that opens a dialog that explains maritime symbols on the map
-            Button(
-                onClick = { showExplanation = true },
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = 16.dp, top = 100.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF_13_23_2C)
-                )
-            ) {
-                Text(text = "?", fontSize = (15.sp))
-            }
-
-            // the dialog with maritime symbols
-            if (showExplanation) {
-                ExplanationBox(
-                    symbolDescription = listOfSymbols,
-                    onDismiss = { showExplanation = false }
-                )
-            }
                 // button to activate/deactivate tile overlay
-            FilterButtonAndDialog(showSymbols, showHarborWithGas, showHarborWithoutGas, showDialog)
+                FilterButtonAndDialog(
+                    showSymbols,
+                    showHarborWithGas,
+                    showHarborWithoutGas,
+                    showDialog
+                )
+            }
+            // the bottom navigation between screens
+            NavigationBarWithButtons(navController = navController)
         }
-        // the bottom navigation between screens
-        NavigationBarWithButtons(navController = navController)
-    }
         NetworkConnectionStatus(connectivityObserver)
     }
 }
@@ -286,10 +320,12 @@ val tileProvider = object : UrlTileProvider(256, 256) {
  * and map overlay with maritime symbols
  */
 @Composable
-fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
-                          showHarborWithGas: MutableState<Boolean>,
-                          showHarborWithoutGas: MutableState<Boolean>,
-                          showDialog: MutableState<Boolean>) {
+fun FilterButtonAndDialog(
+    showSymbols: MutableState<Boolean>,
+    showHarborWithGas: MutableState<Boolean>,
+    showHarborWithoutGas: MutableState<Boolean>,
+    showDialog: MutableState<Boolean>
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
