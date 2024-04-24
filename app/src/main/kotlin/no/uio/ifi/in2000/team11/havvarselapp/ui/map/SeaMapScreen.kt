@@ -64,6 +64,8 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsList
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsPair
 import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.CheckHarborColor
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
+import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
+import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectionStatus
 import java.net.URL
 
 @Composable
@@ -72,8 +74,8 @@ fun SeaMapScreen(
     navController: NavController,
     placesClient: PlacesClient,
     updateLocation: (loc: LatLng) -> Unit,
-    seaMapViewModel: SeaMapViewModel = viewModel(),
-
+    connectivityObserver: ConnectivityObserver,
+    seaMapViewModel: SeaMapViewModel = viewModel()
 ) {
     val autocompleteTextFieldActivity = AutocompleteTextFieldActivity()
     val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
@@ -81,6 +83,7 @@ fun SeaMapScreen(
     val showHarborWithGas = rememberSaveable { mutableStateOf(true) }
     val showHarborWithoutGas = rememberSaveable { mutableStateOf(true) }
     var showExplanation by rememberSaveable { mutableStateOf(false) }
+    /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
     val listOfSymbols : List<SeaSymbolsPair> = SeaSymbolsList().symbolDescription
     // her trengs 'context' for å kunne hente utseende av kartet
     val context = LocalContext.current
@@ -97,9 +100,18 @@ fun SeaMapScreen(
 
     // Henter data om gjestehavner fra JSON fil
     seaMapViewModel.fetchHarborData(context)
-    Column (modifier = Modifier.fillMaxSize()){
 
-        Box(modifier = Modifier.fillMaxSize().weight(1f)) {
+    Box(modifier = Modifier
+        .fillMaxSize(),
+        contentAlignment = Alignment.Center) {
+
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
 
             // selve kartet
             GoogleMap(
@@ -186,6 +198,8 @@ fun SeaMapScreen(
             FilterButtonAndDialog(showSymbols, showHarborWithGas, showHarborWithoutGas, showDialog)
         }
         NavigationBarWithButtons(navController = navController)
+    }
+        NetworkConnectionStatus(connectivityObserver)
     }
 }
 
@@ -333,7 +347,3 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
         }
     }
 }
-
-
-
-

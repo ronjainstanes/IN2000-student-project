@@ -51,6 +51,8 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.Timeseries
 import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.TimeseriesOcean
 import no.uio.ifi.in2000.team11.havvarselapp.ui.locationForecast.LocationForecastViewModel
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
+import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
+import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectionStatus
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -75,11 +77,14 @@ enum class Expanded {
 fun WeatherScreen(
     sharedUiState: SharedUiState,
     navController: NavController,
-    forecastViewModel: LocationForecastViewModel = viewModel()
+    forecastViewModel: LocationForecastViewModel = viewModel(),
+    connectivityObserver: ConnectivityObserver
 ) {
     val displayInfo =
         remember { mutableStateOf(DisplayInfo.Weather) } // endret fra by til = slik at funksjonene kan være utenfor hovedmetoden
     val context = LocalContext.current
+
+    /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
 
     val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()
     val oceanForecastUiState by forecastViewModel.oceanForecastUiState.collectAsState()
@@ -106,42 +111,51 @@ fun WeatherScreen(
     val fontBold = fonts3[3]
 
 
-    Column (modifier = Modifier.fillMaxSize()){
-        // knappene for vær og hav, sitter fast på bunn av siden
-        Scaffold(modifier = Modifier.weight(1f),
-            bottomBar = { BottomNavBar(currentScreen = displayInfo, fontNormal) }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding)
-            ) {
+    Box(modifier = Modifier
+        .fillMaxSize(),
+        contentAlignment = Alignment.Center) {
 
+        Column(modifier = Modifier.fillMaxSize()) {
+            // knappene for vær og hav, sitter fast på bunn av siden
+            Scaffold(modifier = Modifier.weight(1f),
+                bottomBar = { BottomNavBar(currentScreen = displayInfo, fontNormal) }
+            ) { innerPadding ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(2.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
-                )
-                {
-                    // øverste del av skjermen frem til tabellen
-                    ScreenTop(
-                        forecastViewModel = forecastViewModel,
-                        displayInfo = displayInfo,
-                        fontNormal = fontNormal,
-                        fontBold = fontBold
-                    )
+                        .padding(innerPadding)
+                ) {
 
-                    ScreenContent(
-                        forecastViewModel = forecastViewModel,
-                        displayInfo = displayInfo,
-                        fontNormal = fontNormal
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(2.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
                     )
+                    {
+                        // øverste del av skjermen frem til tabellen
+                        ScreenTop(
+                            forecastViewModel = forecastViewModel,
+                            displayInfo = displayInfo,
+                            fontNormal = fontNormal,
+                            fontBold = fontBold
+                        )
+
+                        ScreenContent(
+                            forecastViewModel = forecastViewModel,
+                            displayInfo = displayInfo,
+                            fontNormal = fontNormal
+                        )
+
+                        /*                    //Vises hvis det oppstår problemer med nettverk
+                    NetworkConnectionStatus(connectivityObserver)*/
+                    }
                 }
             }
+            NavigationBarWithButtons(navController = navController)
         }
-        NavigationBarWithButtons(navController = navController)
+        NetworkConnectionStatus(connectivityObserver)
     }
 }
 

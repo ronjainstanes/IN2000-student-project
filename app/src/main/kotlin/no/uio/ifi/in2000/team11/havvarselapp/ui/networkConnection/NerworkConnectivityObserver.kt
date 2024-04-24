@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp
+package no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-class NetworkConnectivityObserver (private val context: Context): ConnectivityObserver{
+class NetworkConnectivityObserver (private val context: Context): ConnectivityObserver {
 
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

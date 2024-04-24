@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.team11.havvarselapp
+package no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection
 
 import kotlinx.coroutines.flow.Flow
 

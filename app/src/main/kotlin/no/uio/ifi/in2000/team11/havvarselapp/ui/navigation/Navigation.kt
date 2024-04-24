@@ -15,6 +15,7 @@ import androidx.navigation.navigation
 import com.google.android.libraries.places.api.net.PlacesClient
 import no.uio.ifi.in2000.team11.havvarselapp.SharedViewModel
 import no.uio.ifi.in2000.team11.havvarselapp.ui.map.SeaMapScreen
+import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
 import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
 
 /**
@@ -22,7 +23,8 @@ import no.uio.ifi.in2000.team11.havvarselapp.ui.weather.WeatherScreen
  */
 @Composable
 fun SetUpNavigation(
-    placesClient: PlacesClient
+    placesClient: PlacesClient,
+    connectivityObserver: ConnectivityObserver
 ) {
     val navController = rememberNavController()
 
@@ -48,7 +50,8 @@ fun SetUpNavigation(
                     placesClient,
                     updateLocation = {
                         viewModel.updateLocation(it)
-                    }
+                    },
+                    connectivityObserver
                 )
             }
             composable("weather_screen") { entry ->
@@ -58,6 +61,8 @@ fun SetUpNavigation(
                 WeatherScreen(
                     sharedUiState = state,
                     navController = navController,
+                    connectivityObserver = connectivityObserver
+
                 )
             }
         }
