@@ -15,23 +15,27 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.harbor.Harbor
 import org.json.JSONArray
 
 data class MapUiState(
-
-    /** Er det en synlig pin på kartet? */
-    val markerVisible: Boolean = false,
-
+    /**
+     * if there is a location-marker visible on the map
+     */
+    val markerVisible: Boolean = false
 )
 
 class SeaMapViewModel : ViewModel() {
-    // oppretter en privat state flow, denne er mutable og kan derfor endres på
+    // Creating a private state flow, which is mutable
     private val _mapUiState = MutableStateFlow(MapUiState())
 
-    // oppretter en immutable/uforanderlig UiState av typen StateFlow
+    // Creating a public, immutable stateflow
     val mapUiState: StateFlow<MapUiState> = _mapUiState.asStateFlow()
-    // Gjestehavner
+
+    // Guest harbors
     val harborData = MutableLiveData<List<Harbor>>()
 
+    /**
+     * Places a marker on the map, at the location where the user clicked.
+     * Or if there is already a marker visible, hides it
+     */
     fun placeOrRemoveMarker() {
-        // hvis marker allerede er synlig, fjern den
         if (mapUiState.value.markerVisible) {
             _mapUiState.update { currentState ->
                 currentState.copy(markerVisible = false)
@@ -44,6 +48,10 @@ class SeaMapViewModel : ViewModel() {
             }
         }
     }
+
+    /**
+     * Fetches data for guest harbour markers on the map
+     */
     @OptIn(DelicateCoroutinesApi::class)
     fun fetchHarborData(context: Context) {
         GlobalScope.launch {
@@ -63,7 +71,9 @@ class SeaMapViewModel : ViewModel() {
                     Harbor(
                         item.getInt("id"),
                         item.getString("name"),
-                        item.getJSONArray("location").let { arrayOf(it.getDouble(0), it.getDouble(1)) },
+                        item.getJSONArray("location").let {
+                            arrayOf(it.getDouble(0), it.getDouble(1))
+                        },
                         item.getString("description")
                     )
                 )

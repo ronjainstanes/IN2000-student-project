@@ -4,23 +4,23 @@ import com.google.android.gms.maps.model.LatLng
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 
 interface MetAlertsRepository {
-    /** Returnerer farevarsler på den gitte posisjonen, som en liste MetAlert-objekter */
-    suspend fun getMetAlertsAtLocation(pos: LatLng): List<MetAlert>
+    /** Returns a list of met-alerts at the given location */
+    suspend fun getMetAlertsAtLocation(loc: LatLng): List<MetAlert>
 
-    /** Returnerer alle farevarsler i Norge, som en liste MetAlert-objekter */
+    /** Returns a list of all met-alerts in Norway */
     suspend fun getMetAlertsInNorway(): List<MetAlert>
 }
 
 class MetAlertsRepositoryImpl(
-    // data source for farevarsler
+    // Data source for met-alerts
     private val dataSource: MetAlertsDataSource = MetAlertsDataSource(),
 
 ) : MetAlertsRepository {
 
-    override suspend fun getMetAlertsAtLocation(pos: LatLng): List<MetAlert> {
+    override suspend fun getMetAlertsAtLocation(loc: LatLng): List<MetAlert> {
         return dataSource.fetchMetAlertsAtLocation(
-            pos.latitude.toString(),
-            pos.longitude.toString()
+            loc.latitude.toString(),
+            loc.longitude.toString()
         )
     }
 

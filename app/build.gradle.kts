@@ -1,5 +1,3 @@
-
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -55,81 +53,71 @@ android {
 }
 
 secrets {
-    // Fil som absolutt ikke skal inkluderes i Git, inneholder API-nøkler
+    // File containing data that should not be included in git
     propertiesFileName = "secrets.properties"
 
-    // Fil som inneholder standardverdier, kan inkluderes i Git
+    // File containing default values, can be included in git
     defaultPropertiesFileName = "local.defaults.properties"
 
-    // Hvilke nøkler som skal ignoreres av plugin. "sdk.dir" ignoreres som standard
+    // Specifies which keys to ignore, can be included in git
     ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
     ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }
 
-
 dependencies {
-    // Android core
+    // Android core functionality
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+    // Jetpack Compose, ViewModel, lifecycle, activity
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
 
-    // Jetpack Compose + BOM som sikrer at alle pakkeversjonene fungerer bra sammen
-    implementation(platform("androidx.compose:compose-bom:2024.02.02"))
+    // Jetpack Compose + BOM ensuring all versions of the packages work well together
+    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
-    // Jetpack Compose ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    // Compose debugger
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Testing (Junit, Espresso, Compose UI testing)
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.02"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    // Compose debugger
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // Compose extended icons
+    implementation("androidx.compose.material:material-icons-extended:1.6.5")
 
-    // Ktor
+    // NavController
+    val navVersion = "2.7.7"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // Ktor, including Gson
     val ktorVersion = "2.3.8"
     implementation("io.ktor:ktor-serialization-gson:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
-    // extended icons
-    implementation("androidx.compose.material:material-icons-extended:1.6.5")
-
     // JSON
     implementation("org.json:json:20240303")
-
-    // NavController
-    val navVersion = "2.7.7"
-    implementation("androidx.navigation:navigation-compose:$navVersion")
 
     // Maps & Android Maps Compose
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.maps.android:maps-compose:4.3.3")
 
-    // Location
+    // Location services, used for the map
     implementation("com.google.android.gms:play-services-location:21.2.0")
 
-    // Brukes for adressesøk i søkefelt
-    implementation("com.google.android.libraries.places:places:3.3.0")
+    // API for addresses, used in autocomplete textfield
+    implementation("com.google.android.libraries.places:places:3.4.0")
 
-    // Android Desugaring for å kunne bruke ZonedDateTime
+    // Android Desugaring, to be able to use ZonedDateTime
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-
-
-
-    //api places for autocompleate textfield?
-    implementation("com.google.android.libraries.places:places:3.1.0")
-
-
 }

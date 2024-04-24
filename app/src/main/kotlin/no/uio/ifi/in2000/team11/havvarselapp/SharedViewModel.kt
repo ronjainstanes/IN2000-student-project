@@ -22,12 +22,6 @@ data class SharedUiState(
      * List of all met-alerts at the current location
      */
     val allMetAlerts: List<MetAlert> = listOf(),
-
-    /**
-     * Amount of met alerts at this location
-     * TODO: SLETT DENNE HVIS DEN IKKE BRUKES
-     */
-    var amountOfAlerts: Int = 0
 )
 
 class SharedViewModel: ViewModel() {
@@ -65,15 +59,6 @@ class SharedViewModel: ViewModel() {
                 // Return a new UiState with MetAlerts and replace the old UiState
                 currentState.copy(allMetAlerts = metAlerts)
             }
-        }
-    }
-
-    /**
-     * Updates the amount of met-alerts at this location //TODO: SLETT HVIS DET IKKE BRUKES
-     */
-    fun updateAmountOfAlerts(amountOfAlerts: Int) {
-        _sharedUiState.update { currentState ->
-            currentState.copy(amountOfAlerts = amountOfAlerts)
         }
     }
 

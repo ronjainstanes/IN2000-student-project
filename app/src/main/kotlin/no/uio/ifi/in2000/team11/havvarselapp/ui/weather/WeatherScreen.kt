@@ -68,11 +68,8 @@ enum class Expanded {
 }
 
 /**
- * Skjerm med værinfo og farevarsler.
- * NB: Funksjonen har "SuppressLint" annotering fordi ikonnavn
- * og ID hentes dynamisk i stedet for statisk, noe som gir en warning.
+ * Screen containing weather forecast for up to 9 days ahead
  */
-@SuppressLint("DiscouragedApi", "FlowOperatorInvokedInComposition")
 @Composable
 fun WeatherScreen(
     sharedUiState: SharedUiState,
@@ -81,7 +78,7 @@ fun WeatherScreen(
     connectivityObserver: ConnectivityObserver
 ) {
     val displayInfo =
-        remember { mutableStateOf(DisplayInfo.Weather) } // endret fra by til = slik at funksjonene kan være utenfor hovedmetoden
+        remember { mutableStateOf(DisplayInfo.Weather) }
     val context = LocalContext.current
 
     /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
@@ -89,13 +86,13 @@ fun WeatherScreen(
     val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()
     val oceanForecastUiState by forecastViewModel.oceanForecastUiState.collectAsState()
 
-    // Bruker LaunchedEffect for å laste værdata når posisjonen endres via søk / pin
+    // Using LaunchedEffect to load weather data when the position changes via search/pin
     LaunchedEffect(sharedUiState.currentLocation.hashCode()) {
         forecastViewModel.loadForecast(
             sharedUiState.currentLocation.latitude.toString(),
             sharedUiState.currentLocation.longitude.toString()
         )
-        // slik at Stedsnavn oppdateres når data endres
+        // Placename is updated when the location changes
         forecastViewModel.setCurrentPlaceName(
             context,
             sharedUiState.currentLocation.latitude,
@@ -116,7 +113,7 @@ fun WeatherScreen(
         contentAlignment = Alignment.Center) {
 
         Column(modifier = Modifier.fillMaxSize()) {
-            // knappene for vær og hav, sitter fast på bunn av siden
+            // buttons to change between weather and sea forecast, at the bottom of the screen
             Scaffold(modifier = Modifier.weight(1f),
                 bottomBar = { BottomNavBar(currentScreen = displayInfo, fontNormal) }
             ) { innerPadding ->
@@ -126,21 +123,22 @@ fun WeatherScreen(
                         .padding(innerPadding)
                 ) {
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(2.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(2.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                )
+                {
+
+                    // this is the top part of the screen, above the weather-rows
+                    ScreenTop(
+                        forecastViewModel = forecastViewModel,
+                        displayInfo = displayInfo,
+                        fontNormal = fontNormal,
+                        fontBold = fontBold
                     )
-                    {
-                        // øverste del av skjermen frem til tabellen
-                        ScreenTop(
-                            forecastViewModel = forecastViewModel,
-                            displayInfo = displayInfo,
-                            fontNormal = fontNormal,
-                            fontBold = fontBold
-                        )
 
                         ScreenContent(
                             forecastViewModel = forecastViewModel,
@@ -173,6 +171,9 @@ fun List<TimeseriesOcean>.groupByDayOcean(): Map<LocalDate, List<TimeseriesOcean
     }
 }
 
+/**
+ * The main part of the screen, containing rows (cards) with weather data
+ */
 @Composable
 fun ScreenContent(
     forecastViewModel: LocationForecastViewModel,
@@ -281,7 +282,9 @@ fun ScreenContent(
     }
 }
 
-@SuppressLint("SuspiciousIndentation")
+/**
+ * A card containing multiple rows with weather info
+ */
 @Composable
 fun DayWeatherCard(
     day: LocalDate,
@@ -315,7 +318,7 @@ fun DayWeatherCard(
                 text = if (todayOrTmr == " ") formattedDay else "$todayOrTmr $formattedDay",
                 fontFamily = fontNormal,
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 lineHeight = 25.sp
             )
         }
@@ -414,7 +417,7 @@ fun DayWeatherCardLongTerm(
                 text = formattedDay,
                 fontFamily = fontNormal,
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 lineHeight = 25.sp
             )
         }
@@ -441,7 +444,13 @@ fun DayWeatherCardLongTerm(
     }
 }
 
-
+/**
+ * A row displaying the weather in the upcoming days.
+ *
+ * Note: The function has an 'SuppressLint' annotation because 'getIdentifier'
+ * is used to get the iconname in a dynamic way instead of static, which
+ * causes a warning. But the icon is dependent on the API-data that is always changing.
+ */
 @SuppressLint("DiscouragedApi")
 @Composable
 fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
@@ -497,7 +506,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
             Text(
                 text = getNorwegianTimeWeather(data),
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font
             )
         }
@@ -524,7 +533,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
             Text(
                 text = getTemperature(data),
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font,
                 color = if (temperaturePositive(data)) pos else neg
             )
@@ -539,7 +548,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
             Text(
                 text = getPrecipitationAmountMaxMin(data),
                 fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font,
                 color = neg
             )
@@ -555,7 +564,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
                 Text(
                     text = getWindSpeed(data),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     fontFamily = font
                 )
                 Image(
@@ -567,6 +576,14 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
     }
 }
 
+/**
+ * A row displaying the weather multiple days ahead where there is less data
+ * from the API compared to the first days.
+ *
+ * Note: The function has an 'SuppressLint' annotation because 'getIdentifier'
+ * is used to get the iconname in a dynamic way instead of static, which
+ * causes a warning. But the icon is dependent on the API-data that is always changing.
+ */
 @SuppressLint("DiscouragedApi")
 @Composable
 fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
@@ -608,7 +625,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
             Text(
                 text = getNorwegianTimeWeather(data) + " - $lastHourString",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font
             )
         }
@@ -635,7 +652,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
             Text(
                 text = getTemperatureLongTerm(data),
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font,
                 color = if (temperaturePositiveLongTerm(data)) pos else neg
             )
@@ -650,7 +667,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
             Text(
                 text = getPrecipitationAmountMaxMinLongTerm(data),
                 fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font,
                 color = neg
             )
@@ -695,7 +712,7 @@ fun DayOceanCard(
                 text = if (todayOrTmr == " ") formattedDay else "$todayOrTmr $formattedDay",
                 fontFamily = fontNormal,
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 lineHeight = 25.sp
             )
         }
@@ -770,7 +787,7 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
             Text(
                 text = getNorwegianTimeOcean(data),
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font
             )
         }
@@ -784,7 +801,7 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
             Text(
                 text = getSeaWaterTemperature(data),
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font,
                 color = if (seaTemperaturePositive(data)) pos else neg
             )
@@ -801,7 +818,7 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
                 Text(
                     text = "$currentFrom ",
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 11.sp,
+                    fontSize = 12.sp,
                     fontFamily = font
                 )
 
@@ -814,7 +831,7 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
                 Text(
                     text = " $currentTowards",
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 11.sp,
+                    fontSize = 12.sp,
                     fontFamily = font
                 )
             }
@@ -829,7 +846,7 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
             Text(
                 text = getCurrentSpeed(data),
                 fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontFamily = font
             )
         }
@@ -860,7 +877,7 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
                 text = "Tid ",
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font
             )
         }
@@ -872,24 +889,24 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
                 .wrapContentSize()
         ) {
             Text(
-                text = "Bade temp. °C",
+                text = "Vanntemp. °C",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
         }
 
-        // Strøm reting
+        // Strømreting
         Column(
             modifier = Modifier
                 .weight(1f)
                 .wrapContentSize()
         ) {
             Text(
-                text = "Strøm retning",
+                text = "Strømretning",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -904,7 +921,7 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Strøm m/s",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -935,7 +952,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily) {
                 text = "Tid ",
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font
             )
         }
@@ -949,7 +966,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Vær",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -964,7 +981,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Temp. °C",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -980,7 +997,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Nedbør mm",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -995,7 +1012,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Vind(kast) m/s",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -1027,7 +1044,7 @@ fun WeatherHeaderLongTerm(headerColor: Color, font: FontFamily) {
                 text = "Tid ",
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font
             )
         }
@@ -1041,7 +1058,7 @@ fun WeatherHeaderLongTerm(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Vær",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -1056,7 +1073,7 @@ fun WeatherHeaderLongTerm(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Temp. °C",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -1071,7 +1088,7 @@ fun WeatherHeaderLongTerm(headerColor: Color, font: FontFamily) {
             Text(
                 text = "Nedbør mm",
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontFamily = font,
                 color = Color.White,
             )
@@ -1083,9 +1100,11 @@ fun WeatherHeaderLongTerm(headerColor: Color, font: FontFamily) {
 }
 
 /**
- * Henter riktig ikon for værskjermen.
- * NB: Funksjonen har "SuppressLint" annotering fordi ikonnavn
- * og ID er dynamiske i stedet for statiske, noe som gir en warning.
+ * Finds and displays the right weather image for the screen top.
+ *
+ * Note: The function has an 'SuppressLint' annotation because 'getIdentifier'
+ * is used to get the iconname in a dynamic way instead of static, which
+ * causes a warning. But the icon is dependent on the API-data that is always changing.
  */
 @SuppressLint("DiscouragedApi")
 @Composable
@@ -1202,7 +1221,7 @@ fun ShortToLongButton(expanded: MutableState<Expanded>, color: Color, font: Font
                 {
                     Text(
                         text = "Time for time ",
-                        fontSize = 11.sp,
+                        fontSize = 12.sp,
                         lineHeight = 11.sp,
                         fontFamily = font,
                         fontWeight = FontWeight.Bold,
@@ -1228,7 +1247,7 @@ fun ShortToLongButton(expanded: MutableState<Expanded>, color: Color, font: Font
                     Text(
                         text = "Time for time ",
                         textAlign = TextAlign.Center,
-                        fontSize = 11.sp,
+                        fontSize = 12.sp,
                         lineHeight = 11.sp,
                         fontFamily = font,
                         fontWeight = FontWeight.Bold,
@@ -1258,7 +1277,7 @@ fun ScreenTop(
     Text(
         text = forecastViewModel.getPlaceName(),
         textAlign = TextAlign.Center,
-        fontSize = 18.sp,
+        fontSize = 19.sp,
         fontFamily = fontNormal,
         fontWeight = FontWeight.ExtraBold,
         modifier = Modifier.padding(top = 10.dp)
@@ -1282,7 +1301,7 @@ fun ScreenTop(
                             1
                         ),
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 14.sp,
+                        fontSize = 15.sp,
                         fontFamily = fontBold
                     )
                 }
@@ -1297,7 +1316,7 @@ fun ScreenTop(
                     Text(
                         text = forecastViewModel.getTemperature(0),
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 25.sp,
+                        fontSize = 26.sp,
                         fontFamily = fontBold
                     )
 
@@ -1310,10 +1329,10 @@ fun ScreenTop(
                     when (displayInfo.value) {
                         DisplayInfo.Weather -> {
                             Text(
-                                text = "Last updated:\n" + forecastViewModel.locationForecastLastUpdated(),
+                                text = "Sist oppdatert:\n" + forecastViewModel.locationForecastLastUpdated(),
                                 fontWeight = FontWeight.ExtraBold,
                                 lineHeight = 13.sp,
-                                fontSize = 9.sp,
+                                fontSize = 11.sp,
                                 color = Color(115, 115, 115, 255),
                                 fontFamily = fontNormal
                             )
@@ -1321,9 +1340,9 @@ fun ScreenTop(
 
                         DisplayInfo.Sea -> {
                             Text(
-                                text = "Last updated:\n" + forecastViewModel.oceanForecastLastUpdated(),
+                                text = "Sist oppdatert:\n" + forecastViewModel.oceanForecastLastUpdated(),
                                 fontWeight = FontWeight.ExtraBold,
-                                fontSize = 9.sp,
+                                fontSize = 11.sp,
                                 color = Color(115, 115, 115, 255),
                                 lineHeight = 13.sp,
                                 fontFamily = fontNormal
