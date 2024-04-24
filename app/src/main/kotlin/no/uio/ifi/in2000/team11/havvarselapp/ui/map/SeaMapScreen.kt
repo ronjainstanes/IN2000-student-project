@@ -87,7 +87,6 @@ fun SeaMapScreen(
     val activateSearch = rememberSaveable { mutableStateOf(false) } // when true show search "bar"
 
 
-
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(sharedUiState.currentLocation, 12f)
     }
@@ -132,7 +131,6 @@ fun SeaMapScreen(
                 }
 
 
-
                 // kartlag fra OpenSeaMap
                 if (showSymbols.value) {
                     TileOverlay(
@@ -147,7 +145,6 @@ fun SeaMapScreen(
                         icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                     )
                 }
-
             }
 
             LaunchedEffect(cameraPositionState.position) {
@@ -175,7 +172,7 @@ fun SeaMapScreen(
                     containerColor = Color(0xFF_13_23_2C)
                 )
             ) {
-                Text(text = "?")
+                Text(text = "?", fontSize = (15.sp))
             }
 
             //Symbolforklaringen kalles på
@@ -185,11 +182,8 @@ fun SeaMapScreen(
                     onDismiss = { showExplanation=false }
                 )
             }
-
-
             // Knapp for å aktivere/deaktivere TileOverlay
             FilterButtonAndDialog(showSymbols, showHarbourIcons, showDialog)
-
         }
         NavigationBarWithButtons(navController = navController)
     }
@@ -261,8 +255,6 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.BottomStart)
-            //.padding(start = 16.dp, bottom = 16.dp) // Legg til padding for å holde knappen unna kanten
-
     ) {
         if (showDialog.value) {
             Box(
@@ -276,9 +268,7 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Column(
-
-                ) {
+                Column() {
                     Text(text = "Filter menu:",
                         style = TextStyle(
                         fontSize = 20.sp,
@@ -287,7 +277,6 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 4.dp)
                     )
-
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -317,16 +306,16 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
                 }
             }
         }
-
         Button(
             onClick = { showDialog.value = !showDialog.value },
             modifier = Modifier
-                .padding(start = 2.dp),
+                .padding(start = 2.dp, bottom = 4.dp)
+                .size(90.dp, 40.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF_13_23_2C)
             )
         ) {
-            Text(text = "Filter")
+            Text(text = "Filter", fontSize = (15.sp))
         }
     }
 }

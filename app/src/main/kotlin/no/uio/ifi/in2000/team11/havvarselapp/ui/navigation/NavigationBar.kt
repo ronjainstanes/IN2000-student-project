@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 // if button is clicked
@@ -50,7 +51,7 @@ fun NavigationBarWithButtons(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth() // Ensures that the Row fills up the entire screen width
                 .wrapContentHeight(align = Alignment.Bottom)
-                .height(55.dp)
+
         ) {
 
             // button for seamap-screen
@@ -76,7 +77,7 @@ fun NavigationBarWithButtons(navController: NavController) {
                 ButtonMapContext(selectedButtonMap)
             }
 
-            Spacer(modifier = Modifier.width(3.dp).height(55.dp).background(white))
+            Spacer(modifier = Modifier.width(3.dp).height(66.dp).background(white))
 
             // button for weather-screen
             Button(
@@ -103,7 +104,7 @@ fun NavigationBarWithButtons(navController: NavController) {
 
 @Composable
 fun ButtonMapContext(isSelected: Boolean) {
-    val white = Color(100, 110, 125, 200)
+    val white = Color(100, 110, 125, 100)
     val gray = Color(19, 35, 44, 200)
     Box(
         contentAlignment = Alignment.Center, // Senterer innholdet i Box
@@ -117,14 +118,14 @@ fun ButtonMapContext(isSelected: Boolean) {
                 imageVector = Icons.Default.Place,
                 contentDescription = "map"
             )
-            Text("Kart")
+            Text("Kart", fontSize = (15.sp))
         }
     }
 }
 
 @Composable
 fun ButtonWeatherContext(isSelected: Boolean) {
-    val white = Color(100, 110, 125, 200)
+    val white = Color(100, 110, 125, 100)
     val gray = Color(19, 35, 44, 200)
     Box(
         contentAlignment = Alignment.Center, // Senterer innholdet i Box
@@ -138,7 +139,7 @@ fun ButtonWeatherContext(isSelected: Boolean) {
                 imageVector = Icons.Outlined.WbCloudy,
                 contentDescription = "weather"
             )
-            Text("Vær")
+            Text("Vær", fontSize = (15.sp))
         }
     }
 }
