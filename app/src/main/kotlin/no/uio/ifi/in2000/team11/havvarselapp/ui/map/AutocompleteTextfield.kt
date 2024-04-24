@@ -134,7 +134,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                 },
                 shadowElevation = 10.dp,
                 colors = SearchBarDefaults.colors(
-                    containerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.95f),
+                    containerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.96f),
 
                     )
             ) {

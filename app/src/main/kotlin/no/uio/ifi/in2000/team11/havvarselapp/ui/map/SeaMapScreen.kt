@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -61,7 +62,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.R
 import no.uio.ifi.in2000.team11.havvarselapp.SharedUiState
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsList
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsPair
-import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.GoogleMarkersGuest
+import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.CheckHarborColor
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
 import java.net.URL
 
@@ -71,12 +72,14 @@ fun SeaMapScreen(
     navController: NavController,
     placesClient: PlacesClient,
     updateLocation: (loc: LatLng) -> Unit,
-    seaMapViewModel: SeaMapViewModel = viewModel()
+    seaMapViewModel: SeaMapViewModel = viewModel(),
+
 ) {
     val autocompleteTextFieldActivity = AutocompleteTextFieldActivity()
     val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
     val showSymbols = rememberSaveable { mutableStateOf(true) }
-    val showHarbourIcons = rememberSaveable { mutableStateOf(true) }
+    val showHarborWithGas = rememberSaveable { mutableStateOf(true) }
+    val showHarborWithoutGas = rememberSaveable { mutableStateOf(true) }
     var showExplanation by rememberSaveable { mutableStateOf(false) }
     val listOfSymbols : List<SeaSymbolsPair> = SeaSymbolsList().symbolDescription
     // her trengs 'context' for å kunne hente utseende av kartet
@@ -90,8 +93,7 @@ fun SeaMapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(sharedUiState.currentLocation, 12f)
     }
-    // Variabel for å endre gjestehavnenes marører synlighet
-    var visibleHarborMarker: Boolean
+
 
     // Henter data om gjestehavner fra JSON fil
     seaMapViewModel.fetchHarborData(context)
@@ -119,15 +121,13 @@ fun SeaMapScreen(
                 )
             ) {
 
-                // Endrer markørenes synlighent
-                visibleHarborMarker = if(cameraPositionState.position.zoom > 20f){
-                    false
-                } else{
-                    true
-                }
-                // Viser gjestehavner markører på karten
-                if (showHarbourIcons.value == true){
-                    seaMapViewModel.harborData.value?.map { harbor -> GoogleMarkersGuest(harbor, visibleHarborMarker) }
+                // Viser gjestehavner markører på karten basert på brukerens valg
+                seaMapViewModel.harborData.value?.forEach { harbor ->
+                    if (harbor.description.contains("Drivstoff") && showHarborWithGas.value) {
+                        CheckHarborColor(harbor = harbor, visible = true)
+                    } else if (!harbor.description.contains("Drivstoff") && showHarborWithoutGas.value) {
+                        CheckHarborColor(harbor = harbor, visible = true)
+                    }
                 }
 
 
@@ -183,7 +183,7 @@ fun SeaMapScreen(
                 )
             }
             // Knapp for å aktivere/deaktivere TileOverlay
-            FilterButtonAndDialog(showSymbols, showHarbourIcons, showDialog)
+            FilterButtonAndDialog(showSymbols, showHarborWithGas, showHarborWithoutGas, showDialog)
         }
         NavigationBarWithButtons(navController = navController)
     }
@@ -249,7 +249,8 @@ val tileProvider = object : UrlTileProvider(256, 256) {
 
 @Composable
 fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
-                          showHarbourIcons: MutableState<Boolean>,
+                          showHarborWithGas: MutableState<Boolean>,
+                          showHarborWithoutGas: MutableState<Boolean>,
                           showDialog: MutableState<Boolean>) {
     Column(
         modifier = Modifier
@@ -259,12 +260,13 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
         if (showDialog.value) {
             Box(
                 modifier = Modifier
-                    .width(180.dp)
-                    .padding(5.dp)
+                    .width(320.dp)
+                    .height(190.dp)
+                    .padding(8.dp)
                     .shadow(10.dp) // Legg til skyggeeffekt
                     .clip(RoundedCornerShape(8.dp)) // Rund av hjørnene
                     .background(
-                        color = Color(0xFF_D9_D9_D9).copy(alpha = 0.95f) // Bruk ønsket farge og gjennomsiktighet
+                        color = Color(0xFF_D9_D9_D9).copy(alpha = 0.97f) // Bruk ønsket farge og gjennomsiktighet
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -275,7 +277,7 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
                         fontWeight = FontWeight.Bold),
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(top = 4.dp)
+                            .padding(top = 5.dp)
                     )
 
                     Row(
@@ -287,20 +289,32 @@ fun FilterButtonAndDialog(showSymbols: MutableState<Boolean>,
                         )
                         ClickableText(
                             text = AnnotatedString("Kartsymboler"),
+                            style = TextStyle(fontSize = 15.sp),
                             onClick = { showSymbols.value = !showSymbols.value }
                         )
                     }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
-                            checked = showHarbourIcons.value,
-                            onCheckedChange = { showHarbourIcons.value = it }
+                            checked = showHarborWithGas.value,
+                            onCheckedChange = { showHarborWithGas.value = it }
                         )
                         ClickableText(
-                            text = AnnotatedString("Gjestehavner"),
-                            onClick = { showHarbourIcons.value = !showHarbourIcons.value }
+                            text = AnnotatedString("Gjestehavner med bensinstasjoner"),
+                            style = TextStyle(fontSize = 15.sp),
+                            onClick = { showHarborWithGas.value = !showHarborWithGas.value }
+                        )
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = showHarborWithoutGas.value,
+                            onCheckedChange = { showHarborWithoutGas.value = it }
+                        )
+                        ClickableText(
+                            text = AnnotatedString("Gjestehavner uten bensinstasjoner"),
+                            style = TextStyle(fontSize = 15.sp),
+                            onClick = { showHarborWithoutGas.value = !showHarborWithoutGas.value }
                         )
                     }
                 }

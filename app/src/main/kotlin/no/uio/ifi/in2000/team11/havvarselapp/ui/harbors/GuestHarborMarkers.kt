@@ -20,21 +20,55 @@ fun GoogleMarkersGuest(harbor: Harbor, visible: Boolean) {
         BitmapDescriptorFactory.fromResource(R.drawable.without_gas_harbor)
     }
 
-
-
     Marker(
             state = rememberMarkerState(position = LatLng(harbor.location[0],harbor.location[1])),
             title = harbor.name,
             snippet = harbor.description,
             icon = icon,
             visible = visible,
-/*
-            onInfoWindowLongClick = {
-                showMoreInformation(context, harbor = harbor)
-            }   
-*/
         )
 }
+
+
+@Composable
+fun GoogleMarkersGuestBlue(harbor: Harbor, visible: Boolean) {
+
+    val icon = BitmapDescriptorFactory.fromResource(R.drawable.without_gas_harbor)
+
+    Marker(
+        state = rememberMarkerState(position = LatLng(harbor.location[0],harbor.location[1])),
+        title = harbor.name,
+        snippet = harbor.description,
+        icon = icon,
+        visible = visible,
+    )
+}
+
+@Composable
+fun GoogleMarkersGuestRed(harbor: Harbor, visible: Boolean) {
+
+    val icon = BitmapDescriptorFactory.fromResource(R.drawable.with_gas_harbor)
+
+    Marker(
+        state = rememberMarkerState(position = LatLng(harbor.location[0],harbor.location[1])),
+        title = harbor.name,
+        snippet = harbor.description,
+        icon = icon,
+        visible = visible,
+    )
+}
+
+@Composable
+fun CheckHarborColor(harbor: Harbor, visible: Boolean) {
+
+    if (harbor.description.contains("Drivstoff")){
+        GoogleMarkersGuestRed(harbor = harbor, visible = visible)
+    } else {
+        GoogleMarkersGuestBlue(harbor = harbor, visible = visible)
+    }
+}
+
+
 
 /**
  * Det skal være funksjon for å vise ekstra innhold når bruker trykker på markøren
