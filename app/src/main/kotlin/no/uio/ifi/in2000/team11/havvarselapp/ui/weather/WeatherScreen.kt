@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -54,8 +55,6 @@ import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButt
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectionStatus
 import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -82,9 +81,6 @@ fun WeatherScreen(
     val context = LocalContext.current
 
     /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
-
-    val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()
-    val oceanForecastUiState by forecastViewModel.oceanForecastUiState.collectAsState()
 
     // Using LaunchedEffect to load weather data when the position changes via search/pin
     LaunchedEffect(sharedUiState.currentLocation.hashCode()) {
@@ -121,6 +117,7 @@ fun WeatherScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(innerPadding)
+                        .background(Color(230, 240, 255))
                 ) {
 
                 Column(
@@ -135,11 +132,9 @@ fun WeatherScreen(
                     // this is the top part of the screen, above the weather-rows
                     ScreenTop(
                         forecastViewModel = forecastViewModel,
-                        displayInfo = displayInfo,
                         fontNormal = fontNormal,
                         fontBold = fontBold
                     )
-
                         ScreenContent(
                             forecastViewModel = forecastViewModel,
                             displayInfo = displayInfo,
@@ -154,20 +149,6 @@ fun WeatherScreen(
             NavigationBarWithButtons(navController = navController)
         }
         NetworkConnectionStatus(connectivityObserver)
-    }
-}
-
-fun List<Timeseries>.groupByDay(): Map<LocalDate, List<Timeseries>> {
-    val zoneId = ZoneId.of("Europe/Oslo")
-    return this.groupBy {
-        ZonedDateTime.parse(it.time).withZoneSameInstant(zoneId).toLocalDate()
-    }
-}
-
-fun List<TimeseriesOcean>.groupByDayOcean(): Map<LocalDate, List<TimeseriesOcean>> {
-    val zoneId = ZoneId.of("Europe/Oslo")
-    return this.groupBy {
-        ZonedDateTime.parse(it.time).withZoneSameInstant(zoneId).toLocalDate()
     }
 }
 
@@ -232,6 +213,13 @@ fun ScreenContent(
                                 )
                             }
                         }
+                    item {
+                        DataLastUpdated(
+                            forecastViewModel = forecastViewModel,
+                            displayInfo = displayInfo,
+                            fontNormal = fontNormal
+                        )
+                    }
                 }
             }
         }
@@ -275,6 +263,13 @@ fun ScreenContent(
                             )
                         }
                     }
+                    item {
+                        DataLastUpdated(
+                            forecastViewModel = forecastViewModel,
+                            displayInfo = displayInfo,
+                            fontNormal = fontNormal
+                        )
+                    }
                 }
             }
         }
@@ -293,9 +288,9 @@ fun DayWeatherCard(
     todayOrTmr: String? = " "
 ) {
     val expanded = remember { mutableStateOf(Expanded.Short) }
-    val weatherRow1 = Color(234, 236, 255, 255)
-    val weatherRow2 = Color(218, 222, 255, 255)
-    val weatherHeader = Color(120, 133, 191, 255)
+    val weatherRow1 = Color(204, 241, 214)
+    val weatherRow2 = Color(153, 222, 173)
+    val weatherHeader = Color(65, 95, 78)
     var formattedDay = day.format(DateTimeFormatter.ofPattern("EEEE d. MMMM", Locale("no", "NO")))
     if (todayOrTmr == " ") {
         formattedDay =
@@ -331,7 +326,7 @@ fun DayWeatherCard(
         )
         {
             // RAD MED IKON ØVERST
-            WeatherHeader(headerColor = weatherHeader, font = fontNormal)
+            WeatherHeader(headerColor = weatherHeader, font = fontNormal, shortTerm = true)
             when (expanded.value) {
 
                 Expanded.Short -> {
@@ -397,9 +392,9 @@ fun DayWeatherCardLongTerm(
     timeseriesList: List<Timeseries>,
     fontNormal: FontFamily
 ) {
-    val weatherRow1 = Color(234, 236, 255, 255)
-    val weatherRow2 = Color(218, 222, 255, 255)
-    val weatherHeader = Color(120, 133, 191, 255)
+    val weatherRow1 = Color(204, 241, 214)
+    val weatherRow2 = Color(153, 222, 173)
+    val weatherHeader = Color(65, 95, 78)
     var formattedDay = day.format(DateTimeFormatter.ofPattern("EEEE d. MMMM", Locale("no", "NO")))
     formattedDay =
         formattedDay.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.titlecase() }
@@ -429,7 +424,7 @@ fun DayWeatherCardLongTerm(
         )
         {
             // RAD MED IKON ØVERST
-            WeatherHeaderLongTerm(headerColor = weatherHeader, font = fontNormal)
+            WeatherHeader(headerColor = weatherHeader, font = fontNormal, shortTerm = false)
             var farge = true
             timeseriesList.forEach { timeseries ->
                 farge = if (farge) {
@@ -677,6 +672,105 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
 }
 
 
+
+
+@Composable
+fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(30.dp)
+            .background(headerColor),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    )
+    {
+
+        // Tidspunkt
+        Column(
+            modifier = Modifier
+                .weight(0.8f)
+                .wrapContentSize()
+        ) {
+            Text(
+                text = "Tid ",
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White,
+                fontSize = 12.sp,
+                fontFamily = font
+            )
+        }
+
+        // Vær ikon
+        Column(
+            modifier = Modifier
+                .weight(0.8f)
+                .wrapContentSize()
+        ) {
+            Text(
+                text = "Vær",
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 12.sp,
+                fontFamily = font,
+                color = Color.White,
+            )
+        }
+
+        // Temperatur
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentSize()
+        ) {
+            Text(
+                text = "Temp. °C",
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 12.sp,
+                fontFamily = font,
+                color = Color.White,
+            )
+        }
+
+
+        // Nedbørsmengde
+        Column(
+            modifier = Modifier
+                .weight(1.25f)
+                .wrapContentSize()
+        ) {
+            Text(
+                text = "Nedbør mm",
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 12.sp,
+                fontFamily = font,
+                color = Color.White,
+            )
+        }
+
+        if (shortTerm) {
+            // Vind
+            Column(
+                modifier = Modifier
+                    .weight(1.2f)
+                    .wrapContentSize()
+            ) {
+                Text(
+                    text = "Vind(kast) m/s",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 12.sp,
+                    fontFamily = font,
+                    color = Color.White,
+                )
+            }
+        }
+        else {
+            Spacer(modifier = Modifier.weight(1.2f))
+        }
+    }
+}
+
+
 @Composable
 fun DayOceanCard(
     day: LocalDate,
@@ -685,9 +779,9 @@ fun DayOceanCard(
     todayOrTmr: String? = " "
 ) {
     val expanded = remember { mutableStateOf(Expanded.Short) }
-    val oceanRow1 = Color(212, 225, 255, 255)
-    val oceanRow2 = Color(190, 210, 254, 255)
-    val oceanHeader = Color(105, 131, 187, 232)
+    val oceanRow1 = Color(204, 225, 255)
+    val oceanRow2 = Color(154, 195, 255)
+    val oceanHeader = Color(0, 86, 179)
     var formattedDay = day.format(DateTimeFormatter.ofPattern("EEEE d. MMMM", Locale("no", "NO")))
 
     if (todayOrTmr == " ") {
@@ -929,202 +1023,75 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
     }
 }
 
+
+
 @Composable
-fun WeatherHeader(headerColor: Color, font: FontFamily) {
+fun ScreenTop(forecastViewModel: LocationForecastViewModel, fontNormal: FontFamily, fontBold: FontFamily) {
+    val placeNameUiState by forecastViewModel.placeNameState.collectAsState()
+    val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()
+    val today = locationForecastUiState?.properties?.timeseries?.getToday()
+
+
+    Text(
+        text = placeNameUiState,
+        textAlign = TextAlign.Center,
+        fontSize = 18.sp,
+        fontFamily = fontNormal,
+        fontWeight = FontWeight.ExtraBold,
+        modifier = Modifier.padding(top = 10.dp)
+    )
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(30.dp)
-            .background(headerColor),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    )
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically )
     {
+        if (forecastViewModel.forecastInfoUiState.collectAsState().value != null) {
 
-        // Tidspunkt
-        Column(
-            modifier = Modifier
-                .weight(0.8f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Tid ",
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.White,
-                fontSize = 12.sp,
-                fontFamily = font
-            )
-        }
+            Column(modifier = Modifier.weight(1f)) {
+                if (today != null) {
+                    Row( modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 26.dp, top = 5.dp) ) {
 
-        // Vær ikon
-        Column(
-            modifier = Modifier
-                .weight(0.8f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Vær",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 12.sp,
-                fontFamily = font,
-                color = Color.White,
-            )
-        }
+                        Text(
+                            text = "I dag "+ getNorwegianTimeWeather(today[0]) + "-" + getNorwegianTimeWeather(today[1]),
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 14.sp,
+                            fontFamily = fontBold )
+                    }
 
-        // Temperatur
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Temp. °C",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 12.sp,
-                fontFamily = font,
-                color = Color.White,
-            )
-        }
+                }
 
+                Row(
+                    Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 40.dp) ) {
+                    if (today != null) {
+                        Text(
+                            text = getTemperature(today[0]),
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 25.sp,
+                            fontFamily = fontBold )
+                    }
+                }
+            }
 
-        // Nedbørsmengde
-        Column(
-            modifier = Modifier
-                .weight(1.25f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Nedbør mm",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 12.sp,
-                fontFamily = font,
-                color = Color.White,
-            )
-        }
+            Column (
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally )
+            {
+                if (today != null) {
+                    GetWeatherIconTopPage(timeseries = today[0])
+                }
+            }
 
-        // Vind
-        Column(
-            modifier = Modifier
-                .weight(1.2f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Vind(kast) m/s",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 12.sp,
-                fontFamily = font,
-                color = Color.White,
-            )
+            Spacer( modifier = Modifier.weight(1f) )
         }
     }
 }
 
 
-@Composable
-fun WeatherHeaderLongTerm(headerColor: Color, font: FontFamily) {
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(30.dp)
-            .background(headerColor),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    )
-    {
-
-        // Tidspunkt
-        Column(
-            modifier = Modifier
-                .weight(0.8f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Tid ",
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.White,
-                fontSize = 12.sp,
-                fontFamily = font
-            )
-        }
-
-        // Vær ikon
-        Column(
-            modifier = Modifier
-                .weight(0.8f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Vær",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 12.sp,
-                fontFamily = font,
-                color = Color.White,
-            )
-        }
-
-        // Temperatur
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Temp. °C",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 12.sp,
-                fontFamily = font,
-                color = Color.White,
-            )
-        }
-
-        // Nedbørsmengde
-        Column(
-            modifier = Modifier
-                .weight(1.25f)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = "Nedbør mm",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 12.sp,
-                fontFamily = font,
-                color = Color.White,
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1.2f))
-
-    }
-}
-
-/**
- * Finds and displays the right weather image for the screen top.
- *
- * Note: The function has an 'SuppressLint' annotation because 'getIdentifier'
- * is used to get the iconname in a dynamic way instead of static, which
- * causes a warning. But the icon is dependent on the API-data that is always changing.
- */
-@SuppressLint("DiscouragedApi")
-@Composable
-fun GetWeatherIcon(forecastViewModel: LocationForecastViewModel) {
-    val iconName = forecastViewModel.getWeatherIcon(0)
-    val context = LocalContext.current
-    val resId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
-
-    val weatherIcon: ImageVector = if (resId != 0) {
-        ImageVector.vectorResource(id = resId)
-    } else {
-        ImageVector.vectorResource(id = R.drawable.fair_day)
-    }
-    Image(
-        imageVector = weatherIcon, contentDescription = "image",
-        Modifier
-            .size(110.dp)
-            .padding(top = 3.dp, bottom = 10.dp)
-    )
-}
 
 /**
  * Knappene for å bytte mellom vær og hav skjerm. Ligger i scaffol BottomBar slik at den er festet til bunnen av siden.
@@ -1140,6 +1107,7 @@ fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color(230, 240, 255))
             .padding(top = 7.dp, bottom = 7.dp)
     ) {
         Row(
@@ -1263,104 +1231,50 @@ fun ShortToLongButton(expanded: MutableState<Expanded>, color: Color, font: Font
     }
 }
 
-/**
- * Funksjon for å laste øverste del av vær / hav siden før tabellen.
- */
 @Composable
-fun ScreenTop(
-    forecastViewModel: LocationForecastViewModel,
-    displayInfo: MutableState<DisplayInfo>,
-    fontNormal: FontFamily,
-    fontBold: FontFamily
-) {
+fun DataLastUpdated(forecastViewModel: LocationForecastViewModel, displayInfo: MutableState<DisplayInfo>, fontNormal: FontFamily) {
+    val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()
+    val oceanForecastUiState by forecastViewModel.oceanForecastUiState.collectAsState()
 
-    Text(
-        text = forecastViewModel.getPlaceName(),
-        textAlign = TextAlign.Center,
-        fontSize = 19.sp,
-        fontFamily = fontNormal,
-        fontWeight = FontWeight.ExtraBold,
-        modifier = Modifier.padding(top = 10.dp)
-    )
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp, bottom = 40.dp)
+            .background(Color(230, 240, 255)) )
     {
-        if (forecastViewModel.forecastInfoUiState.collectAsState().value != null) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .align(Alignment.Center),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically)
+        {
+            val updateText = when (displayInfo.value) {
 
-            Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 26.dp, top = 5.dp)
-                ) {
-                    Text(
-                        text = "I dag " + forecastViewModel.getNorwegianTimeWeather(0) + "-" + forecastViewModel.getNorwegianTimeWeather(
-                            1
-                        ),
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp,
-                        fontFamily = fontBold
-                    )
+                DisplayInfo.Weather -> {
+                            "Vær data sist oppdatert:\n" +
+                            "${locationForecastUiState?.properties?.meta?.updated_at?.let { LastUpdates(it) }}"
                 }
 
-                Row(
-                    Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 40.dp)
-                )
-                {
-
-                    Text(
-                        text = forecastViewModel.getTemperature(0),
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 26.sp,
-                        fontFamily = fontBold
-                    )
-
-                }
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 15.dp, top = 15.dp)
-                ) {
-                    when (displayInfo.value) {
-                        DisplayInfo.Weather -> {
-                            Text(
-                                text = "Sist oppdatert:\n" + forecastViewModel.locationForecastLastUpdated(),
-                                fontWeight = FontWeight.ExtraBold,
-                                lineHeight = 13.sp,
-                                fontSize = 11.sp,
-                                color = Color(115, 115, 115, 255),
-                                fontFamily = fontNormal
-                            )
-                        }
-
-                        DisplayInfo.Sea -> {
-                            Text(
-                                text = "Sist oppdatert:\n" + forecastViewModel.oceanForecastLastUpdated(),
-                                fontWeight = FontWeight.ExtraBold,
-                                fontSize = 11.sp,
-                                color = Color(115, 115, 115, 255),
-                                lineHeight = 13.sp,
-                                fontFamily = fontNormal
-                            )
-                        }
-                    }
+                DisplayInfo.Sea -> {
+                             "Hav data sist oppdatert:\n" +
+                            "${oceanForecastUiState?.properties?.meta?.updated_at?.let { LastUpdates(it) }}"
                 }
             }
 
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Text(
+                text = updateText,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 15.sp,
+                color = Color(115, 115, 115, 255),
+                fontFamily = fontNormal,
+                textAlign = TextAlign.Center
             )
-            {
-                GetWeatherIcon(forecastViewModel = forecastViewModel)
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
+
+
+

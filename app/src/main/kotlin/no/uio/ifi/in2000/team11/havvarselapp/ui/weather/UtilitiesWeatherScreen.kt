@@ -1,14 +1,27 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.weather
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.team11.havvarselapp.R
 import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.Timeseries
 import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.TimeseriesOcean
+import no.uio.ifi.in2000.team11.havvarselapp.ui.locationForecast.LocationForecastViewModel
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.roundToInt
 
 fun getWeatherIcon(timeseries: Timeseries): String? {
@@ -137,6 +150,62 @@ fun getCurrentSpeed(timeseries: TimeseriesOcean): String {
         if (timeseries.data.instant.details.sea_water_speed == 0.0) 0 else timeseries.data.instant.details.sea_water_speed
     return "$speed"
 }
+
+
+
+fun List<Timeseries>.getToday(): List<Timeseries> {
+    val zoneId = ZoneId.of("Europe/Oslo")
+    val today = LocalDate.now(zoneId)
+    return this.filter { ZonedDateTime.parse(it.time).withZoneSameInstant(zoneId).toLocalDate() == today }
+}
+fun LastUpdates(today: String): String? {
+    val parsedDate = ZonedDateTime.parse(today)
+    val formats = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm",  Locale("no", "NO"))
+    return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formats)
+}
+
+
+
+fun List<Timeseries>.groupByDay(): Map<LocalDate, List<Timeseries>> {
+    val zoneId = ZoneId.of("Europe/Oslo")
+    return this.groupBy {
+        ZonedDateTime.parse(it.time).withZoneSameInstant(zoneId).toLocalDate()
+    }
+}
+
+fun List<TimeseriesOcean>.groupByDayOcean(): Map<LocalDate, List<TimeseriesOcean>> {
+    val zoneId = ZoneId.of("Europe/Oslo")
+    return this.groupBy {
+        ZonedDateTime.parse(it.time).withZoneSameInstant(zoneId).toLocalDate()
+    }
+}
+
+/**
+ * Finds and displays the right weather image for the screen top.
+ *
+ * Note: The function has an 'SuppressLint' annotation because 'getIdentifier'
+ * is used to get the iconname in a dynamic way instead of static, which
+ * causes a warning. But the icon is dependent on the API-data that is always changing.
+ */
+@SuppressLint("DiscouragedApi")
+@Composable
+fun GetWeatherIconTopPage(timeseries: Timeseries) {
+    val iconName = timeseries.data.next_1_hours?.summary?.symbol_code
+    val context = LocalContext.current
+    val resId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
+
+    val weatherIcon: ImageVector = if (resId != 0) {
+        ImageVector.vectorResource(id = resId)
+    } else {
+        ImageVector.vectorResource(id = R.drawable.fair_day) }
+    Image(imageVector = weatherIcon, contentDescription = "image",
+        Modifier.size(110.dp).padding(top = 3.dp, bottom = 10.dp)) }
+
+
+
+
+
+
 
 fun getFonts1(): Array<FontFamily> {
     val barlow1 = FontFamily(Font(R.font.barlow_thin, FontWeight.W400))
