@@ -13,27 +13,37 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Henter riktig ikon for farevarselet.
- * NB: Funksjonen har "SuppressLint" annotering fordi ikonnavn
- * og ID er dynamiske i stedet for statiske, noe som gir en warning hvis
- * man ikke har SuppressLint annoteringen.
+ *
+ * Note: The function has an 'SuppressLint' annotation because image
+ * identifier is created in a dynamic way instead of static, based on the
+ * data from the API. This causes a warning because it makes it harder to
+ * perform build optimizations.
  */
 @SuppressLint("DiscouragedApi")
 @Composable
-fun GetIcon(type: String, color: String) {
+fun GetIconForAlert(event: String, color: String, small: Boolean) {
     val context = LocalContext.current
     val resources = context.resources
 
-    // Bygger strengen som representerer filnavnet til ikonet
-    val iconName = "icon_warning_${type.trim()}_${color}".lowercase()
+    // specifies the size of the image
+    val imagesize: Int = if (small) {
+        30 // this is the tiny image on the map screen
+    }
+    else {
+        70 // the larger image that is in the met-alerts dialog-window
+    }
 
-    // Få Drawable ressurs ID for det dynamisk konstruerte ikonnavnet
+    // Construct the icon name
+    val iconName = "icon_warning_${event.trim()}_${color}".lowercase()
+
+    // Get Drawable resource ID for the dynamically constructed name
     @DrawableRes
     val drawableResId: Int = resources.getIdentifier(
         iconName,
         "drawable",
         context.packageName
     )
-    // Samme prinsipp, men hvis fare-type ikke finnes
+    // Same principle, but if the met-alert type does not exist
     val otherIconName = "icon_warning_generic_${color}".lowercase()
 
     @DrawableRes
@@ -43,23 +53,24 @@ fun GetIcon(type: String, color: String) {
         context.packageName
     )
 
-    // Kontroller at ressursen finnes før den brukes
+    // Check that image exists
     if (drawableResId != 0) {
-        // Bruker ikonet i Image komponenten
+        // Display image
         Image(
             painter = painterResource(id = drawableResId),
             contentDescription = "Farevarsel Ikon",
             modifier = Modifier
-                .size(100.dp)
-                .padding(20.dp)
+                .size(imagesize.dp)
+                .padding(1.dp)
         )
+    // Generic met-alert icon with right color
     } else {
         Image(
             painter = painterResource(id = otherDrawableResId),
             contentDescription = "Farevarsel Ikon",
             modifier = Modifier
-                .size(100.dp)
-                .padding(20.dp)
+                .size(imagesize.dp)
+                .padding(1.dp)
         )
     }
 }

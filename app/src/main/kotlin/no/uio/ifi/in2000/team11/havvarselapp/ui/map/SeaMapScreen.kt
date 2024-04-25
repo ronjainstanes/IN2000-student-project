@@ -65,6 +65,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsList
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsPair
 import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.GoogleMarkersGuestBlue
 import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.GoogleMarkersGuestRed
+import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.GetIconForAlert
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.MetAlertsDialog
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
@@ -87,7 +88,6 @@ fun SeaMapScreen(
     val showHarborWithGas = rememberSaveable { mutableStateOf(true) }
     val showHarborWithoutGas = rememberSaveable { mutableStateOf(true) }
     var showExplanation by rememberSaveable { mutableStateOf(false) }
-    /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
     val listOfSymbols: List<SeaSymbolsPair> = SeaSymbolsList().symbolDescription
     val context = LocalContext.current
 
@@ -140,7 +140,7 @@ fun SeaMapScreen(
                     )
                 ) {
                     // Showing the guest harbors if zoom is small enough
-                    if(cameraPositionState.position.zoom > 10.5f) {
+                    if (cameraPositionState.position.zoom > 10.5f) {
                         // the two types of harbor markers
                         seaMapViewModel.harborData.value?.map { harbor ->
                             if (harbor.description.contains("Drivstoff") && showHarborWithGas.value) {
@@ -206,24 +206,32 @@ fun SeaMapScreen(
                 }
 
                 // button for active met alerts at this location
-                Button(
-                    onClick = { showMetAlerts = true },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(start = 316.dp, top = 100.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF_13_23_2C)
-                    )
-                ) {
-                    Text(text = "Varsler")
-                }
+                if (sharedUiState.allMetAlerts.isNotEmpty()) {
+                    sharedUiState.allMetAlerts.forEach {
+                        Button(
+                            onClick = { showMetAlerts = true },
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(start = 280.dp, top = 100.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF_13_23_2C)
+                            )
+                        ) {
+                            GetIconForAlert(
+                                event = it.event,
+                                color = it.riskMatrixColor,
+                                small = true
+                            )
+                        }
 
-                // if clicked on, show met-alert dialog
-                if (showMetAlerts) {
-                    MetAlertsDialog(
-                        sharedUiState = sharedUiState,
-                        onDismiss = { showMetAlerts = false }
-                    )
+                        // if clicked on, show met-alert dialog
+                        if (showMetAlerts) {
+                            MetAlertsDialog(
+                                sharedUiState = sharedUiState,
+                                onDismiss = { showMetAlerts = false }
+                            )
+                        }
+                    }
                 }
 
                 // button to activate/deactivate tile overlay
@@ -276,7 +284,9 @@ fun ExplanationBox(
             )
 
             // a scrollable window with symbols and explanations
-            LazyColumn(modifier = Modifier.weight(1f).padding(16.dp)) {
+            LazyColumn(modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)) {
                 items(symbolDescription) { seaSymbolsPair ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -310,8 +320,6 @@ fun ExplanationBox(
         }
     }
 }
-
-
 
 /**
  * Provides the tile overlay at the

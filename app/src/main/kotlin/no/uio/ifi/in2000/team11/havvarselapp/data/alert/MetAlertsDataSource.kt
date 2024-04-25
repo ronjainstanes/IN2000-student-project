@@ -89,6 +89,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
                 val area = alert.getJSONObject("properties").optString("area")
                 val title = alert.getJSONObject("properties").optString("title")
                 val description = alert.getJSONObject("properties").optString("description")
+                val event = alert.getJSONObject("properties").optString("event")
                 val consequences = alert.getJSONObject("properties").optString("consequences")
                 val instruction = alert.getJSONObject("properties").optString("instruction")
                 val triggerLevel = alert.getJSONObject("properties").optString("triggerLevel")
@@ -110,6 +111,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
                     area,
                     title,
                     description,
+                    event,
                     consequences,
                     instruction,
                     awarenessLevel,

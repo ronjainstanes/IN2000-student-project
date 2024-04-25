@@ -1,69 +1,77 @@
 package no.uio.ifi.in2000.team11.havvarselapp.model.alert
 
 /**
- * Inneholder info om et farevarsel
+ * Contains information about a met-alert
  */
 data class MetAlert(
     /**
-     * Id for det konkrete farevarselet
+     * Id for the met-alert
      */
     val id: String,
 
     /**
-     * Området varselet gjelder for
+     * The area to which the alert applies
      */
     val area: String,
 
     /**
-     * Tittel
+     * Title of the alert
      */
     val title: String,
 
     /**
-     * Beskrivelse av varselet
+     * Description
      */
-    val description: String, // properties.description
+    val description: String,
 
     /**
-     * Beskriver konsekvensene av været, kan være null
+     * Type of event. The combination of color and event is
+     * used to fetch the right image for the alert.
+     */
+    val event: String,
+
+    /**
+     * Describes the consequences following the extreme weather.
+     * This can be null.
      */
     val consequences: String?,
 
     /**
-     * Instruks til hva man bør gjøre,
-     * f.eks. "ikke dra ut i småbåt"
+     * Instruction of how to handle this weather.
+     * For example: "ikke dra ut i småbåt"
      */
     val instruction: String,
 
     /**
-     * Hvilket nivå varselet har,
+     * Which
      * f.eks. "2, yellow, Moderate"
      */
     val awarenessLevel: List<String>,
 
     /**
-     * Hvilket nivå/farge varselet har:
+     * The color (danger level) of the met-alert, possible values:
      * Green, Yellow, Orange, Red
      */
     val riskMatrixColor: String,
 
     /**
-     * Type farevarsel, f.eks "1, wind".
+     * Type of met-alert, for example "1, wind".
      *
-     * GYLDIGE TYPER: wind, extreme high temperature, rain,
+     * All possible types: wind, extreme high temperature, rain,
      * extreme low temperature, snow/ice, coastal event,
      * thunderstorms, forestfire, fog, avalanches
      */
     val awarenessType: List<String>,
 
     /**
-     * Meter per sekund, kan være null
+     * Meter per second, can be null
      */
     val triggerLevel: String?
 ) {
     /**
-     * Sammenligner to MetAlert-objekter
-     * @return er dette samme farevarsel?
+     * Compares two met alert objects to find out if
+     * they are the same alert.
+     * @return is this the same met-alert?
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -75,7 +83,7 @@ data class MetAlert(
     }
 
     /**
-     * Returnerer hashkoden til MetAlert-objektet
+     * Returns the hashcode of the met-alert object
      */
     override fun hashCode(): Int {
         return id.hashCode()

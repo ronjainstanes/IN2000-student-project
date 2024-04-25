@@ -122,7 +122,11 @@ fun MetAlertCardOld(metAlert: MetAlert) {
                     .size(100.dp) // Sett en fast størrelse for boksen som ikonet skal være inne i
             ) {
                 // Ikonet hentes og vises
-                GetIcon(type = metAlert.awarenessType[1], color = metAlert.riskMatrixColor)
+                GetIconForAlert(
+                    event = metAlert.awarenessType[1],
+                    color = metAlert.riskMatrixColor,
+                    small = false
+                )
             }
             // Spacer legger til et mellomrom mellom ikonet og teksten
             Spacer(Modifier.width(8.dp))
