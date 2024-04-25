@@ -62,7 +62,8 @@ import no.uio.ifi.in2000.team11.havvarselapp.R
 import no.uio.ifi.in2000.team11.havvarselapp.SharedUiState
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsList
 import no.uio.ifi.in2000.team11.havvarselapp.model.seaSymbols.SeaSymbolsPair
-import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.CheckHarborColor
+import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.GoogleMarkersGuestBlue
+import no.uio.ifi.in2000.team11.havvarselapp.ui.harbors.GoogleMarkersGuestRed
 import no.uio.ifi.in2000.team11.havvarselapp.ui.metalert.MetAlertsDialog
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
@@ -96,7 +97,6 @@ fun SeaMapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(sharedUiState.currentLocation, 12f)
     }
-
 
     // get data about guest harbors from a JSON file
     seaMapViewModel.fetchHarborData(context)
@@ -138,13 +138,15 @@ fun SeaMapScreen(
                         ),
                     )
                 ) {
-
-                    // the two types of harbor markers
-                    seaMapViewModel.harborData.value?.forEach { harbor ->
-                        if (harbor.description.contains("Drivstoff") && showHarborWithGas.value) {
-                            CheckHarborColor(harbor = harbor, visible = true)
-                        } else if (!harbor.description.contains("Drivstoff") && showHarborWithoutGas.value) {
-                            CheckHarborColor(harbor = harbor, visible = true)
+                    // Showing the guest harbors if zoom is small enough
+                    if(cameraPositionState.position.zoom > 10.5f) {
+                        // the two types of harbor markers
+                        seaMapViewModel.harborData.value?.map { harbor ->
+                            if (harbor.description.contains("Drivstoff") && showHarborWithGas.value) {
+                                GoogleMarkersGuestRed(harbor = harbor, visible = true)
+                            } else if (!harbor.description.contains("Drivstoff") && showHarborWithoutGas.value) {
+                                GoogleMarkersGuestBlue(harbor = harbor, visible = true)
+                            }
                         }
                     }
 
