@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -250,29 +251,32 @@ fun ExplanationBox(
     symbolDescription: List<SeaSymbolsPair>,
     onDismiss: () -> Unit
 ) {
-    Box(
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
             .zIndex(2f)
             .heightIn(max = 700.dp)
             .padding(16.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .shadow(4.dp, shape = RoundedCornerShape(8.dp)),
-        contentAlignment = Alignment.Center
+            .shadow(1.dp, shape = RoundedCornerShape(8.dp))
+
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+
         ) {
 
             // the title in the dialog
             Text(
                 text = "Symbolforklaringer",
                 style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
             // a scrollable window with symbols and explanations
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(modifier = Modifier.weight(1f).padding(16.dp)) {
                 items(symbolDescription) { seaSymbolsPair ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -306,6 +310,8 @@ fun ExplanationBox(
         }
     }
 }
+
+
 
 /**
  * Provides the tile overlay at the
@@ -360,7 +366,7 @@ fun FilterButtonAndDialog(
                         ),
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(top = 16.dp)
+                            .padding(top = 5.dp)
                     )
 
                     // button to show/hide maritime symbols
@@ -372,7 +378,7 @@ fun FilterButtonAndDialog(
                             onCheckedChange = { showSymbols.value = it }
                         )
                         ClickableText(
-                            text = AnnotatedString("Kartsymboler"),
+                            text = AnnotatedString("Maritime symboler"),
                             style = TextStyle(fontSize = 15.sp),
                             onClick = { showSymbols.value = !showSymbols.value }
                         )
