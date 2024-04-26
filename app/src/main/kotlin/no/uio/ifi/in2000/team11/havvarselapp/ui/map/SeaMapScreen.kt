@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -81,7 +82,7 @@ fun SeaMapScreen(
     seaMapViewModel: SeaMapViewModel = viewModel()
 ) {
     val autocompleteTextFieldActivity = AutocompleteTextFieldActivity()
-    val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
+    val mapUiState: MapUiState by seaMapViewModel.mapUiState.asFlow().collectAsState(initial = MapUiState())
     val showSymbols = rememberSaveable { mutableStateOf(true) }
     var showMetAlerts by rememberSaveable { mutableStateOf(false) }
     val showHarborWithGas = rememberSaveable { mutableStateOf(true) }
@@ -100,7 +101,7 @@ fun SeaMapScreen(
     }
 
     // get data about guest harbors from a JSON file
-    seaMapViewModel.fetchHarborData(context)
+    suspend { seaMapViewModel.loadGuestHarboursFromResources(context) }
 
     Box(
         modifier = Modifier
@@ -123,7 +124,7 @@ fun SeaMapScreen(
                     // when map is clicked
                     onMapClick = { clickedPosition ->
                         updateLocation(clickedPosition)
-                        seaMapViewModel.placeOrRemoveMarker()
+                        seaMapViewModel.toggleMarkerVisibility()
                         showDialog.value = false
                         activateSearch.value = false
                     },
@@ -276,7 +277,9 @@ fun ExplanationBox(
             )
 
             // a scrollable window with symbols and explanations
-            LazyColumn(modifier = Modifier.weight(1f).padding(16.dp)) {
+            LazyColumn(modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)) {
                 items(symbolDescription) { seaSymbolsPair ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

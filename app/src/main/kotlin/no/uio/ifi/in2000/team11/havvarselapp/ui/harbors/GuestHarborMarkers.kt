@@ -14,7 +14,7 @@ fun GoogleMarkersGuestBlue(harbor: Harbor, visible: Boolean) {
     val icon = BitmapDescriptorFactory.fromResource(R.drawable.without_gas_harbor)
 
     Marker(
-        state = rememberMarkerState(position = LatLng(harbor.location[0],harbor.location[1])),
+        state = rememberMarkerState(position = LatLng(harbor.location!![0],harbor.location[1])),
         title = harbor.name,
         snippet = harbor.description,
         icon = icon,
@@ -28,7 +28,7 @@ fun GoogleMarkersGuestRed(harbor: Harbor, visible: Boolean) {
     val icon = BitmapDescriptorFactory.fromResource(R.drawable.with_gas_harbor)
 
     Marker(
-        state = rememberMarkerState(position = LatLng(harbor.location[0],harbor.location[1])),
+        state = rememberMarkerState(position = LatLng(harbor.location!![0],harbor.location[1])),
         title = harbor.name,
         snippet = harbor.description,
         icon = icon,
