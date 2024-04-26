@@ -100,7 +100,7 @@ fun SeaMapScreen(
     }
 
     // get data about guest harbors from a JSON file
-    seaMapViewModel.fetchHarborData(context)
+    seaMapViewModel.loadGuestHarboursFromResources(context)
 
     Box(
         modifier = Modifier

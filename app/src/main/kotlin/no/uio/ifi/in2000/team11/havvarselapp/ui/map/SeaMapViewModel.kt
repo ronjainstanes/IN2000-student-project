@@ -3,8 +3,8 @@ package no.uio.ifi.in2000.team11.havvarselapp.ui.map
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,22 +52,16 @@ class SeaMapViewModel : ViewModel() {
     /**
      * Fetches data for guest harbour markers on the map
      */
-    @OptIn(DelicateCoroutinesApi::class)
-    fun fetchHarborData(context: Context) {
-        GlobalScope.launch {
-            val harborList = mutableListOf<Harbor>()
-            val inputStream = context.resources.openRawResource(R.raw.guestharbors)
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
+    fun loadGuestHarboursFromResources(context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val jsonString =
+                    context.resources.openRawResource(R.raw.guestharbors).bufferedReader()
+                        .use { it.readText() }
+                val jsonArray = JSONArray(jsonString)
 
-            val jsonString = String(buffer)
-            val jsonArray = JSONArray(jsonString)
-
-            for (i in 0 until jsonArray.length()) {
-                val item = jsonArray.getJSONObject(i)
-                harborList.add(
+                val harborList = List(jsonArray.length()) { i ->
+                    val item = jsonArray.getJSONObject(i)
                     Harbor(
                         item.getInt("id"),
                         item.getString("name"),
@@ -76,10 +70,11 @@ class SeaMapViewModel : ViewModel() {
                         },
                         item.getString("description")
                     )
-                )
-            }
+                }
 
-            harborData.postValue(harborList)
+                harborData.postValue(harborList)
+            } catch (_: Exception) {
+            }
         }
     }
 }
