@@ -20,6 +20,8 @@ Users can check the area they need by navigating on the map.
 If there are any meteorological alerts in the area a user navigated to, they come up to the screen in form of a warning triangle in the top right corner on the map. The user can click on it for additional information.
 After navigating to the area the user can check the weather and sea conditions by navigating to the weather-screen.
 
+### Precondition
+
 We assume that internet connection is available, and no errors occur when the user works with the application. The user wants to plan a boat trip and uses the application to check the weather and sea conditions in the area he wants to travel to.
 
 ### **Main flow**:
@@ -37,6 +39,9 @@ We assume that internet connection is available, and no errors occur when the us
 * 3.2.2 The alerts are not dangerous, so the user continue planing of his trip and goes to the step 4
 
 For the application to function, and for the user to be able to perform these actions, we need to retrieve different data from MET (weather forecast, ocean forecast, and meteorological alerts) and Google (map), which means they are secondary actors in our system.
+
+**Primary actor**: User
+**Secondary actors**: Google, MET
 
 ### Use case diagram:
 
