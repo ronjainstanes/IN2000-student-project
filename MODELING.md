@@ -38,7 +38,7 @@ We assume that internet connection is available, and no errors occur when the us
 * 3.2.1 The alerts are quite dangerous, so the user decides to change his destination point (goes back to step 2).
 * 3.2.2 The alerts are not dangerous, so the user continue planing of his trip and goes to the step 4
 
-For the application to function, and for the user to be able to perform these actions, we need to retrieve different data from MET (weather forecast, ocean forecast, and meteorological alerts) and Google (map), which means they are secondary actors in our system.
+For the application to function, and for the user to be able to perform these actions, we need to fetch different data from MET´s Api (weather forecast, ocean forecast, meteorological alerts) and Google (map), which means they are secondary actors in our system.
 
 * **Primary actor**: User
 * **Secondary actors**: Google, MET
@@ -47,7 +47,19 @@ For the application to function, and for the user to be able to perform these ac
 
 ![useCaseMainFlow.png](useCaseMainFlow.png)
 
-Sequence Diagram Check:
+
+## Sequence diagram
+
+After creating a Use Case diagram to depict the interaction between our application and the environment, we want to demonstrate the information flow within the application using a Sequence diagram. As the Sequence diagram provides a more deep view compared to the Use Case diagram, we need to define additional participants within the system to show the flow:
+* **Actor**: User
+* **participant**: MapScreen - main screen 
+* **participant**: WeatherScreen
+* **participant**: GoogleMap Api - we get the map from the Api
+* **participant**: MetAlerts Api - we get data about meteorological from the Api
+* **participant**: Guest harbours / gas stations JSON-file - The most important function requested by our potential users was the ability to access information on guest harbors and gas stations. Since we could not find any suitable free API with this data, we made the decision to generate our own temporary solution by creating a JSON file containing the desired information. We acknowledge that this data source does not offer optimal scalability, we want to emphasize that it is only a temporary measure.
+* **participant**: LocationForecast Api - we get weather conditions data
+* **participant**: OceanForecast Api - we get sea conditions data
+
 
 ```mermaid
     sequenceDiagram
