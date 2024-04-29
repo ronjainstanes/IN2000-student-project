@@ -43,7 +43,6 @@ For the application to function, and for the user to be able to perform these ac
 * **Primary actor**: User
 * **Secondary actors**: Google, MET
 
-### Use case diagram:
 
 ![useCaseMainFlow.png](useCaseMainFlow.png)
 
