@@ -38,6 +38,6 @@ We assume that internet connection is available, and no errors occur when the us
 
 For the application to function, and for the user to be able to perform these actions, we need to retrieve different data from MET (weather forecast, ocean forecast, and meteorological alerts) and Google (map), which means they are secondary actors in our system.
 
-### Use case diagram: 
+### Use case diagram:
 
-https://app.diagrams.net/#G1tyxb-qAJBnqJRcOTSfygIMGQWbwzR3Oc#%7B%22pageId%22%3A%22-blFCseQlbdurMDKeaDK%22%7D
+![useCaseMainFlow.png](useCaseMainFlow.png)
