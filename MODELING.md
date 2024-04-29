@@ -2,7 +2,7 @@
 
 We began our application development journey by hosting a meeting to determine what kind of application we wanted to create and identify our target audience. Once we had a clear understanding of these factors, we conducted a survey via Facebook groups for boat drivers. The purpose of this survey was to gather feedback from representatives of our target audience, in order to determine the most desired functions for our application.
 
-Now we will present the results of the survey in the form of user stories (“As a [role], I want [function] in order to achieve [benefit]”), showcasing functions requested by our potential users, ranged from the most popular to the least.
+Now we will present the results of the survey in the form of user stories **(“As a [role], I want [function] in order to achieve [benefit]”)**, showcasing functions requested by our potential users, ranged from the most popular to the least.
 
 1. As a boat driver, I want a weather alert feature that notifies me about high wind conditions, ensuring my safety while on the water.
 2. As a boat driver, I want the ability to access guest parking information in order to easily find and utilize available parking spots.
