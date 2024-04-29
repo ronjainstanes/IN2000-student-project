@@ -51,23 +51,42 @@ Sequence Diagram Check:
 
 ```mermaid
     sequenceDiagram
-        actor Bruker
-        participant App
-        participant Api
+        actor User
+        participant MapScreen (main)
+        participant WeatherScreen 
+        participant GoogleMap Api
+        participant MetAlerts Api
+        participant Guest harbours / gas stations JSON-file
+        participant LocationForecast Api
+        participant OceanForecast Api
 
-        Bruker->>App: Click on retrieve weather button
+        User->>MapScreen: Search a location
 
-        App->>Api: fetchWeatherData()
-
-        alt sukess
+        MapScreen->>GoogleMap Api: update the map
         
-            Api-->>App: Weather data is returned
-            App-->>Bruker: Show weather data
+        GoogleMap Api-->>MapScreen: return map and update location
+        
+        MapScreen-->>User: Show the map at the location
+        
+        MapScreen->>Guest harbours / gas stations JSON-file: fetch Guest harbours and gas stations at the location
+        
+        Guest harbours / gas stations JSON-file-->>MapScreen: return data
+        
+        MapScreen-->>User: Show guest harbours and gas stations at the location
+        
+        MapScreen->>MetAlerts Api: fetch MetAlerts at the location
+        
+        MetAlerts Api-->>MapScreen: return MetAlerts data
 
-        else feil
+        alt has MetAlerts at the location
+        
+            MapScreen-->>User: Show a warning triangle on the map
+            User->>MapScreen: Click on the triangle for more info
+            MapScreen-->>User: Show info
 
-            Api-->>App: Error
-            App-->>Bruker: Show error message
+        else no MetAlerts at the location
+        
+            MapScreen-->>User: No data comes up on the map
 
         end
 ```
