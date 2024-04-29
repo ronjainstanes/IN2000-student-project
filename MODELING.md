@@ -41,3 +41,26 @@ For the application to function, and for the user to be able to perform these ac
 ### Use case diagram:
 
 ![useCaseMainFlow.png](useCaseMainFlow.png)
+
+Sequence Diagram Check:
+
+    sequenceDiagram
+        actor Bruker
+        participant App
+        participant Api
+
+        Bruker->>App: Click on retrieve weather button
+
+        App->>Api: fetchWeatherData()
+
+        alt sukess
+        
+            Api-->>App: Weather data is returned
+            App-->>Bruker: Show weather data
+
+        else feil
+
+            Api-->>App: Error
+            App-->>Bruker: Show error message
+
+        end
