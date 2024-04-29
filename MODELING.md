@@ -40,8 +40,8 @@ We assume that internet connection is available, and no errors occur when the us
 
 For the application to function, and for the user to be able to perform these actions, we need to retrieve different data from MET (weather forecast, ocean forecast, and meteorological alerts) and Google (map), which means they are secondary actors in our system.
 
-**Primary actor**: User
-**Secondary actors**: Google, MET
+* **Primary actor**: User
+* **Secondary actors**: Google, MET
 
 ### Use case diagram:
 
