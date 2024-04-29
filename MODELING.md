@@ -89,5 +89,23 @@ Sequence Diagram Check:
             MapScreen-->>User: No data comes up on the map
 
         end
+        
+        User->>WeatherScreen: navigate to WeatherScreen
+        
+        MapScreen->>WeatherScreen: send location
+        
+        WeatherScreen->>LocationForecast Api: fetch weather data
+        
+        LocationForecast Api-->>WeatherScreen: return weather data
+        
+        WeatherScreen-->>User: Show weather conditions
+        
+        User->>WeatherScreen: Open sea conditions table
+        
+        WeatherScreen->>OceanForecast Api: fetch sea data
+        
+        OceanForecast Api-->>WeatherScreen: return sea data
+        
+        WeatherScreen-->>User: Show sea conditions
 ```
 
