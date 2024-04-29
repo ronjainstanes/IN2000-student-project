@@ -53,7 +53,7 @@ After creating a Use Case diagram to depict the interaction between our applicat
 * **Actor**: User
 * **participant**: MapScreen - main screen 
 * **participant**: WeatherScreen
-* **participant**: GoogleMap Api - we get the map from the Api
+* **participant**: GoogleMaps Api - we get the map from the Api
 * **participant**: MetAlerts Api - we get data about meteorological from the Api
 * **participant**: Guest harbours / gas stations JSON-file - The most important function requested by our potential users was the ability to access information on guest harbors and gas stations. Since we could not find any suitable free API with this data, we made the decision to generate our own temporary solution by creating a JSON file containing the desired information. We acknowledge that this data source does not offer optimal scalability, we want to emphasize that it is only a temporary measure.
 * **participant**: LocationForecast Api - we get weather conditions data
@@ -65,7 +65,7 @@ After creating a Use Case diagram to depict the interaction between our applicat
         actor User
         participant MapScreen
         participant WeatherScreen 
-        participant GoogleMap Api
+        participant GoogleMaps Api
         participant MetAlerts Api
         participant Guest harbours / gas stations JSON-file
         participant LocationForecast Api
@@ -73,9 +73,9 @@ After creating a Use Case diagram to depict the interaction between our applicat
 
         User->>MapScreen: Search a location
 
-        MapScreen->>GoogleMap Api: update the map
+        MapScreen->>GoogleMaps Api: update the map
         
-        GoogleMap Api-->>MapScreen: return map and update location
+        GoogleMaps Api-->>MapScreen: return map and update location
         
         MapScreen-->>User: Show the map at the location
         
