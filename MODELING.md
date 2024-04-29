@@ -52,7 +52,7 @@ Sequence Diagram Check:
 ```mermaid
     sequenceDiagram
         actor User
-        participant MapScreen (main)
+        participant MapScreen
         participant WeatherScreen 
         participant GoogleMap Api
         participant MetAlerts Api
