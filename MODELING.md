@@ -49,6 +49,7 @@ For the application to function, and for the user to be able to perform these ac
 
 Sequence Diagram Check:
 
+```mermaid
     sequenceDiagram
         actor Bruker
         participant App
@@ -69,3 +70,5 @@ Sequence Diagram Check:
             App-->>Bruker: Show error message
 
         end
+```
+
