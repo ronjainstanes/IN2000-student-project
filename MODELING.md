@@ -11,7 +11,7 @@ Now we will present the results of the survey in the form of user stories **(“
 5. As a boat driver, I want to receive alerts regarding waves and their intensity, helping me make decisions about current conditions and potential risks.
 
 
-### **Use case diagram**
+## **Use case diagram**
 
 To illustrate the interaction between our application and the environment, we will use a Use Case diagram. We define the user as the primary actor. The user's goal in interacting with the system is to be able to check the data defined in user stories (weather and meteorological alerts in the area they are interested in). We have decided to implement these functions through the following pattern:
 There are two screens in the application. On the main screen users see a map.
