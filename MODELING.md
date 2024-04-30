@@ -22,21 +22,22 @@ After navigating to the area the user can check the weather and sea conditions b
 
 ### Precondition
 
-We assume that internet connection is available, and no errors occur when the user works with the application. The user wants to plan a boat trip and uses the application to check the weather and sea conditions in the area he wants to travel to.
+The user opens the application and the main screen (map) is loaded, showing Oslo and the Oslofjord as a hard coded start position. We assume that internet connection is available, and no errors occur when the user works with the application. 
+The user wants to plan a boat trip and uses the application to check the weather and sea conditions in the area he wants to travel to.
 
 ### **Main flow**:
 
-1. The user opens the application and the main screen (map) is loaded, showing Oslo and the Oslofjord as a hard coded start position. At the same time, data about the weather and sea conditions in this area is loaded on the other screen.
-2. The user searches for the area he is interested in to check available guest harbours and gas stations there.
-3. No meteorological alerts appear on the map for the new area.
-4. The user clicks on different guest harbors to check available facilities there.
-5. The user navigates to the weather screen to check the weather and sea conditions.
+1. The user searches for the location he is interested in to check available guest harbours and gas stations there.
+2. No meteorological alerts appear on the map for the new area.
+3. The user clicks on different guest harbors to check available facilities there.
+4. The user navigates to the weather screen to check the weather and sea conditions.
 
-### **Alternative flow, step 3**:
+### **Alternative flow 1, step 2**
+* 2.1 There are meteorological alerts in the new area. A triangle appears on the map indicating meteorological alerts. The user clicks on the warning triangle for more information.
+* 2.2 The alerts are quite dangerous, so the user decides to change his destination point (goes back to step 1).
 
-* 3.1 There are meteorological alerts in the new area. A triangle appears on the map indicating meteorological alerts. The user clicks on the warning triangle for more information.
-* 3.2.1 The alerts are quite dangerous, so the user decides to change his destination point (goes back to step 2).
-* 3.2.2 The alerts are not dangerous, so the user continue planing of his trip and goes to the step 4
+### **Alternative flow 2, step 2.2**
+* 2.2.1 The alerts are not dangerous, so the user continue planing of his trip (goes to the step 3).
 
 For the application to function, and for the user to be able to perform these actions, we need to fetch different data from MET´s Api (weather forecast, ocean forecast, meteorological alerts) and Google (map), which means they are secondary actors in our system.
 
@@ -77,17 +78,15 @@ After creating a Use Case diagram to depict the interaction between our applicat
         
         GoogleMaps Api-->>MapScreen: return map and update location
         
-        MapScreen-->>User: Show the map at the location
-        
         MapScreen->>Guest harbours / gas stations JSON-file: fetch Guest harbours and gas stations at the location
         
         Guest harbours / gas stations JSON-file-->>MapScreen: return data
         
-        MapScreen-->>User: Show guest harbours and gas stations at the location
-        
         MapScreen->>MetAlerts Api: fetch MetAlerts at the location
         
         MetAlerts Api-->>MapScreen: return MetAlerts data
+        
+        MapScreen-->>User: Show map 
 
         alt has MetAlerts at the location
         
