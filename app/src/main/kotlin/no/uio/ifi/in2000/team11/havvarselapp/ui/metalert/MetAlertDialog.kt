@@ -75,8 +75,8 @@ fun MetAlertsDialog(
                 }
             }
         }
-
         Button(
+            modifier = Modifier.align(Alignment.BottomCenter),
             onClick = onDismiss,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF_13_23_2C)

@@ -94,6 +94,10 @@ fun SeaMapScreen(
     val showDialog = rememberSaveable { mutableStateOf(false) } // when true, filter will show up
     val activateSearch = rememberSaveable { mutableStateOf(false) } // when true, show searchbar
 
+    val status by connectivityObserver.observe().collectAsState(
+        initial = ConnectivityObserver.Status.Unavailable
+    )
+
     // camera position, the area of map that is currently shown on screen
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(sharedUiState.currentLocation, 12f)
@@ -175,14 +179,25 @@ fun SeaMapScreen(
                     activateSearch.value = false
                 }
 
+
+
                 // the search bar, with an autocomplete drop-down menu
-                autocompleteTextFieldActivity.AutocompleteTextField(
-                    context,
-                    updateLocation,
-                    cameraPositionState,
-                    placesClient,
-                    activateSearch
-                )
+                if (status == ConnectivityObserver.Status.Lost ||
+                    status == ConnectivityObserver.Status.Losing ||
+                    status == ConnectivityObserver.Status.Unavailable){
+                    //NetworkConnectionStatus(connectivityObserver)
+                } else {
+                    autocompleteTextFieldActivity.AutocompleteTextField(
+                        context,
+                        updateLocation,
+                        cameraPositionState,
+                        placesClient,
+                        activateSearch
+                    )
+                    NetworkConnectionStatus(connectivityObserver)
+                }
+
+
 
                 // button that opens a dialog that explains maritime symbols on the map
                 Button(
@@ -211,8 +226,8 @@ fun SeaMapScreen(
                         Button(
                             onClick = { showMetAlerts = true },
                             modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(start = 280.dp, top = 100.dp),
+                                .align(Alignment.TopEnd)
+                                .padding(start = 280.dp, end = 10.dp, top = 100.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF_13_23_2C)
                             )
