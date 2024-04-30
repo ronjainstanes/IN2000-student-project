@@ -94,9 +94,9 @@ fun SeaMapScreen(
     val showDialog = rememberSaveable { mutableStateOf(false) } // when true, filter will show up
     val activateSearch = rememberSaveable { mutableStateOf(false) } // when true, show searchbar
 
-    val status by connectivityObserver.observe().collectAsState(
-        initial = ConnectivityObserver.Status.Unavailable
-    )
+//    val status by connectivityObserver.observe().collectAsState(
+//        initial = ConnectivityObserver.Status.Unavailable
+//    )
 
     // camera position, the area of map that is currently shown on screen
     val cameraPositionState = rememberCameraPositionState {
@@ -180,8 +180,17 @@ fun SeaMapScreen(
                 }
 
 
+                autocompleteTextFieldActivity.AutocompleteTextField(
+                    context,
+                    updateLocation,
+                    cameraPositionState,
+                    placesClient,
+                    activateSearch
+                )
+
 
                 // the search bar, with an autocomplete drop-down menu
+                /*
                 if (status == ConnectivityObserver.Status.Lost ||
                     status == ConnectivityObserver.Status.Losing ||
                     status == ConnectivityObserver.Status.Unavailable){
@@ -196,6 +205,7 @@ fun SeaMapScreen(
                     )
                     NetworkConnectionStatus(connectivityObserver)
                 }
+                 */
 
 
 
