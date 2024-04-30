@@ -201,6 +201,20 @@ fun GetWeatherIconTopPage(timeseries: Timeseries) {
     Image(imageVector = weatherIcon, contentDescription = "image",
         Modifier.size(110.dp).padding(top = 3.dp, bottom = 10.dp)) }
 
+@SuppressLint("DiscouragedApi")
+@Composable
+fun GetWeatherIconTopPageHorizontal(timeseries: Timeseries) {
+    val iconName = timeseries.data.next_1_hours?.summary?.symbol_code
+    val context = LocalContext.current
+    val resId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
+
+    val weatherIcon: ImageVector = if (resId != 0) {
+        ImageVector.vectorResource(id = resId)
+    } else {
+        ImageVector.vectorResource(id = R.drawable.fair_day) }
+    Image(imageVector = weatherIcon, contentDescription = "image",
+        Modifier.size(53.dp)) }
+
 
 
 

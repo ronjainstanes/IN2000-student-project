@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.weather
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
@@ -104,6 +106,7 @@ fun WeatherScreen(
     val fontBold = fonts3[3]
 
 
+
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center) {
@@ -118,6 +121,7 @@ fun WeatherScreen(
                         .fillMaxWidth()
                         .padding(innerPadding)
                         .background(Color(230, 240, 255))
+
                 ) {
 
                 Column(
@@ -302,7 +306,13 @@ fun DayWeatherCard(
     ) {
 
         Row(
-            modifier = Modifier
+            modifier =
+            if (todayOrTmr == "I dag") Modifier
+                .height(23.dp)
+                .fillMaxWidth()
+                .background(color = Color.Transparent)
+                .padding(start = 18.dp)
+            else Modifier
                 .height(30.dp)
                 .fillMaxWidth()
                 .background(color = Color.Transparent)
@@ -795,7 +805,13 @@ fun DayOceanCard(
         )
     ) {
         Row(
-            modifier = Modifier
+            modifier =
+            if (todayOrTmr == "I dag") Modifier
+                .height(23.dp)
+                .fillMaxWidth()
+                .background(color = Color.Transparent)
+                .padding(start = 18.dp)
+            else Modifier
                 .height(30.dp)
                 .fillMaxWidth()
                 .background(color = Color.Transparent)
@@ -1023,6 +1039,12 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
     }
 }
 
+/**
+ *  if (isLandscape) Modifier
+ *                             .align(Alignment.Start)
+ *                             .padding(start = 146.dp)
+ *                         else  Modifier
+ */
 
 
 @Composable
@@ -1031,63 +1053,123 @@ fun ScreenTop(forecastViewModel: LocationForecastViewModel, fontNormal: FontFami
     val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()
     val today = locationForecastUiState?.properties?.timeseries?.getToday()
 
+    val configuration = LocalConfiguration.current
 
-    Text(
+    // Screen in laying mode
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    Row {
+        if (isLandscape) {
+            Spacer(modifier = Modifier.weight(1.2f))
+        }
+            Text(
         text = placeNameUiState,
         textAlign = TextAlign.Center,
         fontSize = 18.sp,
+        lineHeight = 18.sp,
         fontFamily = fontNormal,
         fontWeight = FontWeight.ExtraBold,
-        modifier = Modifier.padding(top = 10.dp)
+        modifier = if (isLandscape) Modifier
+            .padding(top = 10.dp)
+            .weight(0.6f) else Modifier.padding(top = 10.dp)
     )
+    if (isLandscape) {
+            Box(
+                modifier = Modifier
+                    .weight(1.2f).padding(top = 5.dp)
+            ) {
+                Row {
+                if (today != null) {
+                    Text(
+                        modifier = Modifier.padding(start = 35.dp, top = 15.dp, end = 20.dp),
+                        text = "I dag kl. " + getNorwegianTimeWeather(today[0]) + "-" + getNorwegianTimeWeather(
+                            today[1]
+                        ),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 14.sp,
+                        lineHeight = 14.sp,
+                        fontFamily = fontBold
+                    )
+
+                    GetWeatherIconTopPageHorizontal(timeseries = today[0])
+                    Text(
+                        modifier = Modifier.padding(start = 15.dp, top = 10.dp),
+                        text = getTemperature(today[0]),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 22.sp,
+                        lineHeight = 22.sp,
+                        fontFamily = fontBold
+                    )
+
+                }
+            }
+        }
+    }
+}
+
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically )
+        verticalAlignment = Alignment.CenterVertically
+    )
     {
         if (forecastViewModel.forecastInfoUiState.collectAsState().value != null) {
 
-            Column(modifier = Modifier.weight(1f)) {
-                if (today != null) {
-                    Row( modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 26.dp, top = 5.dp) ) {
+            if (!isLandscape) {
+                Column(modifier = Modifier.weight(1f)) {
+                    if (today != null) {
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.Start)
+                                .padding(start = 26.dp, top = 5.dp)
+                        ) {
 
-                        Text(
-                            text = "I dag "+ getNorwegianTimeWeather(today[0]) + "-" + getNorwegianTimeWeather(today[1]),
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 14.sp,
-                            fontFamily = fontBold )
+                            Text(
+                                text = "I dag kl. " + getNorwegianTimeWeather(today[0]) + "-" + getNorwegianTimeWeather(
+                                    today[1]
+                                ),
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 14.sp,
+                                fontFamily = fontBold
+                            )
+                        }
+
                     }
 
-                }
-
-                Row(
-                    Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 40.dp) ) {
-                    if (today != null) {
-                        Text(
-                            text = getTemperature(today[0]),
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 25.sp,
-                            fontFamily = fontBold )
+                    Row(
+                        Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 40.dp)
+                    ) {
+                        if (today != null) {
+                            Text(
+                                text = getTemperature(today[0]),
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 25.sp,
+                                fontFamily = fontBold
+                            )
+                        }
                     }
                 }
             }
 
-            Column (
+            Column(
                 modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally )
+                horizontalAlignment = Alignment.CenterHorizontally
+            )
             {
-                if (today != null) {
+                if (today != null && (!isLandscape)) {
                     GetWeatherIconTopPage(timeseries = today[0])
                 }
             }
+            if (!isLandscape) {
 
-            Spacer( modifier = Modifier.weight(1f) )
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
         }
     }
+
 }
 
 
@@ -1105,18 +1187,18 @@ fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
     val oceanColor = if (currentScreen.value == DisplayInfo.Sea) pos else neg
 
     Box(
-        modifier = Modifier
+        modifier =  Modifier
             .fillMaxWidth()
             .background(Color(230, 240, 255))
             .padding(top = 7.dp, bottom = 7.dp)
     ) {
         Row(
             modifier = Modifier
-                .width(280.dp)
-                .height(38.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(neg)
-                .align(Alignment.Center),
+                    .width(280.dp)
+                    .height(38.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(neg)
+                    .align(Alignment.Center),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
 
