@@ -267,13 +267,5 @@ fun getFonts5(): Array<FontFamily> {
     return arrayOf(poppinsExtralight, poppinsLight, poppinsRegular)
 }
 
-fun getFonts6(): Array<FontFamily> {
-    val truculentaRegular = FontFamily(Font(R.font.truculenta_regular, FontWeight.W400))
-    val truculentaLight = FontFamily(Font(R.font.truculenta_semiexpanded_light, FontWeight.W400))
-    val truculentaMedium = FontFamily(Font(R.font.truculenta_semiexpanded_medium, FontWeight.W400))
-    val truculenta3 = FontFamily(Font(R.font.truculenta_semiexpanded_regular, FontWeight.W400))
-    val truculenta4 =
-        FontFamily(Font(R.font.truculenta_60pt_semicondensed_regular, FontWeight.W400))
-    return arrayOf(truculentaLight, truculenta4, truculentaRegular, truculenta3, truculentaMedium)
-}
+
 
