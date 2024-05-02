@@ -119,3 +119,8 @@ After creating a Use Case diagram to depict the interaction between our applicat
         WeatherScreen-->>User: Show sea conditions
 ```
 
+## Activity diagram
+
+As a final stage of modeling we want to illustrate an activity diagram to illustrate the flow of events in a use case and to show the interaction with the application from the user's point of view. It will help us to depict the sequence of activities, actions, and decisions that occur during the execution of the use case described over.
+
+
