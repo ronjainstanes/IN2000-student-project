@@ -132,6 +132,9 @@ C--> E{Is the alert dangerous?}
 E-->|Yes| F[Decides to change location]
 F-->A
 E-->|No| D
+D-->G[Navigates to WeatherScreen]
+G--> H[Checks the weather conditions]
+H--> I[Checks the sea conditions]
 ```
 
 
