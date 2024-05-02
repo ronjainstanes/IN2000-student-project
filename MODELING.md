@@ -130,7 +130,7 @@ B -->|Yes| C[Checks the alert]
 B -->|No| D[Checks the guest harbours and gas stations]
 C--> E{Is the alert dangerous?}
 E-->|Yes| F[Decides to change location]-->A
-E-->|No| G-->D
+E-->|No| D
 ```
 
 
