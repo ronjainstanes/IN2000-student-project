@@ -125,12 +125,15 @@ As a final stage of modeling we want to make an activity diagram to illustrate t
 
 ```mermaid
 flowchart 
-A[Search location] -->|Weather screen navigates to the location and shows it to the user| B{MetAlerts appears on the screen?}
+A[Search location] -->|MapScreen navigates to the location and shows it to the user| B{MetAlerts appears on the screen?}
 B -->|Yes| C[Checks the alert]
 B -->|No| D[Checks the guest harbours and gas stations]
 C--> E{Is the alert dangerous?}
 E-->|Yes| F[Decides to change location]-->A
 E-->|No| D
+D-->F[Navigates to WeatherScreen]
+F--> G[Checks the weather conditions]
+G--> H[Checks the sea conditions]
 ```
 
 
