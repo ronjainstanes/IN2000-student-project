@@ -121,6 +121,15 @@ After creating a Use Case diagram to depict the interaction between our applicat
 
 ## Activity diagram
 
-As a final stage of modeling we want to illustrate an activity diagram to illustrate the flow of events in a use case and to show the interaction with the application from the user's point of view. It will help us to depict the sequence of activities, actions, and decisions that occur during the execution of the use case described over.
+As a final stage of modeling we want to make an activity diagram to illustrate the flow of events in the use case and to show the interaction with the application from the user's point of view. It will help us to depict the sequence of activities, actions, and decisions that occur during the execution of the use case described over.
+
+```mermaid
+flowchart TD
+A[Christmas] -->|Get money| B(Go shopping)
+B --> C{Let me think}
+C -->|One| D[Laptop]
+C -->|Two| E[iPhone]
+C -->|Three| F[fa:fa-car Car]
+```
 
 
