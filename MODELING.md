@@ -129,7 +129,8 @@ A[Search location] -->|MapScreen navigates to the location and shows it to the u
 B -->|Yes| C[Checks the alert]
 B -->|No| D[Checks the guest harbours and gas stations]
 C--> E{Is the alert dangerous?}
-E-->|Yes| F[Decides to change location]-->A
+E-->|Yes| F[Decides to change location]
+F-->A
 E-->|No| D
 D-->F[Navigates to WeatherScreen]
 F--> G[Checks the weather conditions]
