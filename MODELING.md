@@ -129,8 +129,8 @@ A[Search location] -->|Weather screen navigates to the location and shows it to 
 B -->|Yes| C[Checks the alert]
 B -->|No| D[Checks the guest harbours and gas stations]
 C--> E{Is the alert dangerous?}
-E-->|Yes| --> [Decides to change location]--> A
-E-->|No|-->D
+E-->|Yes| [Decides to change location]--> A
+E-->|No| G-->D
 ```
 
 
