@@ -120,4 +120,11 @@ dependencies {
 
     // Android Desugaring, to be able to use ZonedDateTime
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    // Implementations for Unit Tests
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation ("androidx.test:core:1.5.0")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }
