@@ -80,7 +80,7 @@ data class InstantDetails(
     val fog_area_fraction: Double?,
     val relative_humidity: Double?,
     val ultraviolet_index_clear_sky: Double?,
-    val wind_from_direction: Double?,
+    var wind_from_direction: Double?,
     val wind_speed: Double?,
     val wind_speed_of_gust: Double?,
     val wind_speed_percentile_10: Double?,
@@ -107,7 +107,7 @@ data class Next_1_hours(
 )
 
 data class Summary1(
-    val symbol_code: String?,
+    var symbol_code: String?,
 )
 
 data class Details1(
@@ -126,12 +126,12 @@ data class Next_6_hours(
 
 
 data class Summary6(
-    val symbol_code: String?,
+    var symbol_code: String?,
 )
 
 data class Details6(
     val air_temperature_max: Double?,
-    val air_temperature_min: Double?,
+    var air_temperature_min: Double?,
     val precipitation_amount: Double?,
     val precipitation_amount_max: Double?,
     val precipitation_amount_min: Double?,

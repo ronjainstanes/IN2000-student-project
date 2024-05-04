@@ -48,7 +48,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-
 class AutocompleteTextFieldActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -90,7 +89,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                     }
                 },
                 onSearch = {
-                    if (text.length > 0){
+                    if (text.isNotEmpty()){
                         val inputTextUpperCase = text.replaceFirstChar { it.uppercase() }
                         getPosition(
                             inputTextUpperCase,
@@ -98,13 +97,8 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                             updateLocation,
                             cameraPositionState
                         )
-                        if (historyItems.contains(inputTextUpperCase)) {
-                            val indexToRemove = historyItems.indexOf(inputTextUpperCase)
-                            historyItems.removeAt(indexToRemove)
-                        } else {
-                            historyItems.removeAt(4)
-                        }
-                        historyItems.add(0, inputTextUpperCase)
+                        addNewItemToSearchHistory(inputTextUpperCase, historyItems)
+
                     }
                     active.value = false },
                 active = active.value,
@@ -153,13 +147,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                         updateLocation,
                                         cameraPositionState
                                     )
-                                    if (historyItems.contains(historyItem)) {
-                                        val indexToRemove = historyItems.indexOf(historyItem)
-                                        historyItems.removeAt(indexToRemove)
-                                    } else {
-                                        historyItems.removeAt(4)
-                                    }
-                                    historyItems.add(0, historyItem)
+                                    addNewItemToSearchHistory(historyItem, historyItems)
                                 })
                         ) {
                             Icon(
@@ -186,16 +174,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                         updateLocation,
                                         cameraPositionState
                                     )
-                                    // save chosen to the history list
-                                    if (historyItems.contains(predictionText)) {
-                                        // just move existing history item on the top of the list
-                                        val indexToRemove = historyItems.indexOf(predictionText)
-                                        historyItems.removeAt(indexToRemove)
-                                    } else {
-                                        // item does not exist, remove last item in the list and add new one to the top (FIFO)
-                                        historyItems.removeAt(4) // remove last element
-                                    }
-                                    historyItems.add(0, predictionText)
+                                    addNewItemToSearchHistory(predictionText, historyItems)
                                 })
                         ) {
                             Text(
@@ -209,8 +188,17 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         }
     }
 
+    private fun addNewItemToSearchHistory(userInput: String, historyItems: MutableList<String>){
+        if (historyItems.contains(userInput)) {
+            val indexToRemove = historyItems.indexOf(userInput)
+            historyItems.removeAt(indexToRemove)
+        } else {
+            historyItems.removeAt(4)
+        }
+        historyItems.add(0, userInput)
+    }
 
-    fun fetchPredictions(
+    private fun fetchPredictions(
         query: String,
         placesClient: PlacesClient,
         onPredictionsFetched: (List<AutocompletePrediction>) -> Unit
@@ -234,12 +222,11 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         }
     }
 
-
     /**
      * Flytter kartet til området som brukeren har søkt opp.
      * Det kommer en pop-up melding hvis posisjonen ikke ble funnet.
      */
-    fun getPosition(
+    private fun getPosition(
         placeName: String,
         context: Context,
         updateLocation: (loc: LatLng) -> Unit,

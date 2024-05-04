@@ -179,7 +179,7 @@ fun SeaMapScreen(
                     activateSearch.value = false
                 }
 
-
+                // the search bar, with an autocomplete drop-down menu
                 autocompleteTextFieldActivity.AutocompleteTextField(
                     context,
                     updateLocation,

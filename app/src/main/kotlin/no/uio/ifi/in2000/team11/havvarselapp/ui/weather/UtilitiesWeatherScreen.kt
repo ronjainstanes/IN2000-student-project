@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.team11.havvarselapp.R
 import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.Timeseries
 import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.TimeseriesOcean
-import no.uio.ifi.in2000.team11.havvarselapp.ui.locationForecast.LocationForecastViewModel
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
