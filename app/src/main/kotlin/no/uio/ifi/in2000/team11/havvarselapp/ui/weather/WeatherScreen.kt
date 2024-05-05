@@ -1337,12 +1337,12 @@ fun DataLastUpdated(forecastViewModel: LocationForecastViewModel, displayInfo: M
 
                 DisplayInfo.Weather -> {
                             "Vær data sist oppdatert:\n" +
-                            "${locationForecastUiState?.properties?.meta?.updated_at?.let { LastUpdates(it) }}"
+                            "${locationForecastUiState?.properties?.meta?.updated_at?.let { lastUpdates(it) }}"
                 }
 
                 DisplayInfo.Sea -> {
                              "Hav data sist oppdatert:\n" +
-                            "${oceanForecastUiState?.properties?.meta?.updated_at?.let { LastUpdates(it) }}"
+                            "${oceanForecastUiState?.properties?.meta?.updated_at?.let { lastUpdates(it) }}"
                 }
             }
 

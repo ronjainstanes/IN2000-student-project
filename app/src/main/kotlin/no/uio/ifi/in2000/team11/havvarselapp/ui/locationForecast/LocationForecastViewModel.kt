@@ -60,7 +60,14 @@ class LocationForecastViewModel(
     }
 
     /**
-     * Reverse geocoder for placename on top of weatherScreen
+     * After the user has searched for a location on the map screen, or
+     * placed a marker on a new location, this function fetches the name of
+     * the location. To be displayed on top of the weather screen.
+     *
+     * NOTE: "getFromLocation" is marked deprecated at API level 33,
+     * however the new non-deprecated method has minimum API level 33.
+     * We found no other to use this without setting minSdk to 33 and maxSdk to 34,
+     * which is a very short API range, and we have chosen not to do this.
      */
     fun setCurrentPlaceName(context: Context, lat: Double, lon: Double) {
         viewModelScope.launch(Dispatchers.IO) {

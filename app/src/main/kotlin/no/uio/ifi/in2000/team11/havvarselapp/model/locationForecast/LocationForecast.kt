@@ -1,7 +1,13 @@
 package no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast
 
 /**
- * Contains all data from LocationForecast API
+ * Contains all data from LocationForecast API.
+ * Data class is generated with the JSON to Kotlin converter to
+ * match the output of the .body() function used in the DataSource.
+ *
+ * NOTE: this file contains many warnings, because the data from the API
+ * contains variables with underscores. However, the names need to match
+ * perfectly for the .body() function to work.
  */
 data class LocationForecast(
     val type: String,

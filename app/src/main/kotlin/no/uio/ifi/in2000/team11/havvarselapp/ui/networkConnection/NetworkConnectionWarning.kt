@@ -11,12 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,9 +35,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.team11.havvarselapp.R
 
+/**
+ * A dialog that informs the user that the app has lost internet connection.
+ * It disappears if the app gains access again.
+ */
 @Composable
 fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
-                            /*onDismiss:() Unit*/
 ){
     // Create a coroutine scope
     val coroutineScope = rememberCoroutineScope()
@@ -57,7 +60,7 @@ fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
         initial = ConnectivityObserver.Status.Unavailable
     )
 
-    //TODO: Trenger vi å erstatte dette bildet siden det er for stort???
+    // The image in the dialog
     val network = ImageVector.vectorResource(id = R.drawable.network2)
 
     // Check if the delay is over before executing the if-check
@@ -100,21 +103,11 @@ fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
                         modifier = Modifier.padding(bottom = 10.dp),
                     )
                     Text(
-                        text = "værmelding, havfohold og farevarslinger",
+                        text = "værmelding, havforhold og farevarslinger",
                         style = TextStyle(fontSize = 16.sp),
                         modifier = Modifier.padding(bottom = 16.dp),
                     )
                 }
-
-                /*            Button(
-                                onClick = onDismiss,
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF_13_23_2C)
-                                )
-                            ) {
-                                Text("Skjønner")
-                            }*/
             }
         }
 

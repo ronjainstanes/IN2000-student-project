@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.map
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -73,7 +74,11 @@ class SeaMapViewModel : ViewModel() {
                 }
 
                 harborData.postValue(harborList)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Log.e(
+                    "SEAMAP_VIEWMODEL",
+                    "Failed to load data for guest harbour markers.\n"
+                )
             }
         }
     }

@@ -48,6 +48,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
+/**
+ * NOTE: this file contains a warning - deprecated. Scroll down for explanation.
+ */
+
+/**
+ * A search field to search for a location, which moves the map
+ * and updates the weather-screen with the new location
+ */
 class AutocompleteTextFieldActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -69,8 +77,6 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         }
         var predictions by rememberSaveable { mutableStateOf(emptyList<AutocompletePrediction>()) }
         var text by rememberSaveable { mutableStateOf("") }
-        // var active by rememberSaveable { mutableStateOf(false) }
-        //val keyboardController = LocalSoftwareKeyboardController.current
 
         Column(
             modifier = Modifier.fillMaxSize().zIndex(2f),
@@ -198,6 +204,11 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         historyItems.add(0, userInput)
     }
 
+    /**
+     * When the user starts typing a location in the search field,
+     * this method fetches predictions to be displayed in an autocomplete
+     * drop-down menu
+     */
     private fun fetchPredictions(
         query: String,
         placesClient: PlacesClient,
@@ -214,6 +225,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
 
             placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
                 val predictions = response.autocompletePredictions
+
                 // Update predictions state
                 onPredictionsFetched(predictions)
             }.addOnFailureListener { exception ->
@@ -222,9 +234,16 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         }
     }
 
+
     /**
-     * Flytter kartet til området som brukeren har søkt opp.
-     * Det kommer en pop-up melding hvis posisjonen ikke ble funnet.
+     * After the user has searched a location in the search field,
+     * the camera will move there.
+     * A pop-up message will appear if the location is not found.
+     *
+     * NOTE: "getFromLocationName" is marked deprecated at API level 33,
+     * however the new non-deprecated method has minimum API level 33.
+     * We found no other to use this without setting minSdk to 33 and maxSdk to 34,
+     * which is a very short API range, and we have chosen not to do this.
      */
     private fun getPosition(
         placeName: String,
@@ -235,21 +254,21 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         val geocoder = Geocoder(context)
 
         try {
-            // Sjekk tilgjengeligheten av nettverkstilgang
+            // Used to check internet connection
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-            // Hent informasjon om nettverkstilkoblingen
+            // Get information about internet connection
             val networkCapabilities =
                 connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
 
-            // Sjekk om enheten har en aktiv internettforbindelse via Wi-Fi eller mobilnett (CELLULAR for mobilnett)
+            // Check if the device has an active internet connection via Wi-Fi or cellular network
             if (networkCapabilities != null && (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || networkCapabilities.hasTransport(
                     NetworkCapabilities.TRANSPORT_CELLULAR
                 ))
             ) {
 
-                // henter posisjonen til stedet som er søkt på
+                // Get the location that the user searched for
                 val addressList: List<Address>? = geocoder.getFromLocationName(placeName, 1)
                 if (!addressList.isNullOrEmpty()) {
                     val address: Address = addressList[0]
@@ -257,18 +276,18 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                     val long = address.longitude
                     val searchLocation = LatLng(lat, long)
 
-                    // oppdater posisjon i UiState, som deretter oppdaterer locationRepository
+                    // Updates location in UiState
                     updateLocation(searchLocation)
 
-                    // flytter kartet til stedet som er søkt opp
+                    // Moves the camera
                     cameraPositionState.position =
                         CameraPosition.fromLatLngZoom(searchLocation, 12f)
                 } else {
-                    // viser en "toast", en liten pop-up melding om at stedet ikke ble funnet
+                    // Shows a "toast", a pop-up message if the location was not found
                     Toast.makeText(context, "Posisjonen ble ikke funnet", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                // Hvis det ikke er noen aktiv internettforbindelse, vis en passende melding
+                // If there is no internet connection, a message pops up
                 Toast.makeText(context, "Ingen internettforbindelse", Toast.LENGTH_SHORT).show()
             }
         } catch (e: IOException) {

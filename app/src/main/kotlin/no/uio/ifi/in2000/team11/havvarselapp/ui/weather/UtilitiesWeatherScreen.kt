@@ -157,7 +157,7 @@ fun List<Timeseries>.getToday(): List<Timeseries> {
     val today = LocalDate.now(zoneId)
     return this.filter { ZonedDateTime.parse(it.time).withZoneSameInstant(zoneId).toLocalDate() == today }
 }
-fun LastUpdates(today: String): String? {
+fun lastUpdates(today: String): String? {
     val parsedDate = ZonedDateTime.parse(today)
     val formats = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm",  Locale("no", "NO"))
     return parsedDate.withZoneSameInstant(ZoneId.of("Europe/Oslo")).format(formats)
@@ -183,7 +183,7 @@ fun List<TimeseriesOcean>.groupByDayOcean(): Map<LocalDate, List<TimeseriesOcean
  * Finds and displays the right weather image for the screen top.
  *
  * Note: The function has an 'SuppressLint' annotation because 'getIdentifier'
- * is used to get the iconname in a dynamic way instead of static, which
+ * is used to get the icon name in a dynamic way instead of static, which
  * causes a warning. But the icon is dependent on the API-data that is always changing.
  */
 @SuppressLint("DiscouragedApi")
@@ -200,6 +200,14 @@ fun GetWeatherIconTopPage(timeseries: Timeseries) {
     Image(imageVector = weatherIcon, contentDescription = "image",
         Modifier.size(110.dp).padding(top = 3.dp, bottom = 10.dp)) }
 
+/**
+ * Finds and displays the right weather image for the screen top,
+ * when the screen is tilted horizontally.
+ *
+ * Note: The function has an 'SuppressLint' annotation because 'getIdentifier'
+ * is used to get the icon name in a dynamic way instead of static, which
+ * causes a warning. But the icon is dependent on the API-data that is always changing.
+ */
 @SuppressLint("DiscouragedApi")
 @Composable
 fun GetWeatherIconTopPageHorizontal(timeseries: Timeseries) {
@@ -265,6 +273,4 @@ fun getFonts5(): Array<FontFamily> {
     val poppinsRegular = FontFamily(Font(R.font.poppins_regular, FontWeight.W400))
     return arrayOf(poppinsExtralight, poppinsLight, poppinsRegular)
 }
-
-
 

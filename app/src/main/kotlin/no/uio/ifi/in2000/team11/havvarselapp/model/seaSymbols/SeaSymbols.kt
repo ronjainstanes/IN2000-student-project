@@ -12,6 +12,9 @@ data class SeaSymbolsPair (
     val description: String
     )
 
+/**
+ * A list of all the sea symbols on the map, and a description for each one
+ */
 data class SeaSymbolsList(
     val symbolDescription: List<SeaSymbolsPair> = listOf(
         SeaSymbolsPair(R.drawable.with_gas_harbor,"Parkering med bensinstasjon" ),

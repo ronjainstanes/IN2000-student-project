@@ -57,13 +57,7 @@ fun NavigationBarWithButtons(navController: NavController) {
             // button for seamap-screen
             Button(
                 modifier = Modifier
-                    .weight(1f)
-                    /*.border(
-                        width = boardersWidth,
-                        // changes color if button is active/inactive
-                        color = white,
-                        shape = RectangleShape
-                    )*/,
+                    .weight(1f),
                 // when clicked: navigate, change color
                 onClick = {
                     selectedButtonMap = true
@@ -82,14 +76,7 @@ fun NavigationBarWithButtons(navController: NavController) {
             // button for weather-screen
             Button(
                 modifier = Modifier
-                    .weight(1f)
-                    /*.border(
-                        width = boardersWidth,
-                        // changes color if button is active/inactive
-                        color = white,
-                        shape = RectangleShape
-                        // when clicked: navigate, change color
-                    )*/, onClick = {
+                    .weight(1f), onClick = {
                     selectedButtonWeather = true
                     navController.navigate("weather_screen")
                     selectedButtonMap = false
@@ -102,16 +89,20 @@ fun NavigationBarWithButtons(navController: NavController) {
     }
 }
 
+/**
+ * The button to navigate to the map screen
+ */
 @Composable
 fun ButtonMapContext(isSelected: Boolean) {
     val white = Color(100, 110, 125, 100)
     val gray = Color(19, 35, 44, 200)
     Box(
-        contentAlignment = Alignment.Center, // Senterer innholdet i Box
+        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(70.dp, 50.dp) // Setter størrelsen på Box, denne må matche størrelsen du setter for Button
-            .clip(CircleShape) // Gjør at Box får en rund form
-            .background(if (isSelected) white else gray) // Endrer bakgrunnsfarge basert på om knappen er valgt
+            .size(70.dp, 50.dp)
+            .clip(CircleShape)
+            // changes background color if the button is clicked
+            .background(if (isSelected) white else gray)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
@@ -123,16 +114,20 @@ fun ButtonMapContext(isSelected: Boolean) {
     }
 }
 
+/**
+ * The button to navigate to the weather screen
+ */
 @Composable
 fun ButtonWeatherContext(isSelected: Boolean) {
     val white = Color(100, 110, 125, 100)
     val gray = Color(19, 35, 44, 200)
     Box(
-        contentAlignment = Alignment.Center, // Senterer innholdet i Box
+        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(70.dp,50.dp) // Setter størrelsen på Box, denne må matche størrelsen du setter for Button
-            .clip(CircleShape) // Gjør at Box får en rund form
-            .background(if (isSelected) white else gray) // Endrer bakgrunnsfarge basert på om knappen er valgt
+            .size(70.dp,50.dp)
+            .clip(CircleShape)
+            // changes background color if the button is clicked
+            .background(if (isSelected) white else gray)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(

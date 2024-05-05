@@ -1,6 +1,14 @@
 package no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast
 
-
+/**
+ * Contains all data from OceanForecast API.
+ * Data class is generated with the JSON to Kotlin converter to
+ * match the output of the .body() function used in the DataSource.
+ *
+ * NOTE: this file contains many warnings, because the data from the API
+ * contains variables with underscores. However, the names need to match
+ * perfectly for the .body() function to work.
+ */
 data class OceanForecast(
     val type: String,
     val geometry: GeometryOcean,
@@ -39,17 +47,13 @@ data class TimeseriesOcean(
     val data: DataOcean,
 )
 
-
-// TODO: Ny
 data class DataOcean(
     val instant: InstantOcean,
 )
 
-// TODO: Ny
 data class InstantOcean(
     val details: DetailsOcean,
 )
-
 
 data class DetailsOcean(
     val sea_surface_wave_from_direction: Double?, // Wave direction follows meteorological convention. It is given as the direction the waves are coming from (0° is north, 90° east, etc.)
@@ -58,16 +62,3 @@ data class DetailsOcean(
     val sea_water_temperature: Double?, //  (celsius) Surface temperature of sea water
     val sea_water_to_direction: Double?, //Sea water (current) direction follows oceanographic convention. It is given as the direction the sea water is moving towards (0° is north, 90° east, etc.)
 )
-
-/**
- *
- *
- * GEOGCS["GCS_WGS_1984",
- * DATUM["D_WGS_1984",
- * SPHEROID["WGS_1984",6378137,298.257223563]],
- * PRIMEM["Greenwich",0],
- * UNIT["Degree",0.017453292519943295]]
- */
-
-
-

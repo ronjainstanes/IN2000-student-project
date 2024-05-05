@@ -24,6 +24,11 @@ data class SharedUiState(
     val allMetAlerts: List<MetAlert> = listOf(),
 )
 
+/**
+ * The shared ViewModel handles the SharedUiState, which all screens in the app
+ * have access to. The ViewModel itself is not sent into the screens because each screen
+ * has only one ViewModel.
+ */
 class SharedViewModel: ViewModel() {
     // Create instance of repository
     private val metAlertsRepository = MetAlertsRepositoryImpl()

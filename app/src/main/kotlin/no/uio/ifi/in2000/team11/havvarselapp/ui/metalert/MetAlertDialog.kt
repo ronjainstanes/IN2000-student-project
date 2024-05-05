@@ -32,10 +32,15 @@ import androidx.compose.ui.zIndex
 import no.uio.ifi.in2000.team11.havvarselapp.SharedUiState
 import no.uio.ifi.in2000.team11.havvarselapp.model.alert.MetAlert
 
-
+/**
+ * A dialog that appears when clicking on the met-alerts icon on the seamap screen.
+ * Displays information about the met alerts that are currently active at this location.
+ */
 @Composable
 fun MetAlertsDialog(
+    // met alerts are saved in the sharedUiState
     sharedUiState: SharedUiState,
+    // function to close the dialog
     onDismiss:() -> Unit,
 ){
     Box(
@@ -52,7 +57,8 @@ fun MetAlertsDialog(
             Column(
                 modifier = Modifier.padding(innerPadding)
             ) {
-                // Tittel
+
+                // Title of the dialog
                 Text(
                     text = "Farevarsler",
                     fontSize = 35.sp,
@@ -61,11 +67,13 @@ fun MetAlertsDialog(
                         .paddingFromBaseline(50.dp, 10.dp)
                 )
 
-                // Viser frem alle farevarsler
+                // displays all met-alerts in a scrollable dialog window
                 LazyVerticalGrid(
                     modifier = Modifier.padding(innerPadding),
                     columns = GridCells.Fixed(1)
                 ) {
+
+                    // contains a card for each met-alert
                     items(
                         count = sharedUiState.allMetAlerts.size,
                         key = { index -> sharedUiState.allMetAlerts[index].id }
@@ -75,6 +83,8 @@ fun MetAlertsDialog(
                 }
             }
         }
+
+        // button to close dialog
         Button(
             modifier = Modifier.align(Alignment.BottomCenter),
             onClick = onDismiss,
@@ -87,59 +97,65 @@ fun MetAlertsDialog(
     }
 }
 
-
+/**
+ * A card containing all information about an active met-alert
+ */
 @Composable
 fun MetAlertCard(metAlert: MetAlert) {
 
     Card(
         modifier = Modifier
-            .fillMaxWidth() // Fylle maksimal bredde som er tilgjengelig
+            .fillMaxWidth()
             .padding(16.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth() // Fylle maksimal bredde som er tilgjengelig
-                .padding(16.dp) // Sett padding for innholdet i kortet
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(100.dp) // Sett en fast størrelse for boksen som ikonet skal være inne i
+                    .size(100.dp)
             ) {
-                // Ikonet hentes og vises
+
+                // Get the right icon to display in the card
                 GetIconForAlert(
                     iconName = metAlert.iconName,
                     color = metAlert.riskMatrixColor,
                     false
                 )
             }
-            // Spacer legger til et mellomrom mellom ikonet og teksten
             Spacer(Modifier.width(8.dp))
 
-            // Sett resten av teksten til å ta opp så mye plass som mulig
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f) // Sett et vektsystem for å fylle tilgjengelig plass
-                    .padding(start = 8.dp) // Sett padding mellom ikonet og teksten
+                    .weight(1f)
+                    .padding(start = 8.dp)
             ) {
+
+                // The area where the met-alert is active
                 Text(
                     text = metAlert.area,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .align(Alignment.Start) // Venstrejuster teksten
+                        .align(Alignment.Start)
                 )
 
+                // Description of what the met-alert is about
                 Text(
                     text = metAlert.description,
                     modifier = Modifier
-                        .padding(top = 3.dp) // Legger til litt plass over denne teksten
-                        .align(Alignment.Start) // Venstrejuster teksten
+                        .padding(top = 3.dp)
+                        .align(Alignment.Start)
                 )
+
+                // Instruction for how to respond
                 Text(
                     text = metAlert.instruction,
                     modifier = Modifier
-                        .align(Alignment.Start), // Venstrejuster teksten
+                        .align(Alignment.Start),
                     color = Color.Blue
                 )
             }

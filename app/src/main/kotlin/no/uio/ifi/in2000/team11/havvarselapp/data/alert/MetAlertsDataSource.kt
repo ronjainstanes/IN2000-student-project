@@ -12,6 +12,15 @@ import java.net.ConnectException
 import java.net.UnknownHostException
 
 /**
+ * NOTE:
+ * In this file, we have decided to parse the data manually from a JSON string
+ * to a self-defined data class, instead of using the .body() function we were
+ * taught in class. This is because we need to process the data before it can
+ * be used in functions, and we have chosen to process it in the data source
+ * instead of needing to do it later in the program.
+ */
+
+/**
  * Data source used to fetch data from Met Alerts API
  */
 interface MetAlertsDataSource {
@@ -94,6 +103,8 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
                 val instruction = alert.getJSONObject("properties").optString("instruction")
                 val triggerLevel = alert.getJSONObject("properties").optString("triggerLevel")
                 val riskMatrixColor = alert.getJSONObject("properties").optString("riskMatrixColor")
+
+                // create an iconName to display the right icon on screen
                 val iconName = "icon_warning_${event.trim()}_${riskMatrixColor}".lowercase()
 
                 // parses from "2; yellow; Moderate" to a List<String>
@@ -102,7 +113,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
                 val awarenessLevel =
                     awarenessLevelStr.split(";")
 
-                // parser fra "1; wind" til en List<String>
+                // parses from "1; wind" to a List<String>
                 val awarenessTypeStr = alert.getJSONObject("properties").getString("awareness_type")
                 val awarenessType = awarenessTypeStr.split(";")
 

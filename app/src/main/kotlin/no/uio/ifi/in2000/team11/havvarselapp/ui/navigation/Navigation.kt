@@ -28,18 +28,19 @@ fun SetUpNavigation(
 ) {
     val navController = rememberNavController()
 
-    //TODO: initialise a placesClient here?
-
+    // Builds a navigation graph, setting up all ways to navigate in the app
     NavHost(
         navController = navController,
         startDestination = "start_destination_seamap"
     ) {
 
+        // Start destination: seamap screen
         navigation(
             startDestination = "seamap_screen",
             route = "start_destination_seamap"
         ) {
 
+            // The seamap screen
             composable("seamap_screen") { entry ->
                 val viewModel = entry.sharedViewModel<SharedViewModel>(navController)
                 val state by viewModel.sharedUiState.collectAsStateWithLifecycle()
@@ -54,6 +55,8 @@ fun SetUpNavigation(
                     connectivityObserver
                 )
             }
+
+            // The weather screen
             composable("weather_screen") { entry ->
                 val viewModel = entry.sharedViewModel<SharedViewModel>(navController)
                 val state by viewModel.sharedUiState.collectAsStateWithLifecycle()
@@ -69,6 +72,14 @@ fun SetUpNavigation(
     }
 }
 
+/**
+ * Makes it possible for all screens in the app to access the same
+ * SharedViewModel and SharedUiState, which is necessary when data updated in one
+ * part of the app needs to be shared with all screens.
+ *
+ * NOTE: The SharedViewModel is not sent into the screens, only the sharedUiState
+ * is taken as a parameter. There is only one ViewModel per screen.
+ */
 @Composable
 inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
     navController: NavHostController,

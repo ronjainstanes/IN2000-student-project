@@ -9,7 +9,9 @@ import io.ktor.serialization.gson.gson
 import io.ktor.util.appendIfNameAbsent
 import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.OceanForecast
 
-
+/**
+ * Data source used to fetch data from OceanForecast API
+ */
 class OceanForecastDataSource {
     // HTTP client
     private val client = HttpClient {
@@ -22,7 +24,10 @@ class OceanForecastDataSource {
         }
     }
 
-    // oslo - lat: 59.9, lon: 10.7
+    /**
+     * Fetches data from the OceanForecast API, returns it as an object of
+     * the OceanForecast data class
+     */
     suspend fun fetchOceanForecast(lat: String, lon: String): OceanForecast? {
         return try {
             client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}")

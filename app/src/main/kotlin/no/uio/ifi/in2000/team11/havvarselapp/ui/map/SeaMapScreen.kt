@@ -72,31 +72,56 @@ import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityOb
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectionStatus
 import java.net.URL
 
+/**
+ * This is the screen containing the sea map.
+ */
 @Composable
 fun SeaMapScreen(
+    // shared UiState containing info shared between both screens in the app
     sharedUiState: SharedUiState,
+    // handles navigation between screens
     navController: NavController,
+    // needed to search for a location in the search field
     placesClient: PlacesClient,
+    // function to update location in SharedUiState
     updateLocation: (loc: LatLng) -> Unit,
+    // used to respond when the app loses or gains internet access
     connectivityObserver: ConnectivityObserver,
+    // viewmodel for the screen
     seaMapViewModel: SeaMapViewModel = viewModel()
 ) {
+    // autocomplete search field
     val autocompleteTextFieldActivity = AutocompleteTextFieldActivity()
+
+    // the UiState for the map screen
     val mapUiState: MapUiState by seaMapViewModel.mapUiState.collectAsState()
+
+    // indicates if maritime symbols (tile overlay) is activated
     val showSymbols = rememberSaveable { mutableStateOf(true) }
+
+    // indicates if met-alert button is clicked on and dialog is open
     var showMetAlerts by rememberSaveable { mutableStateOf(false) }
+
+    // if harbor markers with gas station is activated
     val showHarborWithGas = rememberSaveable { mutableStateOf(true) }
+
+    // if normal harbor markers is activated
     val showHarborWithoutGas = rememberSaveable { mutableStateOf(true) }
+
+    // if dialog explaining maritime symbols is open
     var showExplanation by rememberSaveable { mutableStateOf(false) }
+
+    // the list of symbols and explanations to be displayes in the dialog
     val listOfSymbols: List<SeaSymbolsPair> = SeaSymbolsList().symbolDescription
+
+    // the current context
     val context = LocalContext.current
 
+    // if dialog for filter menu is visible on screen
     val showDialog = rememberSaveable { mutableStateOf(false) } // when true, filter will show up
-    val activateSearch = rememberSaveable { mutableStateOf(false) } // when true, show searchbar
 
-//    val status by connectivityObserver.observe().collectAsState(
-//        initial = ConnectivityObserver.Status.Unavailable
-//    )
+    // open search bar with autocomplete drop-down menu
+    val activateSearch = rememberSaveable { mutableStateOf(false) } // when true, show searchbar
 
     // camera position, the area of map that is currently shown on screen
     val cameraPositionState = rememberCameraPositionState {
@@ -120,18 +145,18 @@ fun SeaMapScreen(
                     .weight(1f)
             ) {
 
-                // composable of the map itself
+                // composable containing the map itself
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,
-                    // when map is clicked
+                    // when map is clicked, place marker and update location
                     onMapClick = { clickedPosition ->
                         updateLocation(clickedPosition)
                         seaMapViewModel.placeOrRemoveMarker()
                         showDialog.value = false
                         activateSearch.value = false
                     },
-                    // stops a google map button to pop up in the corner at random times
+                    // prevents a tiny google map button to pop up in the corner at random times
                     uiSettings = MapUiSettings(
                         mapToolbarEnabled = false
                     ),
@@ -154,7 +179,6 @@ fun SeaMapScreen(
                             }
                         }
                     }
-
 
                     // map overlay from OpenSeaMap
                     if (showSymbols.value) {
@@ -188,27 +212,6 @@ fun SeaMapScreen(
                     activateSearch
                 )
 
-
-                // the search bar, with an autocomplete drop-down menu
-                /*
-                if (status == ConnectivityObserver.Status.Lost ||
-                    status == ConnectivityObserver.Status.Losing ||
-                    status == ConnectivityObserver.Status.Unavailable){
-                    //NetworkConnectionStatus(connectivityObserver)
-                } else {
-                    autocompleteTextFieldActivity.AutocompleteTextField(
-                        context,
-                        updateLocation,
-                        cameraPositionState,
-                        placesClient,
-                        activateSearch
-                    )
-                    NetworkConnectionStatus(connectivityObserver)
-                }
-                 */
-
-
-
                 // button that opens a dialog that explains maritime symbols on the map
                 Button(
                     onClick = { showExplanation = true },
@@ -241,6 +244,8 @@ fun SeaMapScreen(
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF_13_23_2C)
                             )
+
+                            // the button contains a warning symbol for the met-alert
                         ) {
                             GetIconForAlert(
                                 iconName = it.iconName,
@@ -249,7 +254,7 @@ fun SeaMapScreen(
                             )
                         }
 
-                        // if clicked on, show met-alert dialog
+                        // if button is clicked, show the met-alert dialog
                         if (showMetAlerts) {
                             MetAlertsDialog(
                                 sharedUiState = sharedUiState,
@@ -270,14 +275,17 @@ fun SeaMapScreen(
             // the bottom navigation between screens
             NavigationBarWithButtons(navController = navController)
         }
+
+        // when the app loses internet access, a message will be displayed on
+        // screen to inform the user. Disappears when internet access is back
         NetworkConnectionStatus(connectivityObserver)
     }
 }
 
 
 /**
- * The dialog to explain maritime symbols on the map,
- * which are visible with OpenSeaMap tile overlay
+ * A dialog to explain maritime symbols that are visible on the map
+ * when the 'OpenSeaMap' tile overlay is activated.
  */
 @Composable
 fun ExplanationBox(
@@ -325,7 +333,7 @@ fun ExplanationBox(
                             modifier = Modifier.size(36.dp)
                         )
 
-                        // desciption for each image
+                        // desciption for each symbol
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(seaSymbolsPair.description)
                     }
@@ -402,7 +410,7 @@ fun FilterButtonAndDialog(
                             .padding(top = 5.dp)
                     )
 
-                    // button to show/hide maritime symbols
+                    // checkbox to show/hide maritime symbols
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -417,7 +425,7 @@ fun FilterButtonAndDialog(
                         )
                     }
 
-                    // button to show/hide harbor markers
+                    // checkbox to show/hide harbor markers with gas stations
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
                             checked = showHarborWithGas.value,
@@ -430,6 +438,7 @@ fun FilterButtonAndDialog(
                         )
                     }
 
+                    // button to show/hide normal harbor markers (without gas stations)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
                             checked = showHarborWithoutGas.value,
