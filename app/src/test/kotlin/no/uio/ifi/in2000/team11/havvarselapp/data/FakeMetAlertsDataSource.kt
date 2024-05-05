@@ -10,14 +10,14 @@ class FakeMetAlertsDataSource : MetAlertsDataSource {
     override suspend fun fetchMetAlertsInNorway(): List<MetAlert> {
         return mutableListOf(
             MetAlert("22", "", "", "", "",
-                "", "", listOf(""), "", listOf(""), "")
+                "", "", "", listOf(""), "", listOf(""), "")
         )
     }
 
     override suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert> {
         return mutableListOf(
             MetAlert("33", "", "", "", "",
-                "", "", listOf(""), "", listOf(""), "")
+                "", "", "", listOf(""), "", listOf(""), "")
         )
     }
 }

@@ -94,6 +94,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
                 val instruction = alert.getJSONObject("properties").optString("instruction")
                 val triggerLevel = alert.getJSONObject("properties").optString("triggerLevel")
                 val riskMatrixColor = alert.getJSONObject("properties").optString("riskMatrixColor")
+                val iconName = "icon_warning_${event.trim()}_${riskMatrixColor}".lowercase()
 
                 // parses from "2; yellow; Moderate" to a List<String>
                 val awarenessLevelStr =
@@ -111,6 +112,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
                     area,
                     title,
                     description,
+                    iconName,
                     event,
                     consequences,
                     instruction,

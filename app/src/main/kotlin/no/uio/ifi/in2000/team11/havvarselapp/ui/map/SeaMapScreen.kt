@@ -243,7 +243,7 @@ fun SeaMapScreen(
                             )
                         ) {
                             GetIconForAlert(
-                                event = it.event,
+                                iconName = it.iconName,
                                 color = it.riskMatrixColor,
                                 small = true
                             )

@@ -12,7 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 /**
- * Henter riktig ikon for farevarselet.
+ * Returns the right icon for the met alert
  *
  * Note: The function has an 'SuppressLint' annotation because image
  * identifier is created in a dynamic way instead of static, based on the
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
  */
 @SuppressLint("DiscouragedApi")
 @Composable
-fun GetIconForAlert(event: String, color: String, small: Boolean) {
+fun GetIconForAlert(iconName: String, color: String, small: Boolean) {
     val context = LocalContext.current
     val resources = context.resources
 
@@ -33,10 +33,7 @@ fun GetIconForAlert(event: String, color: String, small: Boolean) {
         70 // the larger image that is in the met-alerts dialog-window
     }
 
-    // Construct the icon name
-    val iconName = "icon_warning_${event.trim()}_${color}".lowercase()
-
-    // Get Drawable resource ID for the dynamically constructed name
+    // Get Drawable resource ID for the given icon name
     @DrawableRes
     val drawableResId: Int = resources.getIdentifier(
         iconName,

@@ -25,6 +25,12 @@ data class MetAlert(
     val description: String,
 
     /**
+     * This name corresponds to the right icon to
+     * display for this met-alert
+     */
+    val iconName: String,
+
+    /**
      * Type of event. The combination of color and event is
      * used to fetch the right image for the alert.
      */

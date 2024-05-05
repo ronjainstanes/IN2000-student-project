@@ -108,7 +108,7 @@ fun MetAlertCard(metAlert: MetAlert) {
             ) {
                 // Ikonet hentes og vises
                 GetIconForAlert(
-                    event = metAlert.event,
+                    iconName = metAlert.iconName,
                     color = metAlert.riskMatrixColor,
                     false
                 )
