@@ -86,12 +86,18 @@ class LocationForecastViewModel(
 
                     if (city != null) {
                         "$city, $country"
+                    } else if (adminArea != null) {
+                        if (sublocality != null){
+                            "$adminArea, $sublocality, $country"
+                        } else if (subAdminArea != null){
+                            "$subAdminArea, $country"
+                        } else {
+                            "$adminArea, $country"
+                        }
                     } else if (sublocality != null) {
                         "$sublocality, $country"
                     } else if (subAdminArea != null) {
                         "$subAdminArea, $country"
-                    } else if (adminArea != null) {
-                        "$adminArea, $country"
                     } else {
                         addresses[0].getAddressLine(0)
                     }

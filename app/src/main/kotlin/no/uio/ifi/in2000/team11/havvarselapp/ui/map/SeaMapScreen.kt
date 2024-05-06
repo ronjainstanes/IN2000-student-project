@@ -123,6 +123,9 @@ fun SeaMapScreen(
     // open search bar with autocomplete drop-down menu
     val activateSearch = rememberSaveable { mutableStateOf(false) } // when true, show searchbar
 
+    // enable search bar with autocomplete drop-down menu if there is connection to the net
+    val enableSearch = rememberSaveable { mutableStateOf(false) }
+
     // camera position, the area of map that is currently shown on screen
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(sharedUiState.currentLocation, 12f)
@@ -209,7 +212,8 @@ fun SeaMapScreen(
                     updateLocation,
                     cameraPositionState,
                     placesClient,
-                    activateSearch
+                    activateSearch,
+                    enableSearch
                 )
 
                 // button that opens a dialog that explains maritime symbols on the map
@@ -278,7 +282,7 @@ fun SeaMapScreen(
 
         // when the app loses internet access, a message will be displayed on
         // screen to inform the user. Disappears when internet access is back
-        NetworkConnectionStatus(connectivityObserver)
+        NetworkConnectionStatus(connectivityObserver, enableSearch)
     }
 }
 

@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +42,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.R
  */
 @Composable
 fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
+                            enableSearch: MutableState<Boolean>?,
 ){
     // Create a coroutine scope
     val coroutineScope = rememberCoroutineScope()
@@ -68,7 +70,7 @@ fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
         if (status == ConnectivityObserver.Status.Lost ||
             status == ConnectivityObserver.Status.Losing ||
             status == ConnectivityObserver.Status.Unavailable){
-
+            enableSearch?.value = false // deactivate search bar
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,6 +111,8 @@ fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
                     )
                 }
             }
+        } else {
+            enableSearch?.value = true // we are connected to the net, allow search
         }
 
         // Remember to cancel the coroutine scope when the composable is no longer active

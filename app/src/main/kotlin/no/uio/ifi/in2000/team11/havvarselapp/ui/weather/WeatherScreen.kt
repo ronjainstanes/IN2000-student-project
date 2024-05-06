@@ -152,7 +152,7 @@ fun WeatherScreen(
             }
             NavigationBarWithButtons(navController = navController)
         }
-        NetworkConnectionStatus(connectivityObserver)
+        NetworkConnectionStatus(connectivityObserver, null)
     }
 }
 

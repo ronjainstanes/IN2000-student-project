@@ -64,7 +64,8 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         updateLocation: (loc: LatLng) -> Unit,
         cameraPositionState: CameraPositionState, 
         placesClient: PlacesClient,
-        active: MutableState<Boolean>
+        active: MutableState<Boolean>,
+        enableSearch: MutableState<Boolean>
     ) {
         val historyItems = remember {
             mutableStateListOf(
@@ -94,6 +95,8 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                         predictions = fetchedPredictions
                     }
                 },
+                //if enableSearch.value is true, user will be able to use search
+                enabled = enableSearch.value,
                 onSearch = {
                     if (text.isNotEmpty()){
                         val inputTextUpperCase = text.replaceFirstChar { it.uppercase() }

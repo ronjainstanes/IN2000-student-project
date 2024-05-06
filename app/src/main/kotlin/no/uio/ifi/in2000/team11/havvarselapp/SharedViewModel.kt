@@ -22,6 +22,8 @@ data class SharedUiState(
      * List of all met-alerts at the current location
      */
     val allMetAlerts: List<MetAlert> = listOf(),
+
+
 )
 
 /**
