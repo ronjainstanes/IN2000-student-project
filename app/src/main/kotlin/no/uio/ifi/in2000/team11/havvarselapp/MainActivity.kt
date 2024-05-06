@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var connectivityObserver: ConnectivityObserver
 
-    // klient for å kunne hente posisjon
+    // client to be able to get location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var placesClient: PlacesClient
@@ -37,10 +37,10 @@ class MainActivity : ComponentActivity() {
         Places.initialize(applicationContext, MAPS_API_KEY)
         placesClient = Places.createClient(this)
 
-        // opprett en instans av LocationClient for å kunne hente brukerens posisjon
+        // Create an instance of LocationClient to be able to get the user's location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // sjekker at brukeren har gitt tillatelse til å hente posisjon
+        // Checking if the user has given permission to access their location
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION

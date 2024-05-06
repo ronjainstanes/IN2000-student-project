@@ -15,37 +15,48 @@ import kotlinx.coroutines.launch
  */
 class NetworkConnectivityObserver (context: Context): ConnectivityObserver {
 
+    //Initialize ConnectivityManager
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     override fun observe(): Flow<ConnectivityObserver.Status> {
         return callbackFlow {
+
+            //Create a NetworkCallback
             val callback = object : ConnectivityManager.NetworkCallback(){
+
+                //Calls when network becomes available
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
                     launch { send(ConnectivityObserver.Status.Available) }
                 }
 
+                //Calls when network is losing
                 override fun onLosing(network: Network, maxMsToLive: Int) {
                     super.onLosing(network, maxMsToLive)
                     launch { send(ConnectivityObserver.Status.Losing) }
                 }
 
+                //Calls when network is lost
                 override fun onLost(network: Network) {
                     super.onLost(network)
                     launch { send(ConnectivityObserver.Status.Lost) }
                 }
 
+                //Calls when network is unavailable
                 override fun onUnavailable() {
                     super.onUnavailable()
                     launch { send(ConnectivityObserver.Status.Unavailable) }
                 }
             }
 
+            //Register the NetworkCallback
             connectivityManager.registerDefaultNetworkCallback(callback)
+
+            //Unregister the NetworkCallback when no longer needed
             awaitClose {
                 connectivityManager.unregisterNetworkCallback(callback)
             }
-        }.distinctUntilChanged()
+        }.distinctUntilChanged() //Only emit distinct network status updates
     }
 }
