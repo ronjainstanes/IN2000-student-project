@@ -1,7 +1,9 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.weather
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,6 +58,7 @@ import no.uio.ifi.in2000.team11.havvarselapp.ui.locationForecast.LocationForecas
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectionStatus
+import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectivityObserver
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -81,21 +84,28 @@ fun WeatherScreen(
     val displayInfo =
         remember { mutableStateOf(DisplayInfo.Weather) }
     val context = LocalContext.current
+    //var fromCached = false
+
+    val status by connectivityObserver.observe().collectAsState(
+        initial = ConnectivityObserver.Status.Unavailable
+    )
 
     /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
 
     // Using LaunchedEffect to load weather data when the position changes via search/pin
-    LaunchedEffect(sharedUiState.currentLocation.hashCode()) {
+    LaunchedEffect(sharedUiState.currentLocation.hashCode(), status) {
         forecastViewModel.loadForecast(
-            sharedUiState.currentLocation.latitude.toString(),
-            sharedUiState.currentLocation.longitude.toString()
-        )
-        // Placename is updated when the location changes
-        forecastViewModel.setCurrentPlaceName(
-            context,
-            sharedUiState.currentLocation.latitude,
-            sharedUiState.currentLocation.longitude
-        )
+                sharedUiState.currentLocation.latitude.toString(),
+                sharedUiState.currentLocation.longitude.toString(),
+                context
+            )
+            // Placename is updated when the location changes
+            forecastViewModel.setCurrentPlaceName(
+                context,
+                sharedUiState.currentLocation.latitude,
+                sharedUiState.currentLocation.longitude
+            )
+
     }
 
     val fonts = getFonts()
@@ -225,6 +235,8 @@ fun ScreenContent(
                     }
                 }
             }
+
+
         }
         // VÆR-SKJERM SLUTT
 
