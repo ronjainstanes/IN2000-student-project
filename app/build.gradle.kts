@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "no.uio.ifi.in2000.team11.havvarselapp"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -127,4 +127,5 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.3")
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("io.mockk:mockk:1.12.0")
 }

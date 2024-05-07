@@ -86,7 +86,7 @@ fun MetAlertsDialog(
 
         // button to close dialog
         Button(
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 7.dp),
             onClick = onDismiss,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF_13_23_2C)
