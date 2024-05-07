@@ -33,10 +33,10 @@ fun getWeatherIconLongTerm(timeseries: Timeseries): String? {
 
 fun getWindDirection(timeseries: Timeseries): String {
     val direction = timeseries.data.instant.details.wind_from_direction
-    return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+    return if (direction != null) getNorthEastVestSouthFromDegrees(direction) else " "
 }
 
-private fun getNortEastVestSouthFromDegrees(degree: Double): String {
+private fun getNorthEastVestSouthFromDegrees(degree: Double): String {
     return when {
         degree >= 337.5 || degree < 22.5 -> "N"
         degree >= 22.5 && degree < 67.5 -> "NØ"
@@ -136,12 +136,12 @@ fun seaTemperaturePositive(timeseries: TimeseriesOcean): Boolean {
 
 fun getCurrentDirectionTowards(timeseries: TimeseriesOcean): String {
     val direction = timeseries.data.instant.details.sea_water_to_direction
-    return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+    return if (direction != null) getNorthEastVestSouthFromDegrees(direction) else " "
 }
 
 fun getCurrentDirectionFrom(timeseries: TimeseriesOcean): String {
     val direction = timeseries.data.instant.details.sea_surface_wave_from_direction
-    return if (direction != null) getNortEastVestSouthFromDegrees(direction) else " "
+    return if (direction != null) getNorthEastVestSouthFromDegrees(direction) else " "
 }
 
 fun getCurrentSpeed(timeseries: TimeseriesOcean): String {
@@ -222,55 +222,8 @@ fun GetWeatherIconTopPageHorizontal(timeseries: Timeseries) {
     Image(imageVector = weatherIcon, contentDescription = "image",
         Modifier.size(53.dp)) }
 
-
-
-
-
-
-
-fun getFonts1(): Array<FontFamily> {
-    val barlow1 = FontFamily(Font(R.font.barlow_thin, FontWeight.W400))
-    val barlow2 = FontFamily(Font(R.font.barlow_extralight, FontWeight.W400))
-    val barlow3 = FontFamily(Font(R.font.barlow_light, FontWeight.W400))
-    val barlow4 = FontFamily(Font(R.font.barlow_regular, FontWeight.W400))
-    return arrayOf(barlow1, barlow2, barlow3, barlow4)
+fun getFonts(): Array<FontFamily> {
+    val roboto0 = FontFamily(Font(R.font.robotocondensed_light, FontWeight.W400))
+    val roboto1 = FontFamily(Font(R.font.robotocondensed_regular, FontWeight.W400))
+    return arrayOf(roboto0, roboto1)
 }
-
-fun getFonts2(): Array<FontFamily> {
-    val barlowcondensed1 = FontFamily(Font(R.font.barlowcondensed_thin, FontWeight.W400))
-    val barlowcondensed2 = FontFamily(Font(R.font.barlowcondensed_extralight, FontWeight.W400))
-    val barlowcondensed3 = FontFamily(Font(R.font.barlowcondensed_light, FontWeight.W400))
-    val barlowcondensed4 = FontFamily(Font(R.font.barlowcondensed_regular, FontWeight.W400))
-    return arrayOf(barlowcondensed1, barlowcondensed2, barlowcondensed3, barlowcondensed4)
-}
-
-fun getFonts3(): Array<FontFamily> {
-    val roboto1 = FontFamily(Font(R.font.robotocondensed_thin, FontWeight.W400))
-    val roboto2 = FontFamily(Font(R.font.robotocondensed_extralight, FontWeight.W400))
-    val roboto3 = FontFamily(Font(R.font.robotocondensed_light, FontWeight.W400))
-    val roboto4 = FontFamily(Font(R.font.robotocondensed_regular, FontWeight.W400))
-    return arrayOf(roboto1, roboto2, roboto3, roboto4)
-}
-
-fun getFonts4(): Array<FontFamily> {
-    val natoSansJP = FontFamily(Font(R.font.notosansjp_variablefont_wght, FontWeight.W400))
-    val natoSansJPExtralight = FontFamily(Font(R.font.notosansjp_extralight, FontWeight.W400))
-    val natoSansJPLight = FontFamily(Font(R.font.notosansjp_light, FontWeight.W400))
-    val natoSansJPRegular = FontFamily(Font(R.font.notosansjp_regular, FontWeight.W400))
-    val natoSansJPExtrabold = FontFamily(Font(R.font.notosansjp_extrabold, FontWeight.W400))
-    return arrayOf(
-        natoSansJP,
-        natoSansJPExtralight,
-        natoSansJPLight,
-        natoSansJPRegular,
-        natoSansJPExtrabold
-    )
-}
-
-fun getFonts5(): Array<FontFamily> {
-    val poppinsExtralight = FontFamily(Font(R.font.poppins_extralight, FontWeight.W400))
-    val poppinsLight = FontFamily(Font(R.font.poppins_light, FontWeight.W400))
-    val poppinsRegular = FontFamily(Font(R.font.poppins_regular, FontWeight.W400))
-    return arrayOf(poppinsExtralight, poppinsLight, poppinsRegular)
-}
-

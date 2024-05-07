@@ -98,12 +98,11 @@ fun WeatherScreen(
         )
     }
 
-    // Ulike fonter, getFonts1-getFonts6. Laget funksjoner for mindre rot, bare å slette når vi vet hva vi skal bruke.
-    val fonts3 = getFonts3()
+    val fonts = getFonts()
 
-    // FOR Å ENDRE FONT PÅ ALT ENDRE BARE DENNE VARIABELEN !!
-    val fontNormal = fonts3[2]
-    val fontBold = fonts3[3]
+    //To change the font of everything, just modify this variable!
+    val fontNormal = fonts[0]
+    val fontBold = fonts[1]
 
 
 
