@@ -52,7 +52,10 @@ fun SetUpNavigation(
                     updateLocation = {
                         viewModel.updateLocation(it)
                     },
-                    connectivityObserver
+                    connectivityObserver,
+                    updateSearchHistory = {
+                        viewModel.updateHistoryItems(it)
+                    },
                 )
             }
 

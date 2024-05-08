@@ -23,7 +23,10 @@ data class SharedUiState(
      */
     val allMetAlerts: List<MetAlert> = listOf(),
 
-
+    /**
+    * List of all searched items in the search bar
+     */
+    val historyItems: List<String> = listOf("Oslo", "Bergen", "Drammen", "Trondheim", "Tromsø"),
 )
 
 /**
@@ -73,4 +76,22 @@ class SharedViewModel: ViewModel() {
         super.onCleared()
         println("ViewModel cleared")
     }
+
+    /**
+     * Updates the history items list
+     * It takes name "String" of the location user have searched for
+     * and puts it on the first index of the list and removes the last one (first in, last out - FILO)
+     * If the item that already in list is being searched for it will move up to the first index
+     * and no elements will be deleted
+     */
+    fun updateHistoryItems(userInput: String) {
+        _sharedUiState.update { currentState ->
+            val updatedHistoryItems = mutableListOf<String>().apply {
+                add(userInput)
+                addAll(currentState.historyItems.filter { it != userInput }.take(4))
+            }
+            currentState.copy(historyItems = updatedHistoryItems)
+        }
+    }
+
 }

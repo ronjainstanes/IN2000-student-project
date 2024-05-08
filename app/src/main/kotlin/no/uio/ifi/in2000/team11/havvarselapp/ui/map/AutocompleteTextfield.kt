@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.google.android.gms.maps.model.CameraPosition
@@ -46,6 +47,7 @@ import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000.team11.havvarselapp.SharedUiState
 import java.io.IOException
 
 /**
@@ -62,34 +64,30 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
     fun AutocompleteTextField(
         context: Context,
         updateLocation: (loc: LatLng) -> Unit,
-        cameraPositionState: CameraPositionState, 
+        cameraPositionState: CameraPositionState,
         placesClient: PlacesClient,
         active: MutableState<Boolean>,
-        enableSearch: MutableState<Boolean>
+        enableSearch: MutableState<Boolean>,
+        sharedUiState: SharedUiState,
+        updateSearchHistory: (userInput: String) -> Unit,
     ) {
-        val historyItems = remember {
-            mutableStateListOf(
-                "Oslo",
-                "Bergen",
-                "Drammen",
-                "Trondheim",
-                "Tromsø"
-            )
-        }
         var predictions by rememberSaveable { mutableStateOf(emptyList<AutocompletePrediction>()) }
-        var text by rememberSaveable { mutableStateOf("") }
+        val text = remember { mutableStateOf("") }
+
+        // Vis søkehistorikken ved oppstart
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val focusManager = LocalFocusManager.current
 
         Column(
             modifier = Modifier.fillMaxSize().zIndex(2f),
             horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
+        ) {
             DockedSearchBar(
                 modifier = Modifier.padding(15.dp),
                 shape = RoundedCornerShape(30.dp),
-                query = text,
+                query = text.value,
                 onQueryChange = {
-                    text = it
+                    text.value = it
                     // Fetch predictions when text changes
                     fetchPredictions(it, placesClient) { fetchedPredictions ->
                         predictions = fetchedPredictions
@@ -98,19 +96,26 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                 //if enableSearch.value is true, user will be able to use search
                 enabled = enableSearch.value,
                 onSearch = {
-                    if (text.isNotEmpty()){
-                        val inputTextUpperCase = text.replaceFirstChar { it.uppercase() }
+                    // Close keyboard if enableSearch.value is true
+                    if (enableSearch.value) {
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                    }
+
+                    if (text.value.isNotEmpty()) {
+                        val inputTextUpperCase = text.value.replaceFirstChar { it.uppercase() }
                         getPosition(
                             inputTextUpperCase,
                             context,
                             updateLocation,
                             cameraPositionState
                         )
-                        addNewItemToSearchHistory(inputTextUpperCase, historyItems)
-
+                        updateSearchHistory(inputTextUpperCase)
                     }
-                    active.value = false },
-                active = active.value,
+                    active.value = false
+
+                },
+                active = active.value && enableSearch.value,
                 onActiveChange = { active.value = it },
                 placeholder = { Text("Søk her") },
                 leadingIcon = {
@@ -123,8 +128,8 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                     if (active.value) {
                         Icon(
                             modifier = Modifier.clickable {
-                                if (text.isNotEmpty()) {
-                                    text = ""
+                                if (text.value.isNotEmpty()) {
+                                    text.value = ""
                                     predictions = emptyList() //clears up predictions list
                                 } else {
                                     active.value = false
@@ -137,26 +142,25 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                 },
                 shadowElevation = 10.dp,
                 colors = SearchBarDefaults.colors(
-                    containerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.96f),
-
-                    )
+                    containerColor = Color(0xFF_D9_D9_D9).copy(alpha = 0.96f)
+                )
             ) {
                 if (predictions.isEmpty()) {
-                    historyItems.forEach { historyItem ->
+                    sharedUiState.historyItems.forEach { historyItem ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(all = 12.dp)
                                 .clickable(onClick = {
                                     active.value = false
-                                    text = historyItem
+                                    text.value = historyItem
                                     getPosition(
                                         historyItem,
                                         context,
                                         updateLocation,
                                         cameraPositionState
                                     )
-                                    addNewItemToSearchHistory(historyItem, historyItems)
+                                    updateSearchHistory(historyItem)
                                 })
                         ) {
                             Icon(
@@ -176,19 +180,19 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
                                 .padding(all = 12.dp)
                                 .clickable(onClick = {
                                     active.value = false
-                                    text = predictionText
+                                    text.value = predictionText
                                     getPosition(
                                         predictionText,
                                         context,
                                         updateLocation,
                                         cameraPositionState
                                     )
-                                    addNewItemToSearchHistory(predictionText, historyItems)
+                                    updateSearchHistory(predictionText)
                                 })
                         ) {
                             Text(
                                 modifier = Modifier.padding(start = 5.dp),
-                                text = prediction.getPrimaryText(null).toString()
+                                text = predictionText
                             )
                         }
                     }
@@ -197,15 +201,7 @@ class AutocompleteTextFieldActivity : ComponentActivity() {
         }
     }
 
-    private fun addNewItemToSearchHistory(userInput: String, historyItems: MutableList<String>){
-        if (historyItems.contains(userInput)) {
-            val indexToRemove = historyItems.indexOf(userInput)
-            historyItems.removeAt(indexToRemove)
-        } else {
-            historyItems.removeAt(4)
-        }
-        historyItems.add(0, userInput)
-    }
+
 
     /**
      * When the user starts typing a location in the search field,
