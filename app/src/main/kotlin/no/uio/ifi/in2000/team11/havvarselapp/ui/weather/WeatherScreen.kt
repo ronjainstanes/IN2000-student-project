@@ -1,9 +1,7 @@
 package no.uio.ifi.in2000.team11.havvarselapp.ui.weather
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,7 +56,6 @@ import no.uio.ifi.in2000.team11.havvarselapp.ui.locationForecast.LocationForecas
 import no.uio.ifi.in2000.team11.havvarselapp.ui.navigation.NavigationBarWithButtons
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.ConnectivityObserver
 import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectionStatus
-import no.uio.ifi.in2000.team11.havvarselapp.ui.networkConnection.NetworkConnectivityObserver
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -157,6 +154,7 @@ fun WeatherScreen(
             }
             NavigationBarWithButtons(navController = navController)
         }
+        NetworkConnectionStatus(connectivityObserver,null)
     }
 }
 

@@ -125,7 +125,6 @@ fun SeaMapScreen(
 
     // enable search bar with autocomplete drop-down menu if there is connection to the net
     val enableSearch = rememberSaveable { mutableStateOf(false) }
-
     // camera position, the area of map that is currently shown on screen
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(sharedUiState.currentLocation, 12f)

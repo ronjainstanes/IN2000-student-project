@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -21,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -33,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.team11.havvarselapp.R
 
 /**
@@ -41,36 +43,42 @@ import no.uio.ifi.in2000.team11.havvarselapp.R
  * It disappears if the app gains access again.
  */
 @Composable
-fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
-                            enableSearch: MutableState<Boolean>?,
-){
-    // Create a coroutine scope
+fun NetworkConnectionStatus(
+    connectivityObserver: ConnectivityObserver,
+    enableSearch: MutableState<Boolean>?
+) {
     val coroutineScope = rememberCoroutineScope()
 
-    // Variable to track if the delay has passed
-    val isDelayOver = remember { mutableStateOf(false) }
+    var shouldShowDialog by remember { mutableStateOf(true) } // State to control dialog visibility
 
-    // Start the delay in the init block or any appropriate callback
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            delay(2000) // Delay for 2 seconds
-            isDelayOver.value = true // Update the state to indicate that the delay is over
-        }
-    }
+    val isDelayOver = remember { mutableStateOf(false) }
 
     val status by connectivityObserver.observe().collectAsState(
         initial = ConnectivityObserver.Status.Unavailable
     )
 
-    // The image in the dialog
+    // Start the delay when the composable enters the composition
+    LaunchedEffect(coroutineScope) {
+        delay(2000)
+        isDelayOver.value = true
+    }
+
     val network = ImageVector.vectorResource(id = R.drawable.network2)
 
-    // Check if the delay is over before executing the if-check
-    if (isDelayOver.value) {
+    // Close the dialog and it will not be shown again unless you reset the state
+    fun dismissDialog() {
+        shouldShowDialog = false
+    }
+
+    if (isDelayOver.value && shouldShowDialog) {
+        // Condition to show the dialog
         if (status == ConnectivityObserver.Status.Lost ||
             status == ConnectivityObserver.Status.Losing ||
-            status == ConnectivityObserver.Status.Unavailable){
-            enableSearch?.value = false // deactivate search bar
+            status == ConnectivityObserver.Status.Unavailable
+        ) {
+            enableSearch?.value = false
+
+            // Dialog Content
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,17 +117,28 @@ fun NetworkConnectionStatus(connectivityObserver: ConnectivityObserver,
                         style = TextStyle(fontSize = 16.sp),
                         modifier = Modifier.padding(bottom = 16.dp),
                     )
+                    // Button to dismiss dialog
+                    Button(
+                        // Close dialog on click
+                        onClick = { dismissDialog() },
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF_13_23_2C))
+                    ) {
+                        Text(text = "Skjønner", fontSize = (15.sp))
+                    }
                 }
             }
         } else {
-            enableSearch?.value = true // we are connected to the net, allow search
+            enableSearch?.value = true
         }
+    }
 
-        // Remember to cancel the coroutine scope when the composable is no longer active
-        DisposableEffect(Unit) {
-            onDispose {
-                coroutineScope.cancel()
-            }
+    // Cancel the coroutine when the composable is disposed
+    DisposableEffect(Unit) {
+        onDispose {
+            coroutineScope.cancel()
         }
     }
-    }
+}
+
+
