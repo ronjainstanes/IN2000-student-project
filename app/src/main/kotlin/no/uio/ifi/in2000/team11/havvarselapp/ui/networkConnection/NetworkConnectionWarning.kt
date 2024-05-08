@@ -49,7 +49,7 @@ fun NetworkConnectionStatus(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    var shouldShowDialog by remember { mutableStateOf(true) } // State to control dialog visibility
+    var shouldShowWarning by remember { mutableStateOf(true) } // State to control the warning box visibility
 
     val isDelayOver = remember { mutableStateOf(false) }
 
@@ -65,12 +65,12 @@ fun NetworkConnectionStatus(
 
     val network = ImageVector.vectorResource(id = R.drawable.network2)
 
-    // Close the dialog and it will not be shown again unless you reset the state
+    // Close the warning and it will not be shown again unless you reset the state
     fun dismissDialog() {
-        shouldShowDialog = false
+        shouldShowWarning = false
     }
 
-    if (isDelayOver.value && shouldShowDialog) {
+    if (isDelayOver.value && shouldShowWarning) {
         // Condition to show the dialog
         if (status == ConnectivityObserver.Status.Lost ||
             status == ConnectivityObserver.Status.Losing ||
