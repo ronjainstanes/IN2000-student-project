@@ -84,13 +84,12 @@ fun WeatherScreen(
     val displayInfo =
         remember { mutableStateOf(DisplayInfo.Weather) }
     val context = LocalContext.current
-    //var fromCached = false
+
 
     val status by connectivityObserver.observe().collectAsState(
         initial = ConnectivityObserver.Status.Unavailable
     )
 
-    /*var showNetworkWarning by rememberSaveable { mutableStateOf(false) }*/
 
     // Using LaunchedEffect to load weather data when the position changes via search/pin
     LaunchedEffect(sharedUiState.currentLocation.hashCode(), status) {
@@ -153,15 +152,11 @@ fun WeatherScreen(
                             displayInfo = displayInfo,
                             fontNormal = fontNormal
                         )
-
-                        /*                    //Vises hvis det oppstår problemer med nettverk
-                    NetworkConnectionStatus(connectivityObserver)*/
                     }
                 }
             }
             NavigationBarWithButtons(navController = navController)
         }
-        NetworkConnectionStatus(connectivityObserver, null)
     }
 }
 
@@ -238,7 +233,7 @@ fun ScreenContent(
 
 
         }
-        // VÆR-SKJERM SLUTT
+        // End of the weather-screen
 
 
         // OCEAN-SCREEN
@@ -288,7 +283,7 @@ fun ScreenContent(
                 }
             }
         }
-        // HAV-SKJERM SLUTT
+        // End og the ocean-screen
     }
 }
 
@@ -346,7 +341,7 @@ fun DayWeatherCard(
                 .fillMaxWidth()
         )
         {
-            // RAD MED IKON ØVERST
+            // ROW WITH ICON AT TOP
             WeatherHeader(headerColor = weatherHeader, font = fontNormal, shortTerm = true)
             when (expanded.value) {
 
@@ -444,7 +439,7 @@ fun DayWeatherCardLongTerm(
                 .fillMaxWidth()
         )
         {
-            // RAD MED IKON ØVERST
+            // ROW WITH ICON AT TOP
             WeatherHeader(headerColor = weatherHeader, font = fontNormal, shortTerm = false)
             var farge = true
             timeseriesList.forEach { timeseries ->
@@ -503,7 +498,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
         else -> north
     }
 
-    // Rad x
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -513,7 +508,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        // tidspunkt
+        // time
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -528,7 +523,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
         }
 
 
-        // Ikon for været
+        // Icon for weather
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -540,7 +535,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
             )
         }
 
-        // Temnperatur
+        // Temperature
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -570,7 +565,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
             )
         }
 
-        // Vind-speed
+        // Wind-speed
         Column(
             modifier = Modifier
                 .weight(1.2f)
@@ -622,7 +617,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
     val lastHourString = if (lastHour < 10) "0$lastHour" else "$lastHour"
 
 
-    // Rad x
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -632,7 +627,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        // tidspunkt
+        // time
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -647,7 +642,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
         }
 
 
-        // Ikon for været
+        // Icon for weather
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -659,7 +654,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
             )
         }
 
-        // Temnperatur
+        // Temperature
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -708,7 +703,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
     )
     {
 
-        // Tidspunkt
+        // Time
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -723,7 +718,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
             )
         }
 
-        // Vær ikon
+        // Weather icon
         Column(
             modifier = Modifier
                 .weight(0.8f)
@@ -738,7 +733,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
             )
         }
 
-        // Temperatur
+        // Temperature
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -754,7 +749,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
         }
 
 
-        // Nedbørsmengde
+        // Rain / perciption amount
         Column(
             modifier = Modifier
                 .weight(1.25f)
@@ -770,7 +765,7 @@ fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
         }
 
         if (shortTerm) {
-            // Vind
+            // Wind
             Column(
                 modifier = Modifier
                     .weight(1.2f)
@@ -845,10 +840,10 @@ fun DayOceanCard(
                 .fillMaxWidth()
         )
         {
-            // RAD MED IKON ØVERST Oceanforecast
+            // ROW WITH ICON AT TOP Oceanforecast
             OceanHeader(headerColor = oceanHeader, font = fontNormal)
 
-            // LASTER INN RADENE MED HAV-INFO
+            // LOADING THE ROWS WITH HAV-INFO
             when (expanded.value) {
                 Expanded.Short -> {
                     OceanRow(data = timeseriesList[0], font = fontNormal, rowColor = oceanRow1)
@@ -889,7 +884,6 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
     val currentTowards = getCurrentDirectionTowards(data)
 
 
-    // Rad x
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -899,7 +893,7 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
         verticalAlignment = Alignment.CenterVertically
     )
     {
-        // tidspunkt
+        // time
         Column(
             modifier = Modifier
                 .weight(0.7f)
@@ -913,7 +907,7 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
             )
         }
 
-        // Vann Temnperatur
+        // Water temperature
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -988,7 +982,7 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
     )
     {
 
-        // Klokke ikon
+        // Time icon
         Column(
             modifier = Modifier
                 .weight(0.7f)
@@ -1003,7 +997,7 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
             )
         }
 
-        // Bade temperatur
+        // Water temperature
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -1018,7 +1012,7 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
             )
         }
 
-        // Strømreting
+        // Current direction
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -1033,7 +1027,7 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
             )
         }
 
-        // Strøm hastighet
+        // Current speed
         Column(
             modifier = Modifier
                 .weight(0.8f)
