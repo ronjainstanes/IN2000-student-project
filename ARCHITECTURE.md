@@ -1,6 +1,6 @@
 # Architecture
 
-### Object Oriented Principles and Design Pattern
+## Object Oriented Principles and Design Pattern
 
 We are striving towards developing our app in accordance with the [Recommendations for Android Architecture](https://developer.android.com/topic/architecture/recommendations). The main recommendation is to divide the architecture into two distinct layers: the UI layer and the data layer. To adhere to this recommendation, we have organized our codebase into three main packages: "data", "model" and "ui", following the Model - View - ViewModel (MVVM) design pattern. This helps create a clear division and structure within our code.
 
@@ -10,7 +10,7 @@ All UI elements are contained within the UI layer of our application. For this, 
 
 By adopting this structure, it was easier to implement important object-oriented principles such as low coupling and high cohesion. It promotes low coupling because the different components of the application are organized in a way that minimizes dependencies between them. And there is high cohesion within in each component, because everything within a component is closely related and function together logically.
 
-### The Architecture of our Application
+## The Architecture of our Application
 
 
 ![Architecture](https://media.github.uio.no/user/9545/files/68aaf943-7fc6-4194-b875-12c184671116)
@@ -26,7 +26,7 @@ The data layer consists of Repositories and DataSources which fetches data from 
 
 There are also two API's which are already built into composable functions, such as the "Google Map" composable which is provided by the Google Maps Compose Library, and a Tile Overlay from OpenSeaMap which can be placed on top of the map. These are also APIs, but does not provide data which can be handled by DataSources and saved into a UiState like the other data mentioned above. 
 
-### API Level
+## API Level
 
 We have chosen minimum API level 25 while setting target and compileSdk level to 34. This decision enables us to utilize many new features while still ensuring compatibility with a majority of devices - approximately 95.6% according to [apilevels.com](https://apilevels.com). 
 
