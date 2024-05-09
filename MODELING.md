@@ -67,6 +67,7 @@ After creating a Use Case diagram to depict the interaction between our applicat
         participant MapScreen
         participant WeatherScreen 
         participant GoogleMaps Api
+        participant OpenSeaMap Api
         participant MetAlerts Api
         participant Guest harbours / gas stations JSON-file
         participant LocationForecast Api
@@ -75,6 +76,10 @@ After creating a Use Case diagram to depict the interaction between our applicat
         User->>MapScreen: Search a location
 
         MapScreen->>GoogleMaps Api: update the map
+        
+        GoogleMaps Api->>OpenSeaMap Api: get tile overlay
+        
+        OpenSeaMap Api-->>GoogleMaps Api: place overlay on map
         
         GoogleMaps Api-->>MapScreen: return map and update location
         
