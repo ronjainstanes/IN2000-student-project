@@ -11,7 +11,7 @@ By adopting this structure, it was easier to implement important object-oriented
 ### The Architecture of our Application
 
 
-![Architecture](https://media.github.uio.no/user/9545/files/489c55a2-da52-421f-a758-0fc682852d19)
+![Architecture](https://media.github.uio.no/user/9545/files/68aaf943-7fc6-4194-b875-12c184671116)
 
 
 *This is an illustration of the apps architecture, which is structured according to the MVVM design pattern, and divided into a UI layer and a data layer.*
@@ -19,3 +19,7 @@ By adopting this structure, it was easier to implement important object-oriented
 This illustration clearly distinguishes the two distinct layers. The UI layer contains UI elements, which is represented in the boxes named SeaMapScreen and WeatherScreen. These make up the elements which are visible to the user. 
 
 The UI layer also consists of three ViewModels. Two of them are contained within a screen, either SeaMapScreen or WeatherScreen. The last viewmodel: SharedViewModel, is not part of a screen, but instead has a single responsibility - to handle the state of the SharedUiState, which is what is shared with the two screens. In other words: each screen only has one viewmodel, but the screen composable functions also takes another argument - the SharedUiState which is provided by the SharedViewModel. This is because we have data which both screens need access to, and if this data is updated from one screen, it also needs to be updated in the other screen. After much discussion of how to solve this problem, we endred up with the solution of having a SharedUiState, which is handled by a SharedViewModel.
+
+The data layer consists of Repositories and DataSources which fetches data from external APIs. In our application we fetch data from three distinct APIs, and because the data is quite unique, we created a DataSource and Repository for each API. These include the  "MetAlerts", "LocationForecast" and "OceanForecast" APIS from MET. 
+
+There are also two API's which are already built into composable functions, such as the "Google Map" composable which is provided by the Google Maps Compose Library, and a Tile Overlay from OpenSeaMap which can be placed on top of the map. These are also APIs, but does not provide data which can be handled by DataSources and saved into a UiState like the other data mentioned above. 
