@@ -32,4 +32,4 @@ We have chosen minimum API level 25 while setting target and compileSdk level to
 
 One challenge we encountered was that this version of the Android SDK had some issues with date and time, which got fixed in later versions. We wanted to use the ZonedDateTime class, which is not available at this level. To address this issue we decided to use a library developed by Google called 'desugar_jdk_libs' which allows us to use certain features like ZonedDateTime on lower API levels.
 
-We started out at minimum API level 24, but later in our project discovered that the Tile Overlay from OpenSeaMap did not work on this level. We also observed that certain features of the application seemed much slower on this level. We therefore increased the level from 24 to 25 and these issues got resolved. 
+We started out at minimum API level 24, but later in our project discovered that the Tile Overlay from OpenSeaMap did not work on this level. We also observed that certain features of the application appeared much slower on this level. We therefore increased the level from 24 to 25 which resolved these issues.
