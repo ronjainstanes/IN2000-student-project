@@ -1,1 +1,21 @@
+### Object Oriented Principles and Design Pattern
 
+We are striving towards developing our app in accordance with the [Recommendations for Android Architecture](https://developer.android.com/topic/architecture/recommendations). The first recommendation is to divide the architecture into two distinct layers: the UI layer and the data layer. To adhere to this recommendation, we have organized our codebase into three main packages: "data", "model" and "ui", following the Model - View - ViewModel (MVVM) design pattern. This helps create a clear division and structure within our code.
+
+The data layer in our application is made of Repositories, DataSources and APIs. We have created three Repositories, each handling different types of data which is provided by DataSources. The responsibility of the DataSource classes is to fetch data from APIs, which includes parsing the data and handling exceptions. This layer handles the business logic of the app, for example retrieving and maipulating data and interacting with external data providers such as the APIs. 
+
+All UI elements are contained within the UI layer of our application. For this, we have used the framework Jetpack Compose to create UI elements as composable functions. To handle input from the user and changes in data from external sources, we use ViewModel classes to handle these inputs and update the state accordingly. The ViewModels function as state holders and manage UI logic, such as user interactions and updating UI elements. We also want to note that the UiState is exposed as immutable variables, where only the ViewModels have access to modify the UiState.
+
+By adopting this structure, it was easier to implement important object-oriented principles such as low coupling and high cohesion. It promotes low coupling because the different components of the application are organized in a way that minimizes dependencies between them. And there is high cohesion within in each component, because everything within a component is closely related and function together logically.
+
+### The Architecture of our Application
+
+
+![Architecture](https://media.github.uio.no/user/9545/files/489c55a2-da52-421f-a758-0fc682852d19)
+
+
+*This is an illustration of the apps architecture, which is structured according to the MVVM design pattern, and divided into a UI layer and a data layer.*
+
+This illustration clearly distinguishes the two distinct layers. The UI layer contains UI elements, which is represented in the boxes named SeaMapScreen and WeatherScreen. These make up the elements which are visible to the user. 
+
+The UI layer also consists of three ViewModels. Two of them are contained within a screen, either SeaMapScreen or WeatherScreen. The last viewmodel: SharedViewModel, is not part of a screen, but instead has a single responsibility - to handle the state of the SharedUiState, which is what is shared with the two screens. In other words: each screen only has one viewmodel, but the screen composable functions also takes another argument - the SharedUiState which is provided by the SharedViewModel. This is because we have data which both screens need access to, and if this data is updated from one screen, it also needs to be updated in the other screen. After much discussion of how to solve this problem, we endred up with the solution of having a SharedUiState, which is handled by a SharedViewModel.
