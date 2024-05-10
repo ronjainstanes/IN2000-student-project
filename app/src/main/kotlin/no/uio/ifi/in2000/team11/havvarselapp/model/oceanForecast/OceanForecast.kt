@@ -55,6 +55,7 @@ data class InstantOcean(
     val details: DetailsOcean,
 )
 
+// The variables we use to show the ocean forecast for a specific place
 data class DetailsOcean(
     val sea_surface_wave_from_direction: Double?, // Wave direction follows meteorological convention. It is given as the direction the waves are coming from (0° is north, 90° east, etc.)
     val sea_surface_wave_height: Double?, // (meter) Significant wave height defined as the average of the highest one-third (33%) of waves (measured from trough to crest)

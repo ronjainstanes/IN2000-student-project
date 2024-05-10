@@ -24,21 +24,22 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 /**
- * Gets icon for weather to show on WeatherScreen
+ * Gets the symbol_code that determines what icon we use to illustrate the forecast on WeatherScreen for the first (almost) three days
  */
 fun getWeatherIcon(timeseries: Timeseries): String? {
     return timeseries.data.next_1_hours?.summary?.symbol_code
 }
 
 /**
- * Gets icon for weather for the table on WeatherScreen
+ * Gets the symbol_code that determines what icon we use to illustrate the forecast on WeatherScreen after the first three days
  */
 fun getWeatherIconLongTerm(timeseries: Timeseries): String? {
     return timeseries.data.next_6_hours?.summary?.symbol_code
 }
 
 /**
- * Gets wind direction to display in the weather table
+ * Gets the wind direction to display on WeatherScreen first (almost) three days.
+ * Convert the degrees to letters: N - equals north, etc
  */
 fun getWindDirection(timeseries: Timeseries): String {
     val direction = timeseries.data.instant.details.wind_from_direction
@@ -46,7 +47,7 @@ fun getWindDirection(timeseries: Timeseries): String {
 }
 
 /**
- * Describes the wind direction with symbols in a weather table
+ * This function convert degrees to letters which represent the different cardinal directions.
  */
 private fun getNorthEastVestSouthFromDegrees(degree: Double): String {
     return when {
@@ -63,7 +64,7 @@ private fun getNorthEastVestSouthFromDegrees(degree: Double): String {
 }
 
 /**
- * Gets time hour by hour and shows in the table for weather
+ * Converts the time format 'ISO 8601' to only show the hour in norwegian time, for WeatherScreen
  */
 fun getNorwegianTimeWeather(timeseries: Timeseries): String {
     val timeString = timeseries.time
@@ -103,7 +104,7 @@ fun getWindSpeed(timeseries: Timeseries): String { //
 }
 
 /**
- * Gets precipitation amount
+ * Gets precipitation amount (rain)
  */
 fun getPrecipitationAmountMaxMin(timeseries: Timeseries): String {
     val min =
@@ -114,7 +115,7 @@ fun getPrecipitationAmountMaxMin(timeseries: Timeseries): String {
 }
 
 /**
- * Gets precipitation amount long term
+ * Gets precipitation amount long term (rain)
  */
 fun getPrecipitationAmountMaxMinLongTerm(timeseries: Timeseries): String {
     val min =
@@ -125,7 +126,8 @@ fun getPrecipitationAmountMaxMinLongTerm(timeseries: Timeseries): String {
 }
 
 /**
- * Number for temperature in weather table is red if the temperature is positive, blue id negative
+ * Determines what color the temperature in the weather tables are shown in. If temperature > 0° --> red, else --> blue
+ * short term
  */
 fun temperaturePositive(timeseries: Timeseries): Boolean {
     val temp = (timeseries.data.instant.details.air_temperature)?.roundToInt()
@@ -137,7 +139,8 @@ fun temperaturePositive(timeseries: Timeseries): Boolean {
 }
 
 /**
- * Number for temperature in weather table is red if the temperature is positive, blue id negative long term
+ * Determines what color the temperature in the weather tables are shown in. If temperature > 0° --> red, else --> blue
+ * long term
  */
 fun temperaturePositiveLongTerm(timeseries: Timeseries): Boolean {
     val temp = (timeseries.data.next_6_hours?.details?.air_temperature_min)?.roundToInt()
@@ -149,7 +152,7 @@ fun temperaturePositiveLongTerm(timeseries: Timeseries): Boolean {
 }
 
 /**
- * Gets time hour by hour and shows in the table for sea table
+ * Converts the time format 'ISO 8601' to only show the hour in norwegian time, for OceanForecast in WeatherScreen
  */
 fun getNorwegianTimeOcean(timeseries: TimeseriesOcean): String {
     val timeString = timeseries.time
@@ -168,7 +171,7 @@ fun getSeaWaterTemperature(timeseries: TimeseriesOcean): String {
 }
 
 /**
- * Number for temperature in sea table is red if the temperature is positive, blue id negative
+ * Determines what color the sea temperature in the ocean tables are shown in. If temperature > 0° --> red, else --> blue
  */
 fun seaTemperaturePositive(timeseries: TimeseriesOcean): Boolean {
     val temp = (timeseries.data.instant.details.sea_water_temperature)?.roundToInt()
@@ -206,7 +209,7 @@ fun getCurrentSpeed(timeseries: TimeseriesOcean): String {
 
 
 /**
- * Groups data for today in a table
+ * Groups data for today in a List
  */
 fun List<Timeseries>.getToday(): List<Timeseries> {
     val zoneId = ZoneId.of("Europe/Oslo")
@@ -216,6 +219,7 @@ fun List<Timeseries>.getToday(): List<Timeseries> {
 
 /**
  * Shows when the data were updated (at the very bottom of the screen)
+ * Converts the time format 'ISO 8601' to norwegian time
  */
 fun lastUpdates(today: String): String? {
     val parsedDate = ZonedDateTime.parse(today)
@@ -224,7 +228,7 @@ fun lastUpdates(today: String): String? {
 }
 
 /**
- * Groups data for day by day in a table (weather)
+ * Groups weather forecast data day by day
  */
 fun List<Timeseries>.groupByDay(): Map<LocalDate, List<Timeseries>> {
     val zoneId = ZoneId.of("Europe/Oslo")
@@ -234,7 +238,7 @@ fun List<Timeseries>.groupByDay(): Map<LocalDate, List<Timeseries>> {
 }
 
 /**
- * Groups data for day by day in a table (ocean)
+ * Groups ocean forecast data day by day
  */
 fun List<TimeseriesOcean>.groupByDayOcean(): Map<LocalDate, List<TimeseriesOcean>> {
     val zoneId = ZoneId.of("Europe/Oslo")

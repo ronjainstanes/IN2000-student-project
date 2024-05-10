@@ -69,7 +69,7 @@ enum class Expanded {
 }
 
 /**
- * Screen containing weather forecast for up to 9 days ahead
+ * Screen containing weather and ocean forecast
  */
 @Composable
 fun WeatherScreen(
@@ -144,6 +144,7 @@ fun WeatherScreen(
                         fontNormal = fontNormal,
                         fontBold = fontBold
                     )
+                        // the content of the screen, which contain the cards for the weather and ocean forecast
                         ScreenContent(
                             forecastViewModel = forecastViewModel,
                             displayInfo = displayInfo,
@@ -286,7 +287,7 @@ fun ScreenContent(
 }
 
 /**
- * A card containing multiple rows with weather info
+ * A card containing multiple rows with weather info, for the first three days
  */
 @Composable
 fun DayWeatherCard(
@@ -399,7 +400,9 @@ fun DayWeatherCard(
     }
 }
 
-
+/**
+ *  A card containing multiple rows with weather info, after the first three days
+ */
 @Composable
 fun DayWeatherCardLongTerm(
     day: LocalDate,
@@ -686,8 +689,9 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
 }
 
 
-
-
+/**
+ * The header for each card containing weather info
+ */
 @Composable
 fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
 
@@ -784,7 +788,9 @@ fun WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean) {
     }
 }
 
-
+/**
+ *  A card for the ocean page, containing multiple rows with ocean data,
+ */
 @Composable
 fun DayOceanCard(
     day: LocalDate,
@@ -873,6 +879,10 @@ fun DayOceanCard(
     }
 }
 
+
+/**
+ *  A row displaying the data for a specific time for the ocean card
+ */
 @Composable
 fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
     val pos = Color(159, 8, 8, 255) // Farge til positiv temp som i YR
@@ -966,7 +976,9 @@ fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
     }
 }
 
-
+/**
+ * The header for each card containing ocean data
+ */
 @Composable
 fun OceanHeader(headerColor: Color, font: FontFamily) {
 
@@ -1042,14 +1054,10 @@ fun OceanHeader(headerColor: Color, font: FontFamily) {
     }
 }
 
+
 /**
- *  if (isLandscape) Modifier
- *                             .align(Alignment.Start)
- *                             .padding(start = 146.dp)
- *                         else  Modifier
+ * The top of the screen on the weather and ocean page
  */
-
-
 @Composable
 fun ScreenTop(forecastViewModel: LocationForecastViewModel, fontNormal: FontFamily, fontBold: FontFamily) {
     val placeNameUiState by forecastViewModel.placeNameState.collectAsState()
@@ -1179,7 +1187,7 @@ fun ScreenTop(forecastViewModel: LocationForecastViewModel, fontNormal: FontFami
 
 
 /**
- * Knappene for å bytte mellom vær og hav skjerm. Ligger i scaffol BottomBar slik at den er festet til bunnen av siden.
+ * The bottom navigation bar to navigate between the weather and ocean data
  */
 @Composable
 fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
@@ -1250,7 +1258,7 @@ fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
 
 
 /**
- * Knappen for å utvide og minke tabellen time for time
+ * The button which expand and shorten the number of rows which are shown in a card
  */
 @Composable
 fun ShortToLongButton(expanded: MutableState<Expanded>, color: Color, font: FontFamily) {
@@ -1316,6 +1324,9 @@ fun ShortToLongButton(expanded: MutableState<Expanded>, color: Color, font: Font
     }
 }
 
+/**
+ * Shows shen the data for the weather and ocean forecast were last updated on the bottom of the page
+ */
 @Composable
 fun DataLastUpdated(forecastViewModel: LocationForecastViewModel, displayInfo: MutableState<DisplayInfo>, fontNormal: FontFamily) {
     val locationForecastUiState by forecastViewModel.forecastInfoUiState.collectAsState()

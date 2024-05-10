@@ -3,7 +3,6 @@ package no.uio.ifi.in2000.team11.havvarselapp.ui.locationForecast
 import android.content.Context
 import android.location.Geocoder
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -13,13 +12,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.team11.havvarselapp.data.locationForecast.LocationForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.data.oceanForecast.OceanForecastRepositoryImpl
 import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.LocationForecast
-import no.uio.ifi.in2000.team11.havvarselapp.model.locationForecast.Timeseries
 import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.OceanForecast
-import no.uio.ifi.in2000.team11.havvarselapp.model.oceanForecast.TimeseriesOcean
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Locale
@@ -41,13 +37,12 @@ class LocationForecastViewModel(
 
     private val _placeNameState = MutableStateFlow("Laster...")
     val placeNameState: StateFlow<String> = _placeNameState.asStateFlow()
-    private var placeNameCached: String = "Laster..."
 
 
     /**
-    This method cached the last forecast and makes it possible to continue using the weather-page after loosing wifi
+    This method caches the last forecast and makes it possible to continue using the weather-page after loosing wifi
      */
-    fun saveForecastToFile(context: Context, forecast: LocationForecast?) {
+    private fun saveForecastToFile(context: Context, forecast: LocationForecast?) {
         try {
             context.openFileOutput("forecast.json", Context.MODE_PRIVATE).use { output ->
                 val jsonData = Gson().toJson(forecast)
@@ -58,9 +53,9 @@ class LocationForecastViewModel(
         }
     }
     /**
-    This method cached the last ocean-forecast and makes it possible to continue using the Ocean-page after loosing wifi
+    This method caches the last ocean-forecast and makes it possible to continue using the Ocean-page after loosing wifi
      */
-    fun saveOceanForecastToFile(context: Context, forecast: OceanForecast?) {
+    private fun saveOceanForecastToFile(context: Context, forecast: OceanForecast?) {
         try {
             context.openFileOutput("oceanforecast.json", Context.MODE_PRIVATE).use { output ->
                 val jsonData = Gson().toJson(forecast)
@@ -73,9 +68,9 @@ class LocationForecastViewModel(
     }
 
     /**
-    This method cached the last place-name so the place-name on top of the weather-page is still there and correct for the data shown after loosing wifi
+    This method caches the last place-name so the place-name on top of the weather-page is still there and correct for the data shown after loosing wifi
      */
-    fun savePlaceNameToFile(context: Context, placeName: String) {
+    private fun savePlaceNameToFile(context: Context, placeName: String) {
         try {
             context.openFileOutput("place_name.txt", Context.MODE_PRIVATE).use { output ->
                 output.write(placeName.toByteArray())
@@ -89,7 +84,7 @@ class LocationForecastViewModel(
     /**
      * This methode return the cached place-name for when there is no wifi
      */
-    fun loadPlaceNameFromFile(context: Context): String? {
+    private fun loadPlaceNameFromFile(context: Context): String? {
         return try {
             context.openFileInput("place_name.txt").use { input ->
                 val placeName = input.bufferedReader().use { it.readText() }
@@ -107,9 +102,9 @@ class LocationForecastViewModel(
 
 
     /**
-     * This methode return the cached forecast for when there is no wifi
+     * This methode return the cached LocationForecast for when there is no wifi
      */
-    fun loadForecastFromFile(context: Context): LocationForecast? {
+    private fun loadForecastFromFile(context: Context): LocationForecast? {
         return try {
             context.openFileInput("forecast.json").use { input ->
                 val json = input.bufferedReader().use { it.readText() }
@@ -126,9 +121,9 @@ class LocationForecastViewModel(
     }
 
     /**
-     * This methode return the cached ocean-forecast for when there is no wifi
+     * This methode return the cached OceanForecast for when there is no wifi
      */
-    fun loadOceanForecastFromFile(context: Context): OceanForecast? {
+    private fun loadOceanForecastFromFile(context: Context): OceanForecast? {
         return try {
             context.openFileInput("oceanforecast.json").use { input ->
                 val json = input.bufferedReader().use { it.readText() }
@@ -144,6 +139,11 @@ class LocationForecastViewModel(
         }
     }
 
+    /**
+     * The function that loads both the weather and ocean forecast.
+     * First it tries to get data from the API online.
+     * If it fails - likely because there is no wifi, it will try to return the last cached API instead.
+     */
     fun loadForecast(lat: String, lon: String, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             try {

@@ -73,6 +73,7 @@ data class Instant(
     val details: InstantDetails,
 )
 
+// The variables we use to show the forecast for a specific place for the first (almost) three days
 data class InstantDetails(
     val air_pressure_at_sea_level: Double?,
     val air_temperature: Double?,
@@ -111,7 +112,7 @@ data class Next_1_hours(
     val summary: Summary1?,
     val details: Details1?,
 )
-
+// symbol_code determines what icon we use to illustrate the forecast for the first (almost) three days
 data class Summary1(
     var symbol_code: String?,
 )
@@ -130,11 +131,11 @@ data class Next_6_hours(
     val details: Details6?,
 )
 
-
+// symbol_code determines what icon we use to illustrate the forecast after the first three days
 data class Summary6(
     var symbol_code: String?,
 )
-
+// The variables we use to show the forecast for a specific place after the first three days
 data class Details6(
     val air_temperature_max: Double?,
     var air_temperature_min: Double?,
