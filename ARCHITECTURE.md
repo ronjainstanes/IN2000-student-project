@@ -1,30 +1,41 @@
 # Architecture
 
+
+
+## Technologies used
+
+The technologies we have used are the ones that were specified in the [project criteria](https://www.uio.no/studier/emner/matnat/ifi/IN2000/v24/prosjektarbeid/produktkrav-in2000-v24.pdf). The entire project is written in the programming language **Kotlin** and we have used **Jetpack Compose** as a UI toolkit. We used the IDE **Android Studio** for development and testing, and stored the code in a **Git** repository on UiO Github.
+
+
+
 ## Object Oriented Principles and Design Pattern
 
-We are striving towards developing our app in accordance with the [Recommendations for Android Architecture](https://developer.android.com/topic/architecture/recommendations). The main recommendation is to divide the architecture into two distinct layers: the UI layer and the data layer. To adhere to this recommendation, we have organized our codebase into three main packages: "data", "model" and "ui", following the Model - View - ViewModel (MVVM) design pattern. This helps create a clear division and structure within our code.
+We are striving towards developing our app in accordance with the [Recommendations for Android Architecture](https://developer.android.com/topic/architecture/recommendations). The main recommendation is to divide the architecture into two distinct layers: the UI layer and the data layer. To adhere to this recommendation, we have organized our codebase into three main packages: "data", "model" and "ui", following the Model - View - ViewModel (MVVM) design pattern. This promotes separation of concerns and helps create a clear division and structure within our code.
 
-The data layer in our application is made of Repositories, DataSources and APIs. We have created three Repositories, each handling different types of data which is provided by DataSources. The responsibility of the DataSource classes is to fetch data from APIs, which includes parsing the data and handling exceptions. Another best practice recommendation is to use dispatchers to update data from the data layer. For instance, when fetching data from an API, we use coroutines to dispatch a thread from the "view model scope" to avoid blocking the main thread. This layer handles the business logic of the app, for example retrieving and manipulating data and interacting with external data providers such as the APIs.
+The data layer in our application consists of Repositories, DataSources and external APIs. We have created three sets of Repositories and their corresponding DataSources, where each pair handles different types of data.  We have created interfaces to be able to modify or change the implementation of the classes without it affecting other parts of the code, which promotes to loose coupling between the different units. Another best practice recommendation is to use dispatchers to fetch and update data in the data layer. When fetching data from an API, we use coroutines to dispatch a thread from the "view model scope" to avoid blocking the main thread. The data layer handles the business logic of our application, which mostly involves retrieving and manipulating data and interacting with external data providers such as the APIs.
 
-All UI elements are contained within the UI layer of our application. For this, we have used the framework Jetpack Compose to create UI elements as composable functions. To handle input from the user and changes in data from external sources, we use ViewModel classes to handle these inputs and update the state accordingly. The ViewModels function as state holders and manage UI logic, such as user interactions and updating UI elements. We also want to note that the UiState is exposed as immutable variables, where only the ViewModels have access to modify the UiState.
+The UI layer contains all UI elements in our application, which are implemented as composable functions created with the framework Jetpack Compose. To handle input from the user or changes in data from external sources, we use ViewModel classes to handle these inputs and update the state accordingly. The ViewModels function as state holders which also manages UI logic such as user interactions and updating UI elements. Another recommendation we are following, is to expose UiStates as immutable objects, meaning that only the ViewModels have access to modify the UiState.
 
-By adopting this structure, it was easier to implement important object-oriented principles such as low coupling and high cohesion. It promotes low coupling because the different components of the application are organized in a way that minimizes dependencies between them. And there is high cohesion within in each component, because everything within a component is closely related and function together logically.
+By adopting this structure, it was easier to implement important object-oriented principles such as loose coupling and high cohesion. It promotes loose coupling through the clear division of code into different components, and the use of interfaces. And there is high cohesion within in each component, because each class has a single responsibilty, and classes that work together and depend on each other are encapsulated within the same module.
+
+
 
 ## The Architecture of our Application
 
-
-![Architecture](https://media.github.uio.no/user/9545/files/68aaf943-7fc6-4194-b875-12c184671116)
+![Architecture](https://media.github.uio.no/user/9545/files/ab774338-59a9-4c86-ab4f-ce06e82eef99)
 
 
 *This is an illustration of the apps architecture, which is structured according to the MVVM design pattern, and divided into a UI layer and a data layer.*
 
-This illustration clearly distinguishes the two distinct layers. The UI layer contains UI elements, which is represented in the boxes named SeaMapScreen and WeatherScreen. These make up the elements which are visible to the user. 
+This illustration clearly distinguishes the two layers. The UI layer contains UI elements, which is represented by the boxes named SeaMapScreen and WeatherScreen. These make up the elements which are visible to the user. 
 
-The UI layer also consists of three ViewModels. Two of them are contained within a screen, either SeaMapScreen or WeatherScreen. The last viewmodel: SharedViewModel, is not part of a screen, but instead has a single responsibility - to handle the state of the SharedUiState, which is what is shared with the two screens. In other words: each screen only has one viewmodel, but the screen composable functions also takes another argument - the SharedUiState which is provided by the SharedViewModel. This is because we have data which both screens need access to, and if this data is updated from one screen, it also needs to be updated in the other screen. After much discussion of how to solve this problem, we endred up with the solution of having a SharedUiState, which is handled by a SharedViewModel.
+The UI layer also consists of three ViewModels. Two of them are bound to a screen, either SeaMapScreen or WeatherScreen. The last viewmodel: SharedViewModel, is not directly part of any screens, but instead serves a single purpose - to handle the state of the SharedUiState. This UiState contains data which both screens need access to, and if it is updated in one screen, it also needs to be updated in the other screen. This means that each screen has exactly one ViewModel, while also having access to the SharedUiState.
 
-The data layer consists of Repositories and DataSources which fetches data from external APIs. In our application we fetch data from three distinct APIs, and because the data is quite unique, we created a DataSource and Repository for each API. These include the  "MetAlerts", "LocationForecast" and "OceanForecast" APIS from MET. 
+The data layer consists of Repositories and DataSources which fetches data from external APIs. In our application we fetch data from three distinct APIs, and because the data from each one is quite unique, we decided to create a DataSource and a Repository for each API. These include the  "MetAlerts", "LocationForecast" and "OceanForecast" APIs.
 
-There are also two API's which are already built into composable functions, such as the "Google Map" composable which is provided by the Google Maps Compose Library, and a Tile Overlay from OpenSeaMap which can be placed on top of the map. These are also APIs, but does not provide data which can be handled by DataSources and saved into a UiState like the other data mentioned above. 
+There are also two APIs which are already built into composable functions. The first one is the "Google Map" composable which only need access to an API key (which we store in the codebase using the "google secrets" plugin), and the second one is the Tile Overlay from OpenSeaMap which can be placed on top of the map. These are APIs, but they do not need data sources or repositories, as the functionality of these classes are already built into and handled by the composable functions. 
+
+
 
 ## API Level
 
