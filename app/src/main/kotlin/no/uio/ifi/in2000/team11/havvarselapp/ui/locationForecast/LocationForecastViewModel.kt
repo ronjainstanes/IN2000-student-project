@@ -25,7 +25,6 @@ import java.util.Locale
 //warning explanation: getFromLocation() is still used
 
 
-
 class LocationForecastViewModel(
     private val repository: LocationForecastRepositoryImpl = LocationForecastRepositoryImpl(),
     private val repositoryOcean: OceanForecastRepositoryImpl = OceanForecastRepositoryImpl()
@@ -52,6 +51,7 @@ class LocationForecastViewModel(
             Log.e("SAVE_FORECAST", "Error saving forecast data", e)
         }
     }
+
     /**
     This method caches the last ocean-forecast and makes it possible to continue using the Ocean-page after loosing wifi
      */
@@ -203,9 +203,9 @@ class LocationForecastViewModel(
                     if (city != null) {
                         "$city, $country"
                     } else if (adminArea != null) {
-                        if (sublocality != null){
+                        if (sublocality != null) {
                             "$adminArea, $sublocality, $country"
-                        } else if (subAdminArea != null){
+                        } else if (subAdminArea != null) {
                             "$subAdminArea, $country"
                         } else {
                             "$adminArea, $country"
@@ -225,8 +225,7 @@ class LocationForecastViewModel(
                 e.printStackTrace()
                 if (loadPlaceNameFromFile(context) != null) {
                     loadPlaceNameFromFile(context) // loading cached place-name when there is no internet connection
-                }
-                else {
+                } else {
                     "Laster...."
                 }
             }

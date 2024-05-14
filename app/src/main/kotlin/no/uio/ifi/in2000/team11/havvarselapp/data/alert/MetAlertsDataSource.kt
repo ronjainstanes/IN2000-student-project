@@ -13,11 +13,11 @@ import java.net.UnknownHostException
 
 /**
  * NOTE:
- * In this file, we have decided to parse the data manually from a JSON string
+ * In this file, we have decided to parse the data manually from a JSON object
  * to a self-defined data class, instead of using the .body() function we were
- * taught in class. This is because we need to process the data before it can
- * be used in functions, and we have chosen to process it in the data source
- * instead of needing to do it later in the program.
+ * taught in class. This is because we need to process/change the data before
+ * it can be used later in the program, and we have chosen to process it here
+ * in the data source instead of needing to do it at a later stage.
  */
 
 /**

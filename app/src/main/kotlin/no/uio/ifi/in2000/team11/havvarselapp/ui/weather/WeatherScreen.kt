@@ -60,10 +60,16 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+/**
+ * To know if the user has chosen to display "weather" or "sea" info on screen
+ */
 enum class DisplayInfo {
     Weather, Sea
 }
 
+/**
+ * To know if the user has clicked on "expand" to display more rows of data
+ */
 enum class Expanded {
     Long, Short
 }
@@ -155,6 +161,7 @@ fun WeatherScreen(
             }
             NavigationBarWithButtons(navController = navController)
         }
+        // A pop-up window will appear if the app loses internet connection
         NetworkConnectionStatus(connectivityObserver,null)
     }
 }
@@ -475,8 +482,8 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
         ImageVector.vectorResource(id = R.drawable.fair_day)
     }
 
-    val pos = Color(159, 8, 8, 255) // Farge til positiv temp som i YR
-    val neg = Color(40, 75, 202, 255) // Farge til negativ temp
+    val pos = Color(159, 8, 8, 255) // Color for positive temperatures, 0 degrees or more
+    val neg = Color(40, 75, 202, 255) // Color for negative temperatures
 
     val north = ImageVector.vectorResource(id = R.drawable.north)
     val south = ImageVector.vectorResource(id = R.drawable.south)
@@ -551,7 +558,7 @@ fun WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color) {
             )
         }
 
-        // Rain / perciption amount
+        // Rain / precipitation amount
         Column(
             modifier = Modifier
                 .weight(1.25f)
@@ -612,11 +619,10 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
         ImageVector.vectorResource(id = R.drawable.fair_day)
     }
 
-    val pos = Color(159, 8, 8, 255) // Farge til positiv temp som i YR
-    val neg = Color(40, 75, 202, 255) // Farge til negativ temp
+    val pos = Color(159, 8, 8, 255) // Color for positive temperatures, 0 and above
+    val neg = Color(40, 75, 202, 255) // Color for negative temperatures
     val lastHour = (getNorwegianTimeWeather(data).toInt() + 6) % 24
     val lastHourString = if (lastHour < 10) "0$lastHour" else "$lastHour"
-
 
 
     Row(
@@ -670,7 +676,7 @@ fun WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color) {
             )
         }
 
-        // Rain / perciption amount
+        // Rain / precipitation amount
         Column(
             modifier = Modifier
                 .weight(1.25f)
@@ -847,7 +853,7 @@ fun DayOceanCard(
             // ROW WITH ICON AT TOP Oceanforecast
             OceanHeader(headerColor = oceanHeader, font = fontNormal)
 
-            // LOADING THE ROWS WITH HAV-INFO
+            // LOADING THE ROWS WITH OCEAN INFO
             when (expanded.value) {
                 Expanded.Short -> {
                     OceanRow(data = timeseriesList[0], font = fontNormal, rowColor = oceanRow1)
@@ -885,8 +891,8 @@ fun DayOceanCard(
  */
 @Composable
 fun OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color) {
-    val pos = Color(159, 8, 8, 255) // Farge til positiv temp som i YR
-    val neg = Color(40, 75, 202, 255) // Farge til negativ temp
+    val pos = Color(159, 8, 8, 255) // Red color for positive temperatures, 0 and above
+    val neg = Color(40, 75, 202, 255) // Blue color for negative temperatures
     val arrow = ImageVector.vectorResource(id = R.drawable.oest)
     val currentFrom = getCurrentDirectionFrom(data)
     val currentTowards = getCurrentDirectionTowards(data)
@@ -1177,10 +1183,8 @@ fun ScreenTop(forecastViewModel: LocationForecastViewModel, fontNormal: FontFami
 
                 Spacer(modifier = Modifier.weight(1f))
             }
-
         }
     }
-
 }
 
 
@@ -1191,8 +1195,8 @@ fun ScreenTop(forecastViewModel: LocationForecastViewModel, fontNormal: FontFami
  */
 @Composable
 fun BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily) {
-    val pos = Color(19, 35, 44, 255) // Farge til header i tabellen
-    val neg = Color(155, 163, 174, 255) // Farge til header i tabellen
+    val pos = Color(19, 35, 44, 255) // Color of the navigation button, when it is active
+    val neg = Color(155, 163, 174, 255) // Color of button when it is inactive
 
     val weatherColor = if (currentScreen.value == DisplayInfo.Weather) pos else neg
     val oceanColor = if (currentScreen.value == DisplayInfo.Sea) pos else neg

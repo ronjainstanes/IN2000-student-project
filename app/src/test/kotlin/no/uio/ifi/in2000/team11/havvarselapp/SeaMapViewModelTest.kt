@@ -8,6 +8,9 @@ import org.junit.Test
 class SeaMapViewModelTest {
     private val viewModel = SeaMapViewModel()
 
+    /**
+     * Test to verify that the marker value is updated correctly in UiState
+     */
     @Test
     fun seaMapViewModel_placeOrRemoveMarker_uiUpdated() {
         // initial value

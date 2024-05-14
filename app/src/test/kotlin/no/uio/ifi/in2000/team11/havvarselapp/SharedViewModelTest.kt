@@ -8,6 +8,9 @@ import org.junit.Test
 class SharedViewModelTest {
     private val viewModel = SharedViewModel()
 
+    /**
+     * Test to verify that location is updated correctly in UiState
+     */
     @Test
     fun seaMapViewModel_updateLocationUiState_uiUpdated() {
         val testCoordinates = LatLng(69.6, 18.9)
