@@ -124,6 +124,166 @@ After creating a Use Case diagram to depict the interaction between our applicat
         WeatherScreen-->>User: Show sea conditions
 ```
 
+## Class diagram 
+
+```mermaid
+classDiagram
+    MainActivity --|> Navigation
+    Navigation --|> MapScreen
+    MapScreen --|> AutocompleteTextField
+    Navigation --|> WeatherScreen
+    WeatherScreen --|> SharedViewModel
+    MapScreen --|> SharedViewModel
+    SharedViewModel --|> SharedUiState
+    MapScreen --|> SeaMapViewModel
+    SeaMapViewModel --|> MapUiState
+    WeatherScreen --|> LocationForecastViewModel
+    SeaMapViewModel --|> SeaSymbolsList
+    SeaSymbolsList --|> SeaSymbolsPair
+    LocationForecastViewModel --|> OceanForecast
+    OceanForecast --|> GeometryOcean
+    OceanForecast --|> PropertiesOcean
+    OceanForecast --|> MetaOcean
+    MetaOcean --|> UnitsOcean
+    LocationForecastViewModel --|> TimeseriesOcean
+    TimeseriesOcean --|> DataOcean
+    DataOcean --|> InstantOcean
+    LocationForecastViewModel --|> DetailsOcean
+    
+
+    class MainActivity{ 
+        +onCreate(savedInstanceState: Budle?)}
+
+    class Navigation {
+      + SetUpNavigation(placesClient: PlacesClient, connectivityObserver: ConnectivityObserver)
+      + <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavHostController)
+      + NavigationBarWithButtons(navController: NavController)
+      - ButtonMapContext(isSelected: Boolean)
+      - ButtonWeatherContext(isSelected: Boolean)
+    }
+    
+    class MapScreen{
+    + tileProvider
+    + SeaMapScreen(sharedUiState: SharedUiState, navController: NavController, placesClient: PlacesClient, updateLocation: (loc: LatLng) -> Unit, connectivityObserver: ConnectivityObserver, updateSearchHistory: (userInput: String) -> Unit, seaMapViewModel: SeaMapViewModel = viewModel())
+    - ExplanationBox(symbolDescription: List<SeaSymbolsPair>, onDismiss: () -> Unit)
+    - FilterButtonAndDialog(showSymbols: MutableState<Boolean>, showHarborWithGas: MutableState<Boolean>, showHarborWithoutGas: MutableState<Boolean>, showDialog: MutableState<Boolean>)
+    }
+    
+    class AutocompleteTextField{
+    + AutocompleteTextField(context: Context, updateLocation: (loc: LatLng) -> Unit, cameraPositionState: CameraPositionState, placesClient: PlacesClient, active: MutableState<Boolean>, enableSearch: MutableState<Boolean>, sharedUiState: SharedUiState, updateSearchHistory: (userInput: String) -> Unit)
+    -fetchPredictions(query: String, placesClient: PlacesClient, onPredictionsFetched: (List<AutocompletePrediction>) -> Unit)
+    -getPosition(placeName: String, context: Context, updateLocation: (loc: LatLng) -> Unit, cameraPositionState: CameraPositionState)
+    }
+    
+    class WeatherScreen{
+    + WeatherScreen(sharedUiState: SharedUiState, navController: NavController, forecastViewModel: LocationForecastViewModel = viewModel(), connectivityObserver: ConnectivityObserver)
+    -ScreenContent(forecastViewModel: LocationForecastViewModel,displayInfo: MutableState<DisplayInfo>,fontNormal: FontFamily)
+    -DayWeatherCard(day: LocalDate,timeseriesList: List<Timeseries>,fontNormal: FontFamily,todayOrTmr: String? = " ")
+    -DayWeatherCardLongTerm(day: LocalDate,timeseriesList: List<Timeseries>,fontNormal: FontFamily)
+    -WeatherRow(data: Timeseries, font: FontFamily, rowColor: Color)
+    -WeatherRowLongTerm(data: Timeseries, font: FontFamily, rowColor: Color)
+    -WeatherHeader(headerColor: Color, font: FontFamily, shortTerm: Boolean)
+    -DayOceanCard(day: LocalDate,timeseriesList: List<TimeseriesOcean>,fontNormal: FontFamily,todayOrTmr: String? = " ")
+    -OceanRow(data: TimeseriesOcean, font: FontFamily, rowColor: Color)
+    -OceanHeader(headerColor: Color, font: FontFamily)
+    -ScreenTop(forecastViewModel: LocationForecastViewModel, fontNormal: FontFamily, fontBold: FontFamily)
+    -BottomNavBar(currentScreen: MutableState<DisplayInfo>, font: FontFamily)
+    -ShortToLongButton(expanded: MutableState<Expanded>, color: Color, font: FontFamily)
+    -DataLastUpdated(forecastViewModel: LocationForecastViewModel, displayInfo: MutableState<DisplayInfo>, fontNormal: FontFamily)
+    }
+    
+    class SharedViewModel{
+    -metAlertsRepository
+    -_sharedUiState
+    +sharedUiState
+    +updateLocation(newLocation: LatLng)
+    -loadMetAlerts()
+    +onCleared()
+    +updateHistoryItems(userInput: String)
+    }
+    
+    class SharedUiState{
+    +currentLocation
+    +allMetAlerts
+    +historyItems
+    }
+    
+    class SeaMapViewModel{
+    -_mapUiState
+    +mapUiState
+    +harborData
+    +placeOrRemoveMarker()
+    +loadGuestHarboursFromResources(context: Context)
+    
+    }
+    
+    class MapUiState{
+    +markerVisible}
+    
+    class LocationForecastViewModel{
+    -repository
+    -repositoryOcean
+    -saveForecastToFile(context: Context, forecast: LocationForecast?)
+    -saveOceanForecastToFile(context: Context, forecast: OceanForecast?)
+    -savePlaceNameToFile(context: Context, placeName: String)
+    -loadPlaceNameFromFile(context: Context)
+    -loadForecastFromFile(context: Context)
+    -loadOceanForecastFromFile(context: Context)
+    +loadForecast(lat: String, lon: String, context: Context)
+    +setCurrentPlaceName(context: Context, lat: Double, lon: Double)
+    }
+    
+    class SeaSymbolsPair{
+    +symbol
+    +description
+    }
+    
+    class SeaSymbolsList{
+    +symbolDescription}
+    
+    class OceanForecast{
+    +type
+    +geometry
+    +properties}
+    
+    class GeometryOcean{
+    +type
+    +coordinates}
+    
+    class PropertiesOcean{
+    +meta
+    +timeseries}
+    
+    class MetaOcean{
+    +updated_at
+    +units}
+    
+    class UnitsOcean{
+    +sea_surface_wave_from_direction
+    +sea_surface_wave_height
+    +sea_water_speed
+    +sea_water_temperature
+    +sea_water_to_direction}
+    
+    class TimeseriesOcean{
+    +time
+    +data}
+    
+    class DataOcean{
+    +instant}
+    
+    class InstantOcean{
+    +details}
+    
+    class DetailsOcean{
+    +sea_surface_wave_from_direction
+    +sea_surface_wave_height
+    +sea_water_speed
+    +sea_water_temperature
+    +sea_water_to_direction}
+    
+```
+
 ## Activity diagram (Flow diagram)
 
 As a final stage of modeling we want to make an activity diagram to illustrate the flow of events in the use case and to show the interaction with the application from the user's point of view. It will help us to depict the sequence of activities, actions, and decisions that occur during the execution of the use case described over.
