@@ -126,6 +126,8 @@ After creating a Use Case diagram to depict the interaction between our applicat
 
 ## Class diagram 
 
+In the class diagram, we have depicted the system structure necessary for the execution of our Use Case.
+
 ```mermaid
 classDiagram
     MainActivity --|> Navigation
