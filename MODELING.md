@@ -11,7 +11,7 @@ Now we will present the results of the survey in the form of user stories **(“
 5. As a boat driver, I want to receive alerts regarding waves and their intensity, helping me make decisions about current conditions and potential risks.
 
 
-## **Use case diagram**
+## **Use case diagram** 
 
 To illustrate the interaction between our application and the environment, we will use a Use Case diagram. We define the user as the primary actor. The user's goal in interacting with the system is to be able to check the data defined in user stories (weather and meteorological alerts in the area they are interested in). We have decided to implement these functions through the following pattern:
 There are two screens in the application. On the main screen users see a map.
@@ -138,6 +138,7 @@ classDiagram
     MapScreen --|> SeaMapViewModel
     SeaMapViewModel --|> MapUiState
     WeatherScreen --|> LocationForecastViewModel
+    WeatherScreen --|> UtilitiesWeatherScreen 
     SeaMapViewModel --|> SeaSymbolsList
     SeaSymbolsList --|> SeaSymbolsPair
     LocationForecastViewModel --|> OceanForecast
@@ -150,7 +151,6 @@ classDiagram
     DataOcean --|> InstantOcean
     LocationForecastViewModel --|> DetailsOcean
     
-
     class MainActivity{ 
         +onCreate(savedInstanceState: Budle?)}
 
@@ -163,7 +163,7 @@ classDiagram
     }
     
     class MapScreen{
-    + tileProvider
+    + tileProvider: UrlTileProvider
     + SeaMapScreen(sharedUiState: SharedUiState, navController: NavController, placesClient: PlacesClient, updateLocation: (loc: LatLng) -> Unit, connectivityObserver: ConnectivityObserver, updateSearchHistory: (userInput: String) -> Unit, seaMapViewModel: SeaMapViewModel = viewModel())
     - ExplanationBox(symbolDescription: List<SeaSymbolsPair>, onDismiss: () -> Unit)
     - FilterButtonAndDialog(showSymbols: MutableState<Boolean>, showHarborWithGas: MutableState<Boolean>, showHarborWithoutGas: MutableState<Boolean>, showDialog: MutableState<Boolean>)
@@ -193,9 +193,9 @@ classDiagram
     }
     
     class SharedViewModel{
-    -metAlertsRepository
-    -_sharedUiState
-    +sharedUiState
+    -metAlertsRepository: MetAlertsRepositoryImpl()
+    -_sharedUiState: MutableStateFlow(SharedUiState())
+    +sharedUiState: StateFlow<SharedUiState>
     +updateLocation(newLocation: LatLng)
     -loadMetAlerts()
     +onCleared()
@@ -203,15 +203,15 @@ classDiagram
     }
     
     class SharedUiState{
-    +currentLocation
-    +allMetAlerts
-    +historyItems
+    +currentLocation: LatLng
+    +allMetAlerts: List<MetAlert>
+    +historyItems: List<String>
     }
     
     class SeaMapViewModel{
-    -_mapUiState
-    +mapUiState
-    +harborData
+    -_mapUiState = MutableStateFlow(MapUiState())
+    +mapUiState: StateFlow<MapUiState>
+    +harborData = MutableLiveData<List<Harbor>>()
     +placeOrRemoveMarker()
     +loadGuestHarboursFromResources(context: Context)
     
@@ -221,8 +221,8 @@ classDiagram
     +markerVisible}
     
     class LocationForecastViewModel{
-    -repository
-    -repositoryOcean
+    -repository: LocationForecastRepositoryImpl
+    -repositoryOcean: OceanForecastRepositoryImpl
     -saveForecastToFile(context: Context, forecast: LocationForecast?)
     -saveOceanForecastToFile(context: Context, forecast: OceanForecast?)
     -savePlaceNameToFile(context: Context, placeName: String)
@@ -234,53 +234,81 @@ classDiagram
     }
     
     class SeaSymbolsPair{
-    +symbol
-    +description
+    +symbol: Int
+    +description: String
     }
     
     class SeaSymbolsList{
-    +symbolDescription}
+    +symbolDescription: List<SeaSymbolsPair>}
     
     class OceanForecast{
-    +type
-    +geometry
-    +properties}
+    +type: String
+    +geometry: GeometryOcean
+    +properties: PropertiesOcean}
     
     class GeometryOcean{
-    +type
-    +coordinates}
+    +type: String
+    +coordinates: List<Double>}
     
     class PropertiesOcean{
-    +meta
-    +timeseries}
+    +timeseries: List<TimeseriesOcean>}
     
-    class MetaOcean{
-    +updated_at
-    +units}
+class MetaOcean{
+    val updated_at: String,
+    val units: UnitsOcean}
     
     class UnitsOcean{
-    +sea_surface_wave_from_direction
-    +sea_surface_wave_height
-    +sea_water_speed
-    +sea_water_temperature
-    +sea_water_to_direction}
+    +sea_surface_wave_from_direction: String?
+    +sea_surface_wave_height: String?
+    +sea_water_speed: String?
+    +sea_water_temperature: String?
+    +sea_water_to_direction: String?}
     
     class TimeseriesOcean{
-    +time
-    +data}
+    +time: String
+    +data: DataOcean}
     
     class DataOcean{
-    +instant}
+    +instant: InstantOcean}
     
     class InstantOcean{
-    +details}
+    +details: DetailsOcean}
     
     class DetailsOcean{
-    +sea_surface_wave_from_direction
-    +sea_surface_wave_height
-    +sea_water_speed
-    +sea_water_temperature
-    +sea_water_to_direction}
+    +sea_surface_wave_from_direction: Double?
+    +sea_surface_wave_height: Double?
+    +sea_water_speed: Double?
+    +sea_water_temperature: Double?
+    +sea_water_to_direction: Double?}
+    
+    class UtilitiesWeatherScreen{
+    +getWeatherIcon(timeseries: Timeseries): String?
+    +getWeatherIconLongTerm(timeseries: Timeseries): String?
+    +getWindDirection(timeseries: Timeseries): String
+    -getNorthEastVestSouthFromDegrees(degree: Double): String
+    +getNorwegianTimeWeather(timeseries: Timeseries): String
+    +getTemperature(timeseries: Timeseries): String
+    +getTemperatureLongTerm(timeseries: Timeseries): String
+    +getWindSpeed(timeseries: Timeseries): String
+    +getPrecipitationAmountMaxMin(timeseries: Timeseries): String
+    +getPrecipitationAmountMaxMinLongTerm(timeseries: Timeseries): String
+    +temperaturePositive(timeseries: Timeseries): Boolean
+    +temperaturePositiveLongTerm(timeseries: Timeseries): Boolean
+    +getNorwegianTimeOcean(timeseries: TimeseriesOcean): String
+    +getSeaWaterTemperature(timeseries: TimeseriesOcean): String
+    +seaTemperaturePositive(timeseries: TimeseriesOcean): Boolean
+    +getCurrentDirectionTowards(timeseries: TimeseriesOcean): String
+    +getCurrentDirectionFrom(timeseries: TimeseriesOcean): String
+    +getCurrentSpeed(timeseries: TimeseriesOcean): String
+    +List<Timeseries>.getToday(): List<Timeseries>
+    +lastUpdates(today: String): String?
+    +List<Timeseries>.groupByDay(): Map<LocalDate, List<Timeseries>>
+    +List<TimeseriesOcean>.groupByDayOcean(): Map<LocalDate, List<TimeseriesOcean>>
+    +GetWeatherIconTopPage(timeseries: Timeseries)
+    +GetWeatherIconTopPageHorizontal(timeseries: Timeseries)
+    +getFonts(): Array<FontFamily>
+    }
+    
     
 ```
 
