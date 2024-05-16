@@ -1,10 +1,8 @@
 # Team 11
 
-
-
 ## Running the App
 To run the app you need access to the code files from GitHub. Additionally need to have downloaded Android Studio to your computer.
-Open the folder with the code files in Android Studios.
+Open the folder with the code files in Android Studio.
   
   ### API keys needed for running the app:
   To be able to see the map, you need an API-key which can be downloaded from https://developers.google.com/maps/documentation/android-sdk/get-api-key.
@@ -12,14 +10,11 @@ Open the folder with the code files in Android Studios.
   In this file you should ONLY write: MAPS_API_KEY='your api key'.
   For example, if your API key is 12345678910, you should write MAPS_API_KEY=12345678910
 
-Before running the app, you should go to 'Build' and press 'Clean Project', then 'Rebuild Project', followed by 'Sync Project with Gradle Files' inside Android Studios.
+Before running the app, you should go to 'Build' and press 'Clean Project', then 'Rebuild Project', followed by 'Sync Project with Gradle Files' inside Android Studio.
 When all this is done, you can press "Run app" to run the app.
-On page 2-6 in our report 'MASTER DOCUMENT', all features of our app is described.
+The documentation can be found in our report 'Team 11 Rapport', all features of our app is described there.
 
 We hope you enjoy our app!
-
-
-
 
 ## Libraries Used in the Project
 This project uses several open-source and commercial libraries. Below are some of the main libraries included:
@@ -48,44 +43,4 @@ This project uses several open-source and commercial libraries. Below are some o
 
   ### Other Libraries 
   For additional functionalities, we used a various set of libraries to help with a variety of feathers in our app.
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
