@@ -150,6 +150,20 @@ classDiagram
     TimeseriesOcean --|> DataOcean
     DataOcean --|> InstantOcean
     LocationForecastViewModel --|> DetailsOcean
+    LocationForecastViewModel --|> LocationForecast
+    LocationForecast --|> Geometry
+    LocationForecast --|> Properties
+    Properties --|> Meta
+    Meta --|> Units
+    Properties  --|> Timeseries
+    Timeseries --|> Data
+    Data --|> Instant
+    SeaMapViewModel --|> Harbor 
+    SharedViewModel --|> MetAlert
+    SeaMapViewModel --|> OceanForecastDataSource
+    LocationForecastViewModel --|> LocationForecastDataSource
+    MetAlert --|> MetAlertsDataSourceImpl
+    
     
     class MainActivity{ 
         +onCreate(savedInstanceState: Budle?)}
@@ -307,6 +321,87 @@ class MetaOcean{
     +GetWeatherIconTopPage(timeseries: Timeseries)
     +GetWeatherIconTopPageHorizontal(timeseries: Timeseries)
     +getFonts(): Array<FontFamily>
+    }
+    
+    class LocationForecast{
+    +type: String,
+    +geometry: Geometry,
+    +properties: Properties}
+    
+    class Geometry{
+    +type: String
+    +coordinates: List<Double>}
+    
+    class Properties{
+    +meta: Meta
+    +timeseries: List<Timeseries>}
+    
+    class Meta{
+    +updated_at: String
+    +units: Units}
+    
+    class Units{
+    +air_pressure_at_sea_level: String
+    +air_temperature: String?
+    +air_temperature_max: String?
+    +air_temperature_min: String?
+    +air_temperature_percentile_10: String?
+    }
+    
+    class Timeseries{
+    +time: String
+    +data: Data}
+    
+    class Data{
+    +instant: Instant
+    +next_12_hours: Next_12_hours?
+    +next_1_hours: Next_1_hours?
+    +next_6_hours: Next_6_hours?}
+    
+    class Instant{
+    val details: InstantDetails}
+    
+    class Harbor{
+    +id: Int
+    +name: String
+    +location: Array<Double>
+    +description: String
+    +equals(other: Any?): Boolean
+    +hashCode(): Int}
+    
+    class MetAlert{
+    +id: String
+    +area: String
+    +title: String
+    +description: String
+    +iconName: String
+    +event: String
+    +consequences: String?
+    +instruction: String
+    +awarenessLevel: List<String>
+    +riskMatrixColor: String
+    +awarenessType: List<String>
+    +triggerLevel: String?
+    +equals(other: Any?): Boolean
+    +fun hashCode(): Int
+    }
+    
+    class OceanForecastDataSource{
+    -client
+    +fetchOceanForecast(lat: String, lon: String): OceanForecast?
+    }
+    
+    class LocationForecastDataSource{
+    -client
+    +fetchLocationForecast(lat: String, lon: String): LocationForecast
+    }
+    
+    class MetAlertsDataSourceImpl{
+    -client
+    +fetchMetAlertsInNorway(): List<MetAlert>
+    +fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert>
+    -fetchMetAlerts(url: String): List<MetAlert>
+    
     }
     
     
