@@ -17,7 +17,7 @@ class LocationForecastDataSource {
     // HTTP client
     private val client = HttpClient {
         defaultRequest {
-            url("https://gw-uio.intark.uh-it.no/in2000/")
+            url("https://in2000.api.met.no/")
             headers.appendIfNameAbsent("X-Gravitee-API-Key", "7c5b6de3-2539-4c5e-bfb3-ec6377399ece")
         }
 
@@ -33,7 +33,7 @@ class LocationForecastDataSource {
      */
     suspend fun fetchLocationForecast(lat: String, lon: String): LocationForecast {
         return client.get(
-            "https://gw-uio.intark.uh-it.no/in2000/weatherapi/" +
+            "https://in2000.api.met.no/weatherapi/" +
                     "locationforecast/2.0/complete?lat=${lat}&lon=${lon}"
         ).body<LocationForecast>()
     }

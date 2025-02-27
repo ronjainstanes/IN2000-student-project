@@ -37,7 +37,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
     // set up client that will do the api-call
     private val client = HttpClient {
         defaultRequest {
-            url("https://gw-uio.intark.uh-it.no/in2000/")
+            url("https://in2000.api.met.no/")
             headers.appendIfNameAbsent("X-Gravitee-API-Key", "7c5b6de3-2539-4c5e-bfb3-ec6377399ece")
         }
     }
@@ -48,7 +48,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
      */
     override suspend fun fetchMetAlertsInNorway(): List<MetAlert> {
         return fetchMetAlerts(
-            "https://gw-uio.intark.uh-it.no/in2000/" +
+            "https://in2000.api.met.no/" +
                     "weatherapi/metalerts/2.0/current.json"
         )
     }
@@ -59,7 +59,7 @@ class MetAlertsDataSourceImpl : MetAlertsDataSource {
      */
     override suspend fun fetchMetAlertsAtLocation(lat: String, lon: String): List<MetAlert> {
         return fetchMetAlerts(
-            "https://gw-uio.intark.uh-it.no/in2000/" +
+            "https://in2000.api.met.no/" +
                     "weatherapi/metalerts/2.0/current.json?lat=${lat}&lon=${lon}"
         )
     }

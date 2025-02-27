@@ -16,7 +16,7 @@ class OceanForecastDataSource {
     // HTTP client
     private val client = HttpClient {
         defaultRequest {
-            url("https://gw-uio.intark.uh-it.no/in2000/")
+            url("https://in2000.api.met.no/")
             headers.appendIfNameAbsent("X-Gravitee-API-Key", "7c5b6de3-2539-4c5e-bfb3-ec6377399ece")
         }
         install(ContentNegotiation) {
@@ -30,7 +30,7 @@ class OceanForecastDataSource {
      */
     suspend fun fetchOceanForecast(lat: String, lon: String): OceanForecast? {
         return try {
-            client.get("https://gw-uio.intark.uh-it.no/in2000/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}")
+            client.get("https://in2000.api.met.no/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}")
                 .body<OceanForecast>()
         } catch (e: Exception) {
             null
