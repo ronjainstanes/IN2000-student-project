@@ -1,4 +1,11 @@
-# Team 11
+## Introduction
+
+This app was developed as a student project in the *IN2000 Software Engineering* course (spring 2024) at the University of Oslo. We were a team of 6 students working together on this project ⛵️
+
+The app is made for people who own a recreational boat. You can find weather forecasts on both land and sea, receive weather warnings, explore nearby guest harbours and read about their available facilities, and see visual maritime data shown on an interactive map — with a built-in guide that explains what each symbol means.
+
+<img width="2571" height="3877" alt="12-screenshots" src="https://github.com/user-attachments/assets/c8656dd1-0f38-42b4-92cc-531c7019d320" />
+
 
 ## Running the App
 To run the app you need access to the code files from GitHub. Additionally need to have downloaded Android Studio to your computer.
